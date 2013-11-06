@@ -4,5 +4,9 @@
     <string name="app_name">ZoneSnap_App</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_section1">Current Zone</string>
+    <string name="title_section2">Past Zones</string>
+    <string name="title_section3">Camera</string>
 
 </resources>

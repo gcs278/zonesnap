@@ -2,7 +2,9 @@ package com.zonesnap.zonesnap_app;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
+import android.view.View;
 
 public class LoginActivity extends Activity {
 
@@ -19,4 +21,9 @@ public class LoginActivity extends Activity {
 		return true;
 	}
 
+	public void login(View view) {
+		Intent login = new Intent(this, MainActivity.class);
+		startActivity(login);
+	}
 }
+
