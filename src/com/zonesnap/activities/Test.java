@@ -1,4 +1,8 @@
-package com.zonesnap.zonesnap_app;
+package com.zonesnap.activities;
+
+import com.zonesnap.zonesnap_app.R;
+import com.zonesnap.zonesnap_app.R.layout;
+import com.zonesnap.zonesnap_app.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;

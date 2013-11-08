@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.zonesnap.zonesnap_app.MainActivity"
+            android:name="com.zonesnap.activities.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
     </application>

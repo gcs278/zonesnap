@@ -1,7 +1,13 @@
-package com.zonesnap.zonesnap_app;
+package com.zonesnap.activities;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import com.zonesnap.zonesnap_app.R;
+import com.zonesnap.zonesnap_app.R.id;
+import com.zonesnap.zonesnap_app.R.layout;
+import com.zonesnap.zonesnap_app.R.menu;
+import com.zonesnap.zonesnap_app.R.string;
 
 import android.content.ClipData.Item;
 import android.os.Bundle;
