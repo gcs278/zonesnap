@@ -1,0 +1,56 @@
+<<<<<<< HEAD:src/com/zonesnap/activities/LoginActivity.java
+package com.zonesnap.activities;
+
+import com.zonesnap.zonesnap_app.R;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+
+public class LoginActivity extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.login, menu);
+		return true;
+	}
+
+}
+=======
+package com.zonesnap.zonesnap_app;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.Menu;
+import android.view.View;
+
+public class LoginActivity extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_login);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.login, menu);
+		return true;
+	}
+
+	public void login(View view) {
+		Intent login = new Intent(this, MainActivity.class);
+		startActivity(login);
+	}
+}
+
+>>>>>>> 262d041c50413b13438244f99152992524e5a82a:src/com/zonesnap/zonesnap_app/LoginActivity.java
