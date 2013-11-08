@@ -7,6 +7,12 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="title_section1">Current Zone</string>
     <string name="title_section2">Past Zones</string>
-    <string name="title_section3">Camera</string>
+    <string name="title_section3">Profile</string>
     <string name="title_activity_test">Test</string>
+    <string name="title_activity_upload">UploadActivity</string>
+    <string name="title_activity_picture_view">PictureViewActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_section4">Camera</string>
+
 </resources>

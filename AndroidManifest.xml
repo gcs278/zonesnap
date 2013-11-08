@@ -26,6 +26,16 @@
             android:name="com.zonesnap.activities.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity
+            android:name="com.zonesnap.activities.UploadActivity"
+            android:label="@string/title_activity_upload" >
+        </activity>
+        <activity
+            android:name="com.zonesnap.activities.PictureViewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_picture_view"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
     </application>
 
 </manifest>
