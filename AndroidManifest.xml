@@ -26,6 +26,10 @@
             android:name="com.zonesnap.zonesnap_app.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity android:name=".ImageViewActivity"
+            android:label="@string/title_activity_image_view">
+        </activity>
+       
     </application>
 
 </manifest>
