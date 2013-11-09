@@ -1,7 +1,13 @@
-package com.zonesnap.zonesnap_app;
+package com.zonesnap.activities;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import com.zonesnap.zonesnap_app.R;
+import com.zonesnap.zonesnap_app.R.id;
+import com.zonesnap.zonesnap_app.R.layout;
+import com.zonesnap.zonesnap_app.R.menu;
+import com.zonesnap.zonesnap_app.R.string;
 
 import android.content.ClipData.Item;
 import android.os.Bundle;
@@ -84,6 +90,9 @@ public class MainActivity extends FragmentActivity {
 			case 1:
 				fragment = new HistoryFragment();
 				break;
+			case 2:
+				fragment = new ProfileFragment();
+				break;
 			default:
 				fragment = new CurrentFragment();
 				break;
@@ -93,8 +102,8 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public int getCount() {
-			// Show 3 total pages.
-			return 3;
+			// Show 4 total pages.
+			return 4;
 		}
 
 		@Override
@@ -107,12 +116,14 @@ public class MainActivity extends FragmentActivity {
 				return getString(R.string.title_section2).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_section3).toUpperCase(l);
+			case 3:
+				return getString(R.string.title_section4).toUpperCase(l);
 			}
 			return null;
 		}
 	}
 
-
+	// Fragment for the current zone
 	public static class CurrentFragment extends Fragment {
 		public static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -125,22 +136,24 @@ public class MainActivity extends FragmentActivity {
 			View rootView = inflater.inflate(R.layout.fragment_current,
 					container, false);
 
-	        
 			return rootView;
 		}
+
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-	        final GridView grid = (GridView) getView().findViewById(R.id.gridCurrent);
-	        final ArrayList<String> items = new ArrayList<String>();
+			final GridView grid = (GridView) getView().findViewById(
+					R.id.gridCurrent);
+			final ArrayList<String> items = new ArrayList<String>();
 
-	        items.add("Current Grid 1 , 11 , 12");
-	        items.add("Current Grid 2 , 21 , 22");
-	        grid.setAdapter(new GridAdapter(items));
-			
+			items.add("Current Grid 1 , 11 , 12");
+			items.add("Current Grid 2 , 21 , 22");
+			grid.setAdapter(new GridAdapter(items));
+
 		}
 	}
-	
+
+	// Fragment for the Historic ZoneSnap View
 	public static class HistoryFragment extends Fragment {
 		public static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -155,17 +168,42 @@ public class MainActivity extends FragmentActivity {
 
 			return rootView;
 		}
-		
+
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-			
-	        final GridView grid = (GridView) getView().findViewById(R.id.gridHistory);
-	        final ArrayList<String> items = new ArrayList<String>();
 
-	        items.add("History Grid 1 , 11 , 12");
-	        items.add("History Grid 2 , 21 , 22");
-	        grid.setAdapter(new GridAdapter(items));
+			final GridView grid = (GridView) getView().findViewById(
+					R.id.gridHistory);
+			final ArrayList<String> items = new ArrayList<String>();
+
+			items.add("History Grid 1 , 11 , 12");
+			items.add("History Grid 2 , 21 , 22");
+			grid.setAdapter(new GridAdapter(items));
+		}
+	}
+
+	// Fragment for user's profile
+	public static class ProfileFragment extends Fragment {
+		public static final String ARG_SECTION_NUMBER = "section_number";
+
+		public ProfileFragment() {
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_profile,
+					container, false);
+
+			return rootView;
+		}
+
+		@Override
+		public void onViewCreated(View view, Bundle savedInstanceState) {
+			super.onViewCreated(view, savedInstanceState);
+			// THIS WILL BE WHERE YOU SET UP THE PROFILE DATE
+			// i.e. load profile pic
 		}
 	}
 

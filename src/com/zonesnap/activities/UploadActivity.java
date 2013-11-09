@@ -1,29 +1,26 @@
-package com.zonesnap.zonesnap_app;
+package com.zonesnap.activities;
+
+import com.zonesnap.zonesnap_app.R;
+import com.zonesnap.zonesnap_app.R.layout;
+import com.zonesnap.zonesnap_app.R.menu;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.content.Intent;
 import android.view.Menu;
-import android.view.View;
 
-public class LoginActivity extends Activity {
+public class UploadActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.activity_upload);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login, menu);
+		getMenuInflater().inflate(R.menu.upload, menu);
 		return true;
 	}
 
-	public void login(View view) {
-		Intent login = new Intent(this, MainActivity.class);
-		startActivity(login);
-	}
 }
-

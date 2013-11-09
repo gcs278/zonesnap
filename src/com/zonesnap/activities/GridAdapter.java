@@ -1,4 +1,4 @@
-package com.zonesnap.zonesnap_app;
+package com.zonesnap.activities;
 
 import java.util.ArrayList;
 
