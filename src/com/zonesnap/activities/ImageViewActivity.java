@@ -1,4 +1,9 @@
-package com.zonesnap.zonesnap_app;
+package com.zonesnap.activities;
+
+import com.zonesnap.zonesnap_app.R;
+import com.zonesnap.zonesnap_app.R.id;
+import com.zonesnap.zonesnap_app.R.layout;
+import com.zonesnap.zonesnap_app.R.menu;
 
 import android.app.Activity;
 import android.net.Uri;
