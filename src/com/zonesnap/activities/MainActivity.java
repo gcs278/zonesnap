@@ -24,8 +24,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -57,7 +60,7 @@ public class MainActivity extends FragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
+		mViewPager.setCurrentItem(1);
 	}
 
 	@Override
@@ -85,10 +88,10 @@ public class MainActivity extends FragmentActivity {
 			Fragment fragment;
 			switch (position) {
 			case 0:
-				fragment = new CurrentFragment();
+				fragment = new HistoryFragment();
 				break;
 			case 1:
-				fragment = new HistoryFragment();
+				fragment = new CurrentFragment();
 				break;
 			case 2:
 				fragment = new ProfileFragment();
@@ -142,13 +145,15 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-			final GridView grid = (GridView) getView().findViewById(
+			GridView grid = (GridView) getView().findViewById(
 					R.id.gridCurrent);
-			final ArrayList<String> items = new ArrayList<String>();
-
-			items.add("Current Grid 1 , 11 , 12");
-			items.add("Current Grid 2 , 21 , 22");
-			grid.setAdapter(new GridAdapter(items));
+			grid.setAdapter(new ImageAdapter(getActivity()));
+			
+			grid.setOnItemClickListener(new OnItemClickListener() {
+		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		            Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+		        }
+		    });
 
 		}
 	}
@@ -172,14 +177,15 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-
-			final GridView grid = (GridView) getView().findViewById(
+			GridView grid = (GridView) getView().findViewById(
 					R.id.gridHistory);
-			final ArrayList<String> items = new ArrayList<String>();
-
-			items.add("History Grid 1 , 11 , 12");
-			items.add("History Grid 2 , 21 , 22");
-			grid.setAdapter(new GridAdapter(items));
+			grid.setAdapter(new ImageAdapter(getActivity()));
+			
+			grid.setOnItemClickListener(new OnItemClickListener() {
+		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		            Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+		        }
+		    });
 		}
 	}
 
