@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 import com.zonesnap.zonesnap_app.R.id;
 import com.zonesnap.zonesnap_app.R.layout;
@@ -30,10 +31,14 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,8 +77,9 @@ public class MainActivity extends FragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setCurrentItem(1);
 		
-				
+			
 
 	}
 
@@ -101,16 +107,16 @@ public class MainActivity extends FragmentActivity {
 			// below) with the page number as its lone argument.
 			Fragment fragment;
 			switch (position) {
-			case 0:
+			case 1:
 				fragment = new CurrentFragment();
 				break;
-			case 1:
+			case 2:
 				fragment = new HistoryFragment();
 				break;
-			case 2:
+			case 3:
 				fragment = new ProfileFragment();
 				break;
-			case 3: 
+			case 0: 
 				fragment = new UploadFragment();
 				break;
 			default:
@@ -130,13 +136,13 @@ public class MainActivity extends FragmentActivity {
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 			switch (position) {
-			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_section2).toUpperCase(l);
+				return getString(R.string.title_section1).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
+				return getString(R.string.title_section2).toUpperCase(l);
 			case 3:
+				return getString(R.string.title_section3).toUpperCase(l);
+			case 0:
 				return getString(R.string.title_section4).toUpperCase(l);
 			}
 			return null;
@@ -231,6 +237,14 @@ public class MainActivity extends FragmentActivity {
 	public static class UploadFragment extends Fragment {
 		public static final String ARG_SECTION_NUMBER = "section_number";
 		
+		ImageButton camerabtn;
+		Button uploadbtn;
+		Button clearbtn;
+		ImageView imageView;
+		EditText editTitle;
+		boolean imgTaken;
+		String image64;
+		
 		public UploadFragment() {
 			
 		}
@@ -246,29 +260,68 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-			//setup upload button to call camera intent
-			Button uploadbtn = (Button) getView().findViewById(R.id.uploadbtn);
-			uploadbtn.setOnClickListener(new OnClickListener() {
+			
+			imgTaken = false;
+						
+			// image view set to invis at first
+			imageView = (ImageView) getView().findViewById(R.id.uploadImg);
+			imageView.setVisibility(View.GONE);
+			
+			// camera button
+			camerabtn = (ImageButton) getView().findViewById(R.id.cameraBtn);
+			camerabtn.setOnClickListener(new OnClickListener() {
 				public void onClick(View arg0) {
 					Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 					startActivityForResult(cameraIntent, CAMERA_REQUEST);
-					
 				}
 			});
+			
+			// clear button
+			clearbtn  = (Button) getView().findViewById(R.id.clearBtn);
+			clearbtn.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					uploadClear();
+				}			
+			});
+			
+			// upload button
+			uploadbtn = (Button) getView().findViewById(R.id.uploadBtn);			
+			uploadbtn.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					String title = editTitle.getText().toString();
+					NetworkPostPicture task = new NetworkPostPicture(getActivity());
+					task.execute(title, image64);
+					uploadClear();
+				}
+			});
+			
+			editTitle = (EditText) getView().findViewById(R.id.titleEdit);
+						
 		}
+		
+		public void uploadClear(){
+			imgTaken = false;
+			imageView.setVisibility(View.GONE);
+			camerabtn.setVisibility(View.VISIBLE);
+			editTitle.setText("");
+		}
+		
 		
 		//Called when the camera activities respond when finished
 		public void onActivityResult(int requestCode, int resultCode, Intent data) {
 			//camera 
 			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-				Bitmap photo = (Bitmap) data.getExtras().get("data");
-				//ByteArrayOutputStream stream = new ByteArrayOutputStream();
-			    //photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-			    //byte[] b = stream.toByteArray();
+				Bitmap image = (Bitmap) data.getExtras().get("data");
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			    image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			    byte[] bytes = stream.toByteArray();
+			    image64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+			    
 			    Toast.makeText(getActivity(),"photo taken!",Toast.LENGTH_SHORT).show();
-			    Intent intent = new Intent(getActivity(), UploadActivity.class);
-			    intent.putExtra("image", photo);
-			    startActivity(intent);
+			    imgTaken = true;
+			    imageView.setVisibility(View.VISIBLE);
+			    imageView.setImageBitmap(image);
+			    camerabtn.setVisibility(View.GONE);
 			    
 			}	
 
