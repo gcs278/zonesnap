@@ -1,5 +1,6 @@
 package com.zonesnap.activities;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -9,7 +10,9 @@ import com.zonesnap.zonesnap_app.R.layout;
 import com.zonesnap.zonesnap_app.R.menu;
 import com.zonesnap.zonesnap_app.R.string;
 
+import android.content.Intent;
 import android.content.ClipData.Item;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -17,15 +20,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -43,6 +53,11 @@ public class MainActivity extends FragmentActivity {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	
+	private static final int CAMERA_REQUEST = 1888;
+
+	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +72,8 @@ public class MainActivity extends FragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		
+				
 
 	}
 
@@ -92,6 +109,9 @@ public class MainActivity extends FragmentActivity {
 				break;
 			case 2:
 				fragment = new ProfileFragment();
+				break;
+			case 3: 
+				fragment = new UploadFragment();
 				break;
 			default:
 				fragment = new CurrentFragment();
@@ -204,6 +224,54 @@ public class MainActivity extends FragmentActivity {
 			super.onViewCreated(view, savedInstanceState);
 			// THIS WILL BE WHERE YOU SET UP THE PROFILE DATE
 			// i.e. load profile pic
+		}
+	}
+	
+	//fragment for camera
+	public static class UploadFragment extends Fragment {
+		public static final String ARG_SECTION_NUMBER = "section_number";
+		
+		public UploadFragment() {
+			
+		}
+		
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_upload,
+					container, false);
+			return rootView;
+		}
+		
+		@Override
+		public void onViewCreated(View view, Bundle savedInstanceState) {
+			super.onViewCreated(view, savedInstanceState);
+			//setup upload button to call camera intent
+			Button uploadbtn = (Button) getView().findViewById(R.id.uploadbtn);
+			uploadbtn.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+					startActivityForResult(cameraIntent, CAMERA_REQUEST);
+					
+				}
+			});
+		}
+		
+		//Called when the camera activities respond when finished
+		public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			//camera 
+			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+				Bitmap photo = (Bitmap) data.getExtras().get("data");
+				//ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			    //photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			    //byte[] b = stream.toByteArray();
+			    Toast.makeText(getActivity(),"photo taken!",Toast.LENGTH_SHORT).show();
+			    Intent intent = new Intent(getActivity(), UploadActivity.class);
+			    intent.putExtra("image", photo);
+			    startActivity(intent);
+			    
+			}	
+
 		}
 	}
 
