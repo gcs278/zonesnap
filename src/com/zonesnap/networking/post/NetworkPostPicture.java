@@ -4,17 +4,24 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
@@ -23,8 +30,12 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.zonesnap.activities.MainActivity;
+import com.zonesnap.activities.UploadActivity;
 
 // This task is for uploading a picture to the database
 public class NetworkPostPicture extends AsyncTask<String, Void, String> {
@@ -63,15 +74,15 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 					null, null);
 			HttpPost request = new HttpPost(address);
 
-			// Retrieve bytes from image files we just took
-			File file = new File(params[0]);
-			byte[] bytes = IOUtils.toByteArray(file.toURI());
-
-			// Encode them into a BASE64 string
-			byte[] encoded = Base64.encodeBase64(bytes);
-
-			request.setEntity(new ByteArrayEntity(encoded));
-
+			// Get title and image passed in
+			String title = params[0];
+			String image = params[1];
+						
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	        nameValuePairs.add(new BasicNameValuePair("title", title));
+	        nameValuePairs.add(new BasicNameValuePair("image", image));
+	        request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+	        
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
 			client.execute(request, responsehandler);
 
@@ -92,10 +103,11 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 		pd.dismiss();
 		if (result.contains("OK")) {
 			new AlertDialog.Builder(activity).setMessage(
-					"Picture successfully uploaded to database").show();
+                    "Picture successfully uploaded to database").show();
+			
+			
 		} else {
-//			new AlertDialog.Builder(activity).setMessage(
-//					Assignment_2.getErrorMessage() + result).show();
+
 		}
 
 	}
