@@ -1,16 +1,17 @@
 package com.zonesnap.activities;
 
-import com.zonesnap.zonesnap_app.R;
-import com.zonesnap.zonesnap_app.R.layout;
-import com.zonesnap.zonesnap_app.R.menu;
+import java.util.ArrayList;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
+
+import com.zonesnap.zonesnap_app.R;
 
 public class StackViewActivity extends Activity {
 	
 	private StackAdapter sa_;
+	private ArrayList<StackItem> items;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

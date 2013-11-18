@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/stackImage"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
@@ -12,7 +12,7 @@
         android:src="@drawable/zonesnap_logo" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/stackLike"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:alpha="50" />
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/stackText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
