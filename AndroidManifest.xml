@@ -30,8 +30,13 @@
             android:name="com.zonesnap.activities.UploadActivity"
             android:label="@string/title_activity_upload" >
         </activity>
-        <activity android:name="com.zonesnap.activities.ImageViewActivity"
-            android:label="@string/title_activity_image_view">
+        <activity
+            android:name="com.zonesnap.activities.ImageViewActivity"
+            android:label="@string/title_activity_image_view" >
+        </activity>
+        <activity
+            android:name="com.zonesnap.activities.StackViewActivity"
+            android:label="@string/title_activity_stack_view" >
         </activity>
     </application>
 

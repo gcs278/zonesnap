@@ -38,7 +38,6 @@ public class ImageViewActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_image_view);
-
 		// receive Information from HTTP classes
 		recBun = getIntent().getExtras();
 		// Locations should be in URI form of where each image is stored on the
@@ -60,6 +59,9 @@ public class ImageViewActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				// TODO Add call to send like to server
+				
+				like_.setText("Liked");
+				like_.setEnabled(false);
 
 			}
 

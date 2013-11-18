@@ -11,9 +11,9 @@
     <string name="title_activity_test">Test</string>
     <string name="title_activity_image_view">ImageViewActivity</string>
     <string name="title_activity_upload">UploadActivity</string>
-    <string name="title_activity_picture_view">PictureViewActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_section4">Camera</string>
+    <string name="title_activity_stack_view">StackViewActivity</string>
 
 </resources>
