@@ -6,7 +6,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +40,8 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 			holder = new StackHolder();
 			holder.img = (ImageView) row.findViewById(R.id.stackImage);
 			holder.text = (TextView) row.findViewById(R.id.stackText);
+			holder.like = (Button) row.findViewById(R.id.likeButton);
+			
 
 			row.setTag(holder);
 		} else {
@@ -48,12 +52,30 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 
 		holder.img.setImageBitmap(item.getImg());
 		holder.text.setText(item.getText());
+/*		
+		holder.like.setOnClickListener(new OnClickListener(){
 
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				
+				
+			//	Button l = (Button) v.findViewById(R.id.likeButton);
+			//	l.setText("Liked");
+				
+				
+			}
+			
+		});
+*/
 		return row;
 	}
-
+	
 	private class StackHolder {
 		ImageView img;
 		TextView text;
+		Button like;
+	
 	}
 }

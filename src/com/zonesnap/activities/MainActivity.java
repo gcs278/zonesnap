@@ -1,31 +1,46 @@
 package com.zonesnap.activities;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 import com.zonesnap.zonesnap_app.R.id;
 import com.zonesnap.zonesnap_app.R.layout;
 import com.zonesnap.zonesnap_app.R.menu;
 import com.zonesnap.zonesnap_app.R.string;
 
+import android.content.Intent;
 import android.content.ClipData.Item;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Base64;
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
 
@@ -43,6 +58,11 @@ public class MainActivity extends FragmentActivity {
 	 * The {@link ViewPager} that will host the section contents.
 	 */
 	ViewPager mViewPager;
+	
+	private static final int CAMERA_REQUEST = 1888;
+
+	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +77,9 @@ public class MainActivity extends FragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setCurrentItem(1);
+		
+			
 
 	}
 
@@ -84,14 +107,17 @@ public class MainActivity extends FragmentActivity {
 			// below) with the page number as its lone argument.
 			Fragment fragment;
 			switch (position) {
-			case 0:
-				fragment = new CurrentFragment();
-				break;
 			case 1:
 				fragment = new HistoryFragment();
 				break;
 			case 2:
+				fragment = new CurrentFragment();
+				break;
+			case 3:
 				fragment = new ProfileFragment();
+				break;
+			case 0: 
+				fragment = new UploadFragment();
 				break;
 			default:
 				fragment = new CurrentFragment();
@@ -110,13 +136,13 @@ public class MainActivity extends FragmentActivity {
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 			switch (position) {
-			case 0:
-				return getString(R.string.title_section1).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_section2).toUpperCase(l);
+				return getString(R.string.title_section1).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_section3).toUpperCase(l);
+				return getString(R.string.title_section2).toUpperCase(l);
 			case 3:
+				return getString(R.string.title_section3).toUpperCase(l);
+			case 0:
 				return getString(R.string.title_section4).toUpperCase(l);
 			}
 			return null;
@@ -142,13 +168,15 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-			final GridView grid = (GridView) getView().findViewById(
+			GridView grid = (GridView) getView().findViewById(
 					R.id.gridCurrent);
-			final ArrayList<String> items = new ArrayList<String>();
-
-			items.add("Current Grid 1 , 11 , 12");
-			items.add("Current Grid 2 , 21 , 22");
-			grid.setAdapter(new GridAdapter(items));
+			grid.setAdapter(new ImageAdapter(getActivity()));
+			
+			grid.setOnItemClickListener(new OnItemClickListener() {
+		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		            Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+		        }
+		    });
 
 		}
 	}
@@ -172,14 +200,15 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-
-			final GridView grid = (GridView) getView().findViewById(
+			GridView grid = (GridView) getView().findViewById(
 					R.id.gridHistory);
-			final ArrayList<String> items = new ArrayList<String>();
-
-			items.add("History Grid 1 , 11 , 12");
-			items.add("History Grid 2 , 21 , 22");
-			grid.setAdapter(new GridAdapter(items));
+			grid.setAdapter(new ImageAdapter(getActivity()));
+			
+			grid.setOnItemClickListener(new OnItemClickListener() {
+		        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		            Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+		        }
+		    });
 		}
 	}
 
@@ -204,6 +233,101 @@ public class MainActivity extends FragmentActivity {
 			super.onViewCreated(view, savedInstanceState);
 			// THIS WILL BE WHERE YOU SET UP THE PROFILE DATE
 			// i.e. load profile pic
+		}
+	}
+	
+	//fragment for camera
+	public static class UploadFragment extends Fragment {
+		public static final String ARG_SECTION_NUMBER = "section_number";
+		
+		ImageButton camerabtn;
+		Button uploadbtn;
+		Button clearbtn;
+		ImageView imageView;
+		EditText editTitle;
+		boolean imgTaken;
+		String image64;
+		
+		public UploadFragment() {
+			
+		}
+		
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_upload,
+					container, false);
+			return rootView;
+		}
+		
+		@Override
+		public void onViewCreated(View view, Bundle savedInstanceState) {
+			super.onViewCreated(view, savedInstanceState);
+			
+			imgTaken = false;
+						
+			// image view set to invis at first
+			imageView = (ImageView) getView().findViewById(R.id.uploadImg);
+			imageView.setVisibility(View.GONE);
+			
+			// camera button
+			camerabtn = (ImageButton) getView().findViewById(R.id.cameraBtn);
+			camerabtn.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+					startActivityForResult(cameraIntent, CAMERA_REQUEST);
+				}
+			});
+			
+			// clear button
+			clearbtn  = (Button) getView().findViewById(R.id.clearBtn);
+			clearbtn.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					uploadClear();
+				}			
+			});
+			
+			// upload button
+			uploadbtn = (Button) getView().findViewById(R.id.uploadBtn);			
+			uploadbtn.setOnClickListener(new OnClickListener() {
+				public void onClick(View arg0) {
+					String title = editTitle.getText().toString();
+					NetworkPostPicture task = new NetworkPostPicture(getActivity());
+					task.execute(title, image64);
+					uploadClear();
+				}
+			});
+			
+			editTitle = (EditText) getView().findViewById(R.id.titleEdit);
+						
+		}
+		
+		public void uploadClear(){
+			imgTaken = false;
+			imageView.setVisibility(View.GONE);
+			camerabtn.setVisibility(View.VISIBLE);
+			editTitle.setText("");
+		}
+		
+		
+		//Called when the camera activities respond when finished
+		public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			//camera 
+			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+				Bitmap image = (Bitmap) data.getExtras().get("data");
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+			    image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+			    byte[] bytes = stream.toByteArray();
+			    image64 = Base64.encodeToString(bytes, Base64.DEFAULT);
+			    
+			    Toast.makeText(getActivity(),"photo taken!",Toast.LENGTH_SHORT).show();
+			    imgTaken = true;
+			    imageView.setVisibility(View.VISIBLE);
+			    imageView.setImageBitmap(image);
+			    camerabtn.setVisibility(View.GONE);
+			    
+			}	
+
 		}
 	}
 

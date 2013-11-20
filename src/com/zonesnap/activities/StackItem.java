@@ -1,6 +1,11 @@
 package com.zonesnap.activities;
 
 import android.graphics.Bitmap;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+
+import com.zonesnap.zonesnap_app.R;
 
 public class StackItem {
 	
