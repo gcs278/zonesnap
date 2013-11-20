@@ -38,5 +38,10 @@ public class StackItem {
 		this.id_ = id;
 		
 	}
+	public StackItem(Bitmap map, String des){
+		this.img_ = map;
+		this.text_ = des;
+	}
+	
 
 }
