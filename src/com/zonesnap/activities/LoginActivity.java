@@ -10,6 +10,7 @@ import android.widget.Button;
 
 import com.zonesnap.zonesnap_app.R;
 
+
 public class LoginActivity extends Activity {
 
 	@Override
