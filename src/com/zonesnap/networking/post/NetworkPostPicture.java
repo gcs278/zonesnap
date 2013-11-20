@@ -1,7 +1,9 @@
 package com.zonesnap.networking.post;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -36,7 +38,6 @@ import org.json.JSONObject;
 
 import com.zonesnap.activities.MainActivity;
 import com.zonesnap.activities.UploadActivity;
-
 // This task is for uploading a picture to the database
 public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	Context activity;
@@ -44,10 +45,10 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	ProgressDialog pd;
 	int port;
 	String URL;
-
+	
 	public NetworkPostPicture(Context context) {
 		activity = context;
-		port = 9876;
+		port = 8080;
 		URL = "www.grantspence.com";
 	}
 
@@ -66,32 +67,48 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	// Retrieve data
 	@Override
 	protected String doInBackground(String... params) {
+		System.out.println("hereh");
 		String verified = "OK";
 		try {
+
 			// Create the HTTP Post
 			HttpClient client = new DefaultHttpClient();
-			URI address = new URI("http", null, URL, port, "/uploadpic",
-					null, null);
+			URI address = new URI("http", null, URL, port, "/uploadpic", null,
+					null);
 			HttpPost request = new HttpPost(address);
+			
+			// Grant new code
+			// Create JSON object for image
+			JSONObject json = new JSONObject();
+			System.out.println(params[1]);
+			json.put("image",params[1]);
+			json.put("title", params[0]);
+			// TODO: Add latitude and longitude with picture
+			
+			request.setEntity(new StringEntity(json.toString().replace("\\", "")));
+			
+//			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+//			nameValuePairs.add(new BasicNameValuePair("title", title));
+//			nameValuePairs.add(new BasicNameValuePair("image", image));
+//			request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			//request.setEntity(new ByteArrayEntity(image));
+			
 
-			// Get title and image passed in
-			String title = params[0];
-			String image = params[1];
-						
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-	        nameValuePairs.add(new BasicNameValuePair("title", title));
-	        nameValuePairs.add(new BasicNameValuePair("image", image));
-	        request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-	        
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
 			client.execute(request, responsehandler);
 
 		} catch (ClientProtocolException e) {
+			e.printStackTrace();
 			return e.getMessage();
 		} catch (IOException e) {
+			e.printStackTrace();
 			return e.getMessage();
 		} catch (URISyntaxException e) {
+			e.printStackTrace();
 			return e.getMessage();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return verified;
 	}
@@ -103,9 +120,8 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 		pd.dismiss();
 		if (result.contains("OK")) {
 			new AlertDialog.Builder(activity).setMessage(
-                    "Picture successfully uploaded to database").show();
-			
-			
+					"Picture successfully uploaded to database").show();
+
 		} else {
 
 		}

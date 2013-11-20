@@ -43,7 +43,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 	public NetworkGetPicture(Context context,OnTaskComplete listener,ImageView view,int position) {
 		activity = context;
 		// Get the URL and port
-		port = 8888;
+		port = 8080;
 		URL = "www.grantspence.com";
 		this.listener = listener;
 		this.view = view;
@@ -58,7 +58,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 			// Set up HTTP GET
 			HttpClient httpclient = new DefaultHttpClient();
 			URI address = new URI("http", null, URL, port, "/uploadpic",
-				"email=ezowenall@gmail.com", null);
+				"type=get&photoID=0", null);
 			
 			// Excecute
 			HttpResponse response = httpclient.execute(new HttpGet(address));
