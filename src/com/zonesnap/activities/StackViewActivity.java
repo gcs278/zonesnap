@@ -15,14 +15,11 @@ public class StackViewActivity extends Activity {
 	
 	private StackAdapter sa_;
 
-	
-	
-	
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_stack_view);
+		int photoID = this.getIntent().getExtras().getInt("position");
 		
 		Bitmap b = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
 		
@@ -34,9 +31,17 @@ public class StackViewActivity extends Activity {
 		
 		stack.setAdapter(sa_);
 		
-		for(int i = 0; i < 5; i++){
-			sa_.add(item);
-		}
+		StackItem item1 = new StackItem(ZoneSnap_App.mMemoryCache.get(String.valueOf(photoID)),"Lol");
+		sa_.add(item1);
+		StackItem item2 = new StackItem(ZoneSnap_App.mMemoryCache.get(String.valueOf(photoID+1)),"Lol");
+		sa_.add(item2);
+		StackItem item3 = new StackItem(ZoneSnap_App.mMemoryCache.get(String.valueOf(photoID+2)),"Lol");
+		sa_.add(item3);
+		StackItem item4 = new StackItem(ZoneSnap_App.mMemoryCache.get(String.valueOf(photoID+3)),"Lol");
+		sa_.add(item4);
+//		for(int i = 0; i < 5; i++){
+//			sa_.add(item);
+//		}
 		
 	}
 
