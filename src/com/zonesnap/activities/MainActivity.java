@@ -326,15 +326,21 @@ public class MainActivity extends FragmentActivity {
 
 			editTitle = (EditText) getView().findViewById(R.id.titleEdit);
 			
-			NotificationManager notiMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+			final NotificationManager notiMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
 			//notify test button
 			notifybtn = (Button) getView().findViewById(R.id.notificationTest);
 			notifybtn.setOnClickListener(new OnClickListener() {
-				@SuppressLint("ServiceCast")
+				@SuppressLint({ "ServiceCast", "NewApi" })
 				public void onClick(View arg0) {
 					Intent notIntent = new Intent(getActivity(), MainActivity.class);
 					PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, notIntent, 0);
-					Notification n = Notification.Builder(getActivity());
+					Notification n = new Notification.Builder(getActivity())
+							.setContentTitle("Entered new zone.")
+							.setSmallIcon(R.drawable.zonesnap1_launcher)
+							.setContentText("Touch to view content of new zone.")
+							.setContentIntent(pIntent)
+							.setAutoCancel(true).build();
+					notiMgr.notify(0, n);
 				}
 			});
 
