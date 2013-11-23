@@ -1,6 +1,13 @@
 package com.zonesnap.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import com.zonesnap.networking.get.NetworkGetPicture;
+import com.zonesnap.networking.get.NetworkGetPictureList;
 import com.zonesnap.zonesnap_app.R;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,7 +28,9 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 	// Cache for storing pictures from network
 	private LruCache<String, Bitmap> mMemoryCache;
 	RotateAnimation anim;
-
+	ArrayList<Integer> pictureList = new ArrayList<Integer>();
+	int picIndex = 0;
+	
 	public ImageAdapter(Context c) {
 		mContext = c;
 
@@ -48,11 +57,24 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 				return bitmap.getByteCount() / 1024;
 			}
 		};
+		
+		NetworkGetPictureList task = new NetworkGetPictureList(mContext);
+		try {
+			task.execute().get();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pictureList = (ArrayList<Integer>) task.photoIDs.clone();
+		System.out.println("Test: "+pictureList);
 	}
 
 	// How many pictures displaying
 	public int getCount() {
-		return 20;
+		return (pictureList.size());
 	}
 
 	// Not used, but must override
@@ -87,10 +109,10 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 
 	// create a new ImageView for each item referenced by the Adapter
 	public View getView(int position, View convertView, ViewGroup parent) {
-
+		System.out.println(position);
 		ImageView imageView;
-		if (convertView == null) { // if it's not recycled, initialize some
-									// attributes
+		// if (convertView == null) { // if it's not recycled, initialize some
+			System.out.println("here1");				// attributes
 			imageView = new ImageView(mContext);
 			imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
 			imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -106,16 +128,16 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 
 				// Place holder picture while loading
 				// imageView.setImageResource(R.drawable.placeholder);
-
+				
 				// Network task, passes imageview, like pass by reference
 				NetworkGetPicture task = new NetworkGetPicture(mContext, this,
-						imageView, position);
+						imageView, pictureList.get(position));
 				task.execute("");
 			}
-		} else {
-			imageView = (ImageView) convertView;
-		}
-
+//		} else {
+//			System.out.println("here");
+//			imageView = (ImageView) convertView;
+//		}
 		return imageView;
 	}
 

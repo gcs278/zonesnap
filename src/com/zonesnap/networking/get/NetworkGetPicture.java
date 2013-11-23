@@ -39,15 +39,15 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 	String URL;
 	private OnTaskComplete listener;
 	ImageView view;
-	int position;
-	public NetworkGetPicture(Context context,OnTaskComplete listener,ImageView view,int position) {
+	int photoID;
+	public NetworkGetPicture(Context context,OnTaskComplete listener,ImageView view,int photoID) {
 		activity = context;
 		// Get the URL and port
 		port = 8080;
 		URL = "www.grantspence.com";
 		this.listener = listener;
 		this.view = view;
-		this.position = position;
+		this.photoID = photoID;
 	}
 
 	// Retrieve data
@@ -58,7 +58,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 			// Set up HTTP GET
 			HttpClient httpclient = new DefaultHttpClient();
 			URI address = new URI("http", null, URL, port, "/uploadpic",
-				"type=get&photoID=0", null);
+				"type=get&photoID="+photoID, null);
 			
 			// Excecute
 			HttpResponse response = httpclient.execute(new HttpGet(address));
@@ -84,12 +84,17 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 		return imageBase64;
 	}
 
+	@Override
+	protected void onProgressUpdate(Void... values) {
+		// TODO Auto-generated method stub
+		super.onProgressUpdate(values);
+	}
+	
 	// Process data, display
 	@Override
 	protected void onPostExecute(String result) {
 		// check if it didn't fail
-		if (result != "connectFail") {
-
+		if (result != "connectFail" && !result.trim().equalsIgnoreCase(new String("null"))) {
 			try {
 				// Decode and set image to profile pic
 				byte[] decodedString = Base64.decode(result, Base64.DEFAULT);
@@ -97,7 +102,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 						decodedString, 0, decodedString.length);
 				decodedByte = getRoundedCornerBitmap(decodedByte);
 				view.setImageBitmap(decodedByte);
-				listener.onTaskComplete(decodedByte, position);
+				listener.onTaskComplete(decodedByte, photoID);
 				view.setAnimation(AnimationUtils.loadAnimation(activity, R.anim.zoom_enter));
 				// MainActivity.profilePic.setImageBitmap(decodedByte);
 			} catch (IllegalArgumentException e) {

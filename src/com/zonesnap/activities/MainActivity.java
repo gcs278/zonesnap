@@ -108,14 +108,14 @@ public class MainActivity extends FragmentActivity {
 				fragment = new UploadFragment();
 				break;
 			case 1:
-				fragment = new HistoryFragment();
+				fragment = new ProfileFragment();
 				break;
 			case 2:
 				fragment = new CurrentFragment();
 				break;
-			case 3:
-				fragment = new ProfileFragment();
-				break;
+			// case 3:
+			// fragment = new ProfileFragment();
+			// break;
 
 			default:
 				fragment = new CurrentFragment();
@@ -127,7 +127,7 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			// Show 4 total pages.
-			return 4;
+			return 3;
 		}
 
 		@Override
@@ -166,9 +166,9 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-			GridView grid = (GridView) getView().findViewById(R.id.gridCurrent);
+			final GridView grid = (GridView) getView().findViewById(
+					R.id.gridCurrent);
 			grid.setAdapter(new ImageAdapter(getActivity()));
-
 			grid.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v,
 						int position, long id) {
@@ -176,6 +176,22 @@ public class MainActivity extends FragmentActivity {
 							Toast.LENGTH_SHORT).show();
 				}
 			});
+
+//			Thread loadPictures = new Thread(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//					grid.setAdapter(new ImageAdapter(getActivity()));
+//					grid.setOnItemClickListener(new OnItemClickListener() {
+//						public void onItemClick(AdapterView<?> parent, View v,
+//								int position, long id) {
+//							Toast.makeText(getActivity(), "" + position,
+//									Toast.LENGTH_SHORT).show();
+//						}
+//					});
+//				}
+//			});
+//			loadPictures.start();
 
 		}
 	}
@@ -295,7 +311,7 @@ public class MainActivity extends FragmentActivity {
 					String title = editTitle.getText().toString();
 					NetworkPostPicture task = new NetworkPostPicture(
 							getActivity());
-					
+
 					task.execute(title, image64);
 					uploadClear();
 				}
@@ -322,14 +338,14 @@ public class MainActivity extends FragmentActivity {
 				image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 				byte[] bytes = stream.toByteArray();
 				bytes = Base64.encodeBase64(bytes);
-				
+
 				// Convert to base64 string
 				try {
-					image64 = new String(bytes,"UTF-8");
+					image64 = new String(bytes, "UTF-8");
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-				
+
 				Toast.makeText(getActivity(), "photo taken!",
 						Toast.LENGTH_SHORT).show();
 				imgTaken = true;
