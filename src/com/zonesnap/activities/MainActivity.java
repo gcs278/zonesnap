@@ -169,13 +169,15 @@ public class MainActivity extends FragmentActivity {
 			final GridView grid = (GridView) getView().findViewById(
 					R.id.gridCurrent);
 			grid.setAdapter(new ImageAdapter(getActivity()));
-			grid.setOnItemClickListener(new OnItemClickListener() {
-				public void onItemClick(AdapterView<?> parent, View v,
-						int position, long id) {
-					Toast.makeText(getActivity(), "" + position,
-							Toast.LENGTH_SHORT).show();
-				}
-			});
+//			grid.setOnItemClickListener(new OnItemClickListener() {
+//				// When a users clicks an image
+//				public void onItemClick(AdapterView<?> parent, View v,
+//						int position, long id) {
+//					Toast.makeText(getActivity(), "" + position,
+//							Toast.LENGTH_SHORT).show();
+//					
+//				}
+//			});
 
 //			Thread loadPictures = new Thread(new Runnable() {
 //
@@ -335,7 +337,7 @@ public class MainActivity extends FragmentActivity {
 			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 				Bitmap image = (Bitmap) data.getExtras().get("data");
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+				image.compress(Bitmap.CompressFormat.JPEG,100, stream);
 				byte[] bytes = stream.toByteArray();
 				bytes = Base64.encodeBase64(bytes);
 
