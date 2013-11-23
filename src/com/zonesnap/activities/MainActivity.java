@@ -14,6 +14,10 @@ import com.zonesnap.zonesnap_app.R.layout;
 import com.zonesnap.zonesnap_app.R.menu;
 import com.zonesnap.zonesnap_app.R.string;
 
+import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.ClipData.Item;
 import android.graphics.Bitmap;
@@ -263,6 +267,7 @@ public class MainActivity extends FragmentActivity {
 		EditText editTitle;
 		boolean imgTaken;
 		String image64;
+		Button notifybtn;
 
 		public UploadFragment() {
 
@@ -318,6 +323,18 @@ public class MainActivity extends FragmentActivity {
 			});
 
 			editTitle = (EditText) getView().findViewById(R.id.titleEdit);
+			
+			NotificationManager notiMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+			//notify test button
+			notifybtn = (Button) getView().findViewById(R.id.notificationTest);
+			notifybtn.setOnClickListener(new OnClickListener() {
+				@SuppressLint("ServiceCast")
+				public void onClick(View arg0) {
+					Intent notIntent = new Intent(getActivity(), MainActivity.class);
+					PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, notIntent, 0);
+					Notification n = Notification.Builder(getActivity());
+				}
+			});
 
 		}
 
