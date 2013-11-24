@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ import com.zonesnap.zonesnap_app.R;
 public class UploadFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	private static final int CAMERA_REQUEST = 1888;
-	
+
 	ImageButton camerabtn;
 	Button uploadbtn;
 	Button clearbtn;
@@ -48,7 +49,7 @@ public class UploadFragment extends Fragment {
 	Button notifybtn;
 
 	public UploadFragment() {
-	
+
 	}
 
 	@Override
@@ -104,7 +105,6 @@ public class UploadFragment extends Fragment {
 			public void onClick(View arg0) {
 				String title = editTitle.getText().toString();
 				NetworkPostPicture task = new NetworkPostPicture(getActivity());
-
 				task.execute(title, image64);
 				uploadClear();
 			}
@@ -141,7 +141,8 @@ public class UploadFragment extends Fragment {
 	// Called when the camera activities respond when finished
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// camera
-		if (requestCode == CAMERA_REQUEST && resultCode == getActivity().RESULT_OK) {
+		if (requestCode == CAMERA_REQUEST
+				&& resultCode == getActivity().RESULT_OK) {
 			image = (Bitmap) data.getExtras().get("data");
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
