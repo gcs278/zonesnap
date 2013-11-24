@@ -74,6 +74,7 @@ public class UploadFragment extends Fragment {
 		title.setTypeface(zsLogo);
 
 		imgTaken = false;
+		editTitle = (EditText) getView().findViewById(R.id.titleEdit);
 
 		// image view set to invis at first
 		imageView = (ImageView) getView().findViewById(R.id.uploadImg);
@@ -108,8 +109,6 @@ public class UploadFragment extends Fragment {
 				uploadClear();
 			}
 		});
-
-		editTitle = (EditText) getView().findViewById(R.id.titleEdit);
 
 		final NotificationManager notiMgr = (NotificationManager) getActivity()
 				.getSystemService(getActivity().NOTIFICATION_SERVICE);
