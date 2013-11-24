@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.zonesnap.fragments.ProfileFragment;
 import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
@@ -303,36 +304,6 @@ public class MainActivity extends FragmentActivity implements
 			TextView title2 = (TextView) getView().findViewById(
 					R.id.history_pastTitle);
 			title2.setTypeface(zsFont);
-		}
-	}
-
-	// Fragment for user's profile
-	public static class ProfileFragment extends Fragment {
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		public ProfileFragment() {
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_profile,
-					container, false);
-
-			return rootView;
-		}
-
-		@Override
-		public void onViewCreated(View view, Bundle savedInstanceState) {
-			super.onViewCreated(view, savedInstanceState);
-			// THIS WILL BE WHERE YOU SET UP THE PROFILE DATE
-			// i.e. load profile pic
-			// Set Fonts
-			Typeface zsLogo = Typeface.createFromAsset(getActivity()
-					.getAssets(), "fonts/capella.ttf");
-			TextView title = (TextView) getView().findViewById(
-					R.id.profile_title);
-			title.setTypeface(zsLogo);
 		}
 	}
 

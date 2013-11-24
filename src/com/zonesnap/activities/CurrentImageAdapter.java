@@ -55,19 +55,11 @@ import android.widget.ImageView;
 public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 	private Context mContext;
 
-	RotateAnimation anim;
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
 	int picIndex = 0;
 
 	public CurrentImageAdapter(Context c) {
 		mContext = c;
-
-		anim = new RotateAnimation(0.0f, 360, RotateAnimation.RELATIVE_TO_SELF,
-				0.5f, RotateAnimation.RELATIVE_TO_SELF, 0.5f);
-		// anim.setInterpolator(new LinearInterpolator());
-		anim.setRepeatCount(Animation.INFINITE);
-		anim.setDuration(1000);
-		anim.setFillAfter(true);
 
 		NetworkGetPictureList task = new NetworkGetPictureList(mContext);
 		try {
