@@ -28,6 +28,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.zonesnap.activities.OnTaskComplete;
 import com.zonesnap.zonesnap_app.R;
@@ -53,7 +56,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 	// Retrieve data
 	@Override
 	protected String doInBackground(String... params) {
-		String imageBase64 = "";
+		String JSON = "";
 		try {
 			// Set up HTTP GET
 			HttpClient httpclient = new DefaultHttpClient();
@@ -70,7 +73,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 				response.getEntity().writeTo(out);
 				out.close();
 				// Get the image
-				imageBase64 = out.toString();
+				JSON = out.toString();
 			} else {
 				// Closes the connection.
 				response.getEntity().getContent().close();
@@ -81,7 +84,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 		} catch (URISyntaxException e) {
 			return "connectFail";
 		}
-		return imageBase64;
+		return JSON;
 	}
 
 	@Override
@@ -95,9 +98,22 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 	protected void onPostExecute(String result) {
 		// check if it didn't fail
 		if (result != "connectFail" && !result.trim().equalsIgnoreCase(new String("null"))) {
+			
+			String jsonData = result.toString();
+			JSONParser j = new JSONParser();
+			JSONObject json = null;
+			try {
+				json = (JSONObject) j.parse(jsonData);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			String imageBase64 = (String) json.get("image");
+			System.out.println(imageBase64);
+			String title = (String) json.get("title");
+			
 			try {
 				// Decode and set image to profile pic
-				byte[] decodedString = Base64.decode(result, Base64.DEFAULT);
+				byte[] decodedString = Base64.decode(imageBase64, Base64.DEFAULT);
 				Bitmap decodedByte = BitmapFactory.decodeByteArray(
 						decodedString, 0, decodedString.length);
 				decodedByte = getRoundedCornerBitmap(decodedByte);

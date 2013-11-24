@@ -16,6 +16,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.zonesnap.networking.get.NetworkGetPicture;
 import com.zonesnap.networking.get.NetworkGetPictureList;
@@ -49,14 +52,14 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
+public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 	private Context mContext;
 
 	RotateAnimation anim;
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
 	int picIndex = 0;
 
-	public ImageAdapter(Context c) {
+	public CurrentImageAdapter(Context c) {
 		mContext = c;
 
 		anim = new RotateAnimation(0.0f, 360, RotateAnimation.RELATIVE_TO_SELF,
@@ -100,13 +103,13 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 	// Adds a bitmap to our cache
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
 		if (getBitmapFromMemCache(key) == null) {
-			ZoneSnap_App.mMemoryCache.put(key, bitmap);
+			ZoneSnap_App.currentImageCache.put(key, bitmap);
 		}
 	}
 
 	// Retrieves bitmap from cache
 	public Bitmap getBitmapFromMemCache(String key) {
-		return ZoneSnap_App.mMemoryCache.get(key);
+		return ZoneSnap_App.currentImageCache.get(key);
 	}
 
 	// Listener for Network Task
@@ -144,13 +147,15 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 		// } else {
 		// System.out.println("lkjd");
 		// }
-		imageView.setOnClickListener(new OnImageClickListener(pictureList.get(position)));
+		imageView.setOnClickListener(new OnImageClickListener(pictureList
+				.get(position)));
 		return imageView;
 	}
 
 	class OnImageClickListener implements OnClickListener {
 
 		int photoID;
+
 		// constructor
 		public OnImageClickListener(int photoID) {
 			this.photoID = photoID;
@@ -190,7 +195,7 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 		// Retrieve data
 		@Override
 		protected String doInBackground(String... params) {
-			String imageBase64 = "";
+			String JSON = "";
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
@@ -208,7 +213,7 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 					response.getEntity().writeTo(out);
 					out.close();
 					// Get the image
-					imageBase64 = out.toString();
+					JSON = out.toString();
 				} else {
 					// Closes the connection.
 					response.getEntity().getContent().close();
@@ -219,7 +224,7 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 			} catch (URISyntaxException e) {
 				return "connectFail";
 			}
-			return imageBase64;
+			return JSON;
 		}
 
 		@Override
@@ -234,10 +239,22 @@ public class ImageAdapter extends BaseAdapter implements OnTaskComplete {
 			// check if it didn't fail
 			if (result != "connectFail"
 					&& !result.trim().equalsIgnoreCase(new String("null"))) {
+
+				JSONParser j = new JSONParser();
+				JSONObject json = null;
+				try {
+					json = (JSONObject) j.parse(result);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				String imageBase64 = (String) json.get("image");
+				System.out.println("Image" +imageBase64);
+				String title = (String) json.get("title");
+				
 				try {
 					// Decode and set image to profile pic
 					byte[] decodedString = Base64
-							.decode(result, Base64.DEFAULT);
+							.decode(imageBase64, Base64.DEFAULT);
 					Bitmap decodedByte = BitmapFactory.decodeByteArray(
 							decodedString, 0, decodedString.length);
 					// decodedByte = getRoundedCornerBitmap(decodedByte);

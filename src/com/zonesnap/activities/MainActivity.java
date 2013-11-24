@@ -208,7 +208,7 @@ public class MainActivity extends FragmentActivity implements
 			super.onViewCreated(view, savedInstanceState);
 			final GridView grid = (GridView) getView().findViewById(
 					R.id.gridCurrent);
-			grid.setAdapter(new ImageAdapter(getActivity()));
+			grid.setAdapter(new CurrentImageAdapter(getActivity()));
 
 			// Set font
 			Typeface zsFont = Typeface.createFromAsset(getActivity()
@@ -285,7 +285,7 @@ public class MainActivity extends FragmentActivity implements
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
 			GridView grid = (GridView) getView().findViewById(R.id.gridHistory);
-			grid.setAdapter(new ImageAdapter(getActivity()));
+			grid.setAdapter(new CurrentImageAdapter(getActivity()));
 
 			grid.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View v,
