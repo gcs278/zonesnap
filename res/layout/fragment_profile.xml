@@ -6,14 +6,13 @@
     android:background="@drawable/background4">
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/profile_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Your Profile:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#00FF26"
-        android:textSize="40sp"
-        android:typeface="monospace" />
+        android:textSize="30sp"/>
 
     <ImageView
         android:id="@+id/imageView1"

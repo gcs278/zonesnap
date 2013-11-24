@@ -21,10 +21,14 @@ import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ClipData.Item;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -54,22 +58,13 @@ import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-	 * will keep every loaded fragment in memory. If this becomes too memory
-	 * intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
+	// Fragment Variables
 	SectionsPagerAdapter mSectionsPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
 	ViewPager mViewPager;
 
 	private static final int CAMERA_REQUEST = 1888;
+
+	Location mCurrentLocation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +188,7 @@ public class MainActivity extends FragmentActivity implements
 	public static class CurrentFragment extends Fragment {
 		public static final String ARG_SECTION_NUMBER = "section_number";
 
+		TextView logo;
 		public CurrentFragment() {
 		}
 
@@ -220,11 +216,43 @@ public class MainActivity extends FragmentActivity implements
 			title.setTypeface(zsFont);
 			Typeface zsLogo = Typeface.createFromAsset(getActivity()
 					.getAssets(), "fonts/capella.ttf");
-			TextView logo = (TextView) getView()
+			logo = (TextView) getView()
 					.findViewById(R.id.current_Logo);
 			logo.setTypeface(zsLogo);
-			System.out.println("kdj");
+			// Acquire a reference to the system Location Manager
+			LocationManager locationManager = (LocationManager) getActivity()
+					.getSystemService(Context.LOCATION_SERVICE);
+			// Register the listener with the Location Manager to receive
+			// location updates
+			locationManager.requestLocationUpdates(
+					LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
 		}
+
+		public final LocationListener mLocationListener = new LocationListener() {
+
+			@Override
+			public void onLocationChanged(final Location location) {
+				
+			}
+
+			@Override
+			public void onProviderDisabled(String arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onProviderEnabled(String arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+				// TODO Auto-generated method stub
+
+			}
+		};
 	}
 
 	// Fragment for the Historic ZoneSnap View
@@ -289,6 +317,12 @@ public class MainActivity extends FragmentActivity implements
 			super.onViewCreated(view, savedInstanceState);
 			// THIS WILL BE WHERE YOU SET UP THE PROFILE DATE
 			// i.e. load profile pic
+			// Set Fonts
+			Typeface zsLogo = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/capella.ttf");
+			TextView title = (TextView) getView().findViewById(
+					R.id.profile_title);
+			title.setTypeface(zsLogo);
 		}
 	}
 
