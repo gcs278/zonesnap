@@ -15,6 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:singleLine="true"
+        android:textColor="#00CC33"
         android:ems="10" >
 
         <requestFocus />
@@ -27,6 +28,7 @@
         android:layout_above="@+id/titleEdit"
         android:layout_alignLeft="@+id/titleEdit"
         android:ellipsize="end"
+        android:textColor="#00CC33"
         android:text="Title:" />
 
     <Button
