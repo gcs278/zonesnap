@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.apache.commons.codec.binary.Base64;
 
 import com.zonesnap.fragments.ProfileFragment;
+import com.zonesnap.fragments.UploadFragment;
 import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
@@ -64,9 +65,7 @@ public class MainActivity extends FragmentActivity implements
 	// Fragment Variables
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-
-	private static final int CAMERA_REQUEST = 1888;
-
+	
 	Location mCurrentLocation;
 
 	@Override
@@ -192,6 +191,7 @@ public class MainActivity extends FragmentActivity implements
 		public static final String ARG_SECTION_NUMBER = "section_number";
 
 		TextView logo;
+
 		public CurrentFragment() {
 		}
 
@@ -219,13 +219,12 @@ public class MainActivity extends FragmentActivity implements
 			title.setTypeface(zsFont);
 			Typeface zsLogo = Typeface.createFromAsset(getActivity()
 					.getAssets(), "fonts/capella.ttf");
-			logo = (TextView) getView()
-					.findViewById(R.id.current_Logo);
+			logo = (TextView) getView().findViewById(R.id.current_Logo);
 			logo.setTypeface(zsLogo);
 			// Acquire a reference to the system Location Manager
 			LocationManager locationManager = (LocationManager) getActivity()
 					.getSystemService(Context.LOCATION_SERVICE);
-			// Register the listener with the Location Manager to receive   
+			// Register the listener with the Location Manager to receive
 			// location updates
 			locationManager.requestLocationUpdates(
 					LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
@@ -235,14 +234,15 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void onLocationChanged(final Location location) {
-				System.out.println("Lat: "+location.getLatitude());
-				System.out.println("Long: "+location.getLongitude());
-				System.out.println("Accuracy: "+location.getAccuracy());
-				
-				if ( location.getAccuracy() > 40.0 ) {
+				System.out.println("Lat: " + location.getLatitude());
+				System.out.println("Long: " + location.getLongitude());
+				System.out.println("Accuracy: " + location.getAccuracy());
+
+				if (location.getAccuracy() > 40.0) {
 				}
-				
-				NetworkGetZone task = new NetworkGetZone(getActivity(), logo, location.getLatitude(),location.getLongitude());
+
+				NetworkGetZone task = new NetworkGetZone(getActivity(), logo,
+						location.getLatitude(), location.getLongitude());
 				task.execute();
 			}
 
@@ -307,146 +307,6 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	// fragment for camera
-	public static class UploadFragment extends Fragment {
-		public static final String ARG_SECTION_NUMBER = "section_number";
-
-		ImageButton camerabtn;
-		Button uploadbtn;
-		Button clearbtn;
-		ImageView imageView;
-		EditText editTitle;
-		boolean imgTaken;
-		String image64;
-		Bitmap image;
-		Button notifybtn;
-
-		public UploadFragment() {
-
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_upload,
-					container, false);
-			if (imgTaken) {
-				imageView.setVisibility(View.VISIBLE);
-				imageView.setImageBitmap(image);
-				camerabtn.setVisibility(View.GONE);
-			}
-			return rootView;
-		}
-
-		@Override
-		public void onViewCreated(View view, Bundle savedInstanceState) {
-			super.onViewCreated(view, savedInstanceState);
-			// Set Fonts
-			Typeface zsLogo = Typeface.createFromAsset(getActivity()
-					.getAssets(), "fonts/capella.ttf");
-			TextView title = (TextView) getView().findViewById(
-					R.id.upload_title);
-			title.setTypeface(zsLogo);
-
-			imgTaken = false;
-
-			// image view set to invis at first
-			imageView = (ImageView) getView().findViewById(R.id.uploadImg);
-			imageView.setVisibility(View.GONE);
-
-			// camera button
-			camerabtn = (ImageButton) getView().findViewById(R.id.cameraBtn);
-			camerabtn.setOnClickListener(new OnClickListener() {
-				public void onClick(View arg0) {
-					Intent cameraIntent = new Intent(
-							android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-					startActivityForResult(cameraIntent, CAMERA_REQUEST);
-				}
-			});
-
-			// clear button
-			clearbtn = (Button) getView().findViewById(R.id.clearBtn);
-			clearbtn.setOnClickListener(new OnClickListener() {
-				public void onClick(View arg0) {
-					uploadClear();
-				}
-			});
-
-			// upload button
-			uploadbtn = (Button) getView().findViewById(R.id.uploadBtn);
-			uploadbtn.setOnClickListener(new OnClickListener() {
-				public void onClick(View arg0) {
-					String title = editTitle.getText().toString();
-					NetworkPostPicture task = new NetworkPostPicture(
-							getActivity());
-
-					task.execute(title, image64);
-					uploadClear();
-				}
-			});
-
-			editTitle = (EditText) getView().findViewById(R.id.titleEdit);
-
-			final NotificationManager notiMgr = (NotificationManager) getActivity()
-					.getSystemService(NOTIFICATION_SERVICE);
-			// notify test button
-			notifybtn = (Button) getView().findViewById(R.id.notificationTest);
-			notifybtn.setOnClickListener(new OnClickListener() {
-				@SuppressLint({ "ServiceCast", "NewApi" })
-				public void onClick(View arg0) {
-					Intent notIntent = new Intent(getActivity(),
-							MainActivity.class);
-					PendingIntent pIntent = PendingIntent.getActivity(
-							getActivity(), 0, notIntent, 0);
-					Notification n = new Notification.Builder(getActivity())
-							.setContentTitle("Entered new zone.")
-							.setSmallIcon(R.drawable.zonesnap1_launcher)
-							.setContentText(
-									"Touch to view content of new zone.")
-							.setContentIntent(pIntent).setAutoCancel(true)
-							.build();
-					notiMgr.notify(0, n);
-				}
-			});
-
-		}
-
-		public void uploadClear() {
-			imgTaken = false;
-			imageView.setVisibility(View.GONE);
-			camerabtn.setVisibility(View.VISIBLE);
-			editTitle.setText("");
-		}
-
-		// Called when the camera activities respond when finished
-		public void onActivityResult(int requestCode, int resultCode,
-				Intent data) {
-			// camera
-			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-				image = (Bitmap) data.getExtras().get("data");
-				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-				byte[] bytes = stream.toByteArray();
-				bytes = Base64.encodeBase64(bytes);
-
-				// Convert to base64 string
-				try {
-					image64 = new String(bytes, "UTF-8");
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-				}
-
-				Toast.makeText(getActivity(), "photo taken!",
-						Toast.LENGTH_SHORT).show();
-				imgTaken = true;
-				imageView.setVisibility(View.VISIBLE);
-				imageView.setImageBitmap(image);
-				camerabtn.setVisibility(View.GONE);
-
-			}
-
-		}
-	}
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
