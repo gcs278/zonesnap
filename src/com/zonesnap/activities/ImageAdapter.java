@@ -19,8 +19,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
-import com.zonesnap.networking.get.NetworkGetPicture;
 import com.zonesnap.networking.get.NetworkGetPictureList;
 import com.zonesnap.zonesnap_app.R;
 import android.content.Context;
@@ -52,14 +50,17 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
-public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
+public class ImageAdapter extends BaseAdapter {
 	private Context mContext;
 
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
 	int picIndex = 0;
-
-	public CurrentImageAdapter(Context c, ArrayList<Integer> pictureList) {
+	String type;
+	
+	
+	public ImageAdapter(Context c, String adapterType, ArrayList<Integer> pictureList) {
 		mContext = c;
+		this.type = adapterType;
 		
 		this.pictureList = (ArrayList<Integer>) pictureList.clone();
 		System.out.println("Test: " + pictureList);
@@ -83,21 +84,25 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 	}
 
 	// Adds a bitmap to our cache
-	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+	public void addBitmapToMemoryCache(int key, Bitmap bitmap) {
 		if (getBitmapFromMemCache(key) == null) {
-			ZoneSnap_App.currentImageCache.put(key, bitmap);
+			if (type == ZoneSnap_App.CURRENT) {
+				ZoneSnap_App.currentImageCache.put(key, bitmap);
+			} else if (type == ZoneSnap_App.LIKED) {
+				ZoneSnap_App.likedImageCache.put(key, bitmap);
+			}
 		}
 	}
 
 	// Retrieves bitmap from cache
-	public Bitmap getBitmapFromMemCache(String key) {
-		return ZoneSnap_App.currentImageCache.get(key);
-	}
-
-	// Listener for Network Task
-	@Override
-	public void onTaskComplete(Bitmap bitmap, int position) {
-		addBitmapToMemoryCache(String.valueOf(position), bitmap);
+	public Bitmap getBitmapFromMemCache(int key) {
+		Bitmap returnPic = ZoneSnap_App.currentImageCache.get(key);
+		
+		if ( returnPic != null ) {
+			return returnPic;
+		} else {
+			return ZoneSnap_App.likedImageCache.get(key);
+		}
 	}
 
 	// create a new ImageView for each item referenced by the Adapter
@@ -109,8 +114,8 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 		imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 		imageView.setPadding(8, 8, 8, 8);
 		// Get value from cache
-		Bitmap cached = getBitmapFromMemCache(String.valueOf(pictureList
-				.get(position)));
+		Bitmap cached = getBitmapFromMemCache(pictureList
+				.get(position));
 
 		// Check if value exists in cache, otherwise use network to get it
 		if (cached != null) {
@@ -122,7 +127,7 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 			// imageView.setImageResource(R.drawable.placeholder);
 
 			// Network task, passes imageview, like pass by reference
-			NetworkGetPicture task = new NetworkGetPicture(mContext, this,
+			NetworkGetPicture task = new NetworkGetPicture(mContext,
 					imageView, pictureList.get(position));
 			task.execute("");
 		}
@@ -157,19 +162,12 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 	// This network activty retrieves and updates a picture
 	public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 		Context activity;
-		int port;
-		String URL;
-		private OnTaskComplete listener;
 		ImageView view;
 		int photoID;
 
-		public NetworkGetPicture(Context context, OnTaskComplete listener,
+		public NetworkGetPicture(Context context, 
 				ImageView view, int photoID) {
 			activity = context;
-			// Get the URL and port
-			port = 8080;
-			URL = "www.grantspence.com";
-			this.listener = listener;
 			this.view = view;
 			this.photoID = photoID;
 		}
@@ -181,7 +179,7 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, URL, port, "/uploadpic",
+				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/uploadpic",
 						"type=get&photoID=" + photoID, null);
 
 				// Excecute
@@ -238,13 +236,12 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 							.decode(imageBase64, Base64.DEFAULT);
 					Bitmap decodedByte = BitmapFactory.decodeByteArray(
 							decodedString, 0, decodedString.length);
-					// decodedByte = getRoundedCornerBitmap(decodedByte);
+
 					view.setImageBitmap(decodedByte);
-					listener.onTaskComplete(decodedByte, photoID);
+					addBitmapToMemoryCache(photoID, decodedByte);
 					view.setAnimation(AnimationUtils.loadAnimation(activity,
 							R.anim.zoom_enter));
 
-					// MainActivity.profilePic.setImageBitmap(decodedByte);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				}
@@ -253,29 +250,6 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 				System.out.println("Fail");
 			}
 
-		}
-
-		public Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
-			Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-					bitmap.getHeight(), Config.ARGB_8888);
-			Canvas canvas = new Canvas(output);
-
-			final int color = 0xff424242;
-			final Paint paint = new Paint();
-			final Rect rect = new Rect(0, 0, bitmap.getWidth(),
-					bitmap.getHeight());
-			final RectF rectF = new RectF(rect);
-			final float roundPx = 12;
-
-			paint.setAntiAlias(true);
-			canvas.drawARGB(0, 0, 0, 0);
-			paint.setColor(color);
-			canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-
-			paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
-			canvas.drawBitmap(bitmap, rect, rect, paint);
-
-			return output;
 		}
 	}
 

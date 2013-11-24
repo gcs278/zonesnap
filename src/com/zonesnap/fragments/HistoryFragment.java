@@ -27,7 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.TextView;
-import com.zonesnap.activities.CurrentImageAdapter;
+import com.zonesnap.activities.ImageAdapter;
+import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 //Fragment for the Historic ZoneSnap View
@@ -49,8 +50,10 @@ public class HistoryFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		NetworkGetLikedList listTask = new NetworkGetLikedList(getActivity());
-		listTask.execute();
+		NetworkGetLikedList likeTask = new NetworkGetLikedList(getActivity());
+		likeTask.execute();
+		NetworkGetPastList pastTask = new NetworkGetPastList(getActivity());
+		pastTask.execute();
 		
 		// Set font
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
@@ -66,15 +69,10 @@ public class HistoryFragment extends Fragment {
 	// This network activty retrieves and updates a picture
 	public class NetworkGetLikedList extends AsyncTask<String, Void, String> {
 		Context activity;
-		int port;
-		String URL;
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
 
 		public NetworkGetLikedList(Context context) {
 			activity = context;
-			// Get the URL and port
-			port = 8080;
-			URL = "www.grantspence.com";
 		}
 
 		// Retrieve data
@@ -84,7 +82,7 @@ public class HistoryFragment extends Fragment {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, URL, port, "/liked",
+				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/like",
 						"user=grantspence", null);
 
 				// Excecute
@@ -121,8 +119,10 @@ public class HistoryFragment extends Fragment {
 				}
 
 			} catch (IOException e) {
+				e.printStackTrace();
 				return "connectFail";
 			} catch (URISyntaxException e) {
+				e.printStackTrace();
 				return "connectFail";
 			}
 			return photoListJSON;
@@ -131,10 +131,11 @@ public class HistoryFragment extends Fragment {
 		// Process data, display
 		@Override
 		protected void onPostExecute(String result) {
+			System.out.println(result);
 			// check if it didn't fail
 			if (result != "connectFail") {
-				 GridView grid = (GridView) getView().findViewById(R.id.gridHistory);
-				 grid.setAdapter(new CurrentImageAdapter(getActivity(),photoIDs));
+				 GridView grid = (GridView) getView().findViewById(R.id.gridLiked);
+				 grid.setAdapter(new ImageAdapter(getActivity(),ZoneSnap_App.LIKED,photoIDs));
 			} else {
 				System.out.println("FailGetPictureList");
 			}
@@ -142,4 +143,82 @@ public class HistoryFragment extends Fragment {
 		}
 
 	}
+	// This network activty retrieves and updates a picture
+	public class NetworkGetPastList extends AsyncTask<String, Void, String> {
+		Context activity;
+		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
+
+		public NetworkGetPastList(Context context) {
+			activity = context;
+		}
+
+		// Retrieve data
+		@Override
+		protected String doInBackground(String... params) {
+			String photoListJSON = "";
+			try {
+				// Set up HTTP GET
+				HttpClient httpclient = new DefaultHttpClient();
+				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/tracking",
+						"user=grantspence", null);
+
+				// Excecute
+				HttpResponse response = httpclient
+						.execute(new HttpGet(address));
+
+				// Check status
+				StatusLine statusLine = response.getStatusLine();
+				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					// Get the image
+					photoListJSON = out.toString();
+
+				} else {
+					// Closes the connection.
+					response.getEntity().getContent().close();
+					throw new IOException(statusLine.getReasonPhrase());
+				}
+				System.out.println(photoListJSON);
+
+				try {
+					JSONParser j = new JSONParser();
+					JSONObject json = (JSONObject) j.parse(photoListJSON);
+					JSONArray array = (JSONArray) json.get("photoIDs");
+
+					for (int i = 0; i < array.size(); i++) {
+						photoIDs.add(Integer.parseInt(array.get(i).toString()));
+					}
+					System.out.println("LOL:" + photoIDs);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+				return "connectFail";
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+				return "connectFail";
+			}
+			return photoListJSON;
+		}
+
+		// Process data, display
+		@Override
+		protected void onPostExecute(String result) {
+			System.out.println(result);
+			// check if it didn't fail
+			if (result != "connectFail") {
+				 GridView grid = (GridView) getView().findViewById(R.id.gridHistory);
+				 grid.setAdapter(new ImageAdapter(getActivity(),ZoneSnap_App.LIKED,photoIDs));
+			} else {
+				System.out.println("FailGetPictureList");
+			}
+
+		}
+
+	}
+	
 }

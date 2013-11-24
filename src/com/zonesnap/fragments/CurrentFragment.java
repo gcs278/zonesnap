@@ -28,10 +28,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.TextView;
 
-import com.zonesnap.activities.CurrentImageAdapter;
+import com.zonesnap.activities.ImageAdapter;
+import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.zonesnap_app.R;
 
@@ -50,7 +52,7 @@ public class CurrentFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_current,
 				container, false);
-
+		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		return rootView;
 	}
 
@@ -185,7 +187,7 @@ public class CurrentFragment extends Fragment {
 			if (result != "connectFail") {
 				final GridView grid = (GridView) getView().findViewById(
 						R.id.gridCurrent);
-				grid.setAdapter(new CurrentImageAdapter(getActivity(),photoIDs));
+				grid.setAdapter(new ImageAdapter(getActivity(),ZoneSnap_App.CURRENT,photoIDs));
 			} else {
 				System.out.println("FailGetPictureList");
 			}
