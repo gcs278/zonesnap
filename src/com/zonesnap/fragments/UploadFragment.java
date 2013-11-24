@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -31,6 +32,7 @@ import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 
 // fragment for camera
+@SuppressLint("ValidFragment")
 public class UploadFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	private static final int CAMERA_REQUEST = 1888;
@@ -46,7 +48,7 @@ public class UploadFragment extends Fragment {
 	Button notifybtn;
 
 	public UploadFragment() {
-
+	
 	}
 
 	@Override
@@ -110,7 +112,7 @@ public class UploadFragment extends Fragment {
 		editTitle = (EditText) getView().findViewById(R.id.titleEdit);
 
 		final NotificationManager notiMgr = (NotificationManager) getActivity()
-				.getSystemService(NOTIFICATION_SERVICE);
+				.getSystemService(getActivity().NOTIFICATION_SERVICE);
 		// notify test button
 		notifybtn = (Button) getView().findViewById(R.id.notificationTest);
 		notifybtn.setOnClickListener(new OnClickListener() {
@@ -140,7 +142,7 @@ public class UploadFragment extends Fragment {
 	// Called when the camera activities respond when finished
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// camera
-		if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+		if (requestCode == CAMERA_REQUEST && resultCode == getActivity().RESULT_OK) {
 			image = (Bitmap) data.getExtras().get("data");
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
