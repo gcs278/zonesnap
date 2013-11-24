@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,18 +39,15 @@ import org.json.JSONObject;
 
 import com.zonesnap.activities.MainActivity;
 import com.zonesnap.activities.UploadActivity;
+import com.zonesnap.activities.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	Context activity;
 	// Progress display
 	ProgressDialog pd;
-	int port;
-	String URL;
-	
+	double latitude, longitude;
 	public NetworkPostPicture(Context context) {
 		activity = context;
-		port = 8080;
-		URL = "www.grantspence.com";
 	}
 
 	// Let user know its updating
@@ -62,6 +60,13 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 		pd.setCancelable(false);
 		pd.setIndeterminate(true);
 		pd.show();
+		LocationManager locationManager = (LocationManager) activity
+				.getSystemService(Context.LOCATION_SERVICE);
+		latitude = locationManager.getLastKnownLocation(
+				LocationManager.GPS_PROVIDER).getLatitude();
+		longitude = locationManager.getLastKnownLocation(
+				LocationManager.GPS_PROVIDER).getLongitude();
+		
 	}
 
 	// Retrieve data
@@ -73,7 +78,7 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 
 			// Create the HTTP Post
 			HttpClient client = new DefaultHttpClient();
-			URI address = new URI("http", null, URL, port, "/uploadpic", null,
+			URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/uploadpic", null,
 					null);
 			HttpPost request = new HttpPost(address);
 			
@@ -83,6 +88,8 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 			System.out.println(params[1]);
 			json.put("image",params[1]);
 			json.put("title", params[0]);
+			json.put("lat", latitude);
+			json.put("long",longitude);
 			// TODO: Add latitude and longitude with picture
 			
 			request.setEntity(new StringEntity(json.toString().replace("\\", "")));

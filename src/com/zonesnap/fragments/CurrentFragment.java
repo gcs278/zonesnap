@@ -41,7 +41,9 @@ import com.zonesnap.zonesnap_app.R;
 // Fragment for the current zone
 public class CurrentFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
-
+	double latitude;
+	double longitude;
+	
 	TextView logo;
 
 	public CurrentFragment() {
@@ -59,8 +61,7 @@ public class CurrentFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(getActivity());
-		listTask.execute();
+
 		
 		// Set font
 		Typeface zsFont = Typeface.createFromAsset(getActivity()
@@ -72,13 +73,18 @@ public class CurrentFragment extends Fragment {
 				.getAssets(), "fonts/capella.ttf");
 		logo = (TextView) getView().findViewById(R.id.current_Logo);
 		logo.setTypeface(zsLogo);
+		
+		// Register the listener with the Location Manager to receive
+		// location updates
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
-		// Register the listener with the Location Manager to receive
-		// location updates
 		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+				LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);	
+		latitude = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
+		longitude = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
+		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(getActivity());
+		listTask.execute();
 	}
 
 	public final LocationListener mLocationListener = new LocationListener() {
@@ -88,12 +94,13 @@ public class CurrentFragment extends Fragment {
 			System.out.println("Lat: " + location.getLatitude());
 			System.out.println("Long: " + location.getLongitude());
 			System.out.println("Accuracy: " + location.getAccuracy());
-
+			latitude = location.getLatitude();
+			longitude = location.getLongitude();
 			if (location.getAccuracy() > 40.0) {
 			}
 
 			NetworkGetZone task = new NetworkGetZone(getActivity(), logo,
-					location.getLatitude(), location.getLongitude());
+					latitude, longitude);
 			task.execute();
 		}
 
@@ -138,8 +145,8 @@ public class CurrentFragment extends Fragment {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
 				URI address = new URI("http", null, URL, port, "/uploadpic",
-						"type=list&order=date&lat=0&long=0", null);
-
+						"type=list&order=date&lat="+latitude+"&long="+longitude, null);
+				System.out.println(address.toString());
 				// Excecute
 				HttpResponse response = httpclient.execute(new HttpGet(address));
 
