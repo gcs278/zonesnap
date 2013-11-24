@@ -72,5 +72,16 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="14dp"
         android:text="Notify" />
+
+    <TextView
+        android:id="@+id/upload_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Upload Picture"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#00FF26"
+        android:textSize="30sp" />
    
 </RelativeLayout>

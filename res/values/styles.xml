@@ -18,6 +18,7 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    
     <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@null</item>
@@ -33,6 +34,8 @@
         <item name="android:background">@android:drawable/bottom_bar</item>
     </style>
 
+    
+    
     <style name="ButtonBarButton" />
 
 </resources>

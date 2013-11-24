@@ -15,12 +15,16 @@ import com.zonesnap.zonesnap_app.R.menu;
 import com.zonesnap.zonesnap_app.R.string;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.ClipData.Item;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -48,8 +52,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity {
-
+public class MainActivity extends FragmentActivity implements
+		ActionBar.TabListener {
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a
@@ -72,6 +76,10 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		// Set up the action bar.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -80,8 +88,29 @@ public class MainActivity extends FragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		mViewPager.setCurrentItem(2);
 
+		// When swiping between different sections, select the corresponding
+		// tab. We can also use ActionBar.Tab#select() to do this if we have
+		// a reference to the Tab.
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						actionBar.setSelectedNavigationItem(position);
+					}
+				});
+
+		// For each of the sections in the app, add a tab to the action bar.
+		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+			// Create a tab with text corresponding to the page title defined by
+			// the adapter. Also specify this Activity object, which implements
+			// the TabListener interface, as the callback (listener) for when
+			// this tab is selected.
+			actionBar.addTab(actionBar.newTab()
+					.setText(mSectionsPagerAdapter.getPageTitle(i))
+					.setTabListener(this));
+		}
+		mViewPager.setCurrentItem(1);
 	}
 
 	@Override
@@ -89,6 +118,14 @@ public class MainActivity extends FragmentActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onTabSelected(ActionBar.Tab tab,
+			FragmentTransaction fragmentTransaction) {
+		// When the given tab is selected, switch to the corresponding page in
+		// the ViewPager.
+		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
 	/**
@@ -112,14 +149,14 @@ public class MainActivity extends FragmentActivity {
 				fragment = new UploadFragment();
 				break;
 			case 1:
-				fragment = new ProfileFragment();
-				break;
-			case 2:
 				fragment = new CurrentFragment();
 				break;
-			// case 3:
-			// fragment = new ProfileFragment();
-			// break;
+			case 2:
+				fragment = new HistoryFragment();
+				break;
+			case 3:
+				fragment = new ProfileFragment();
+				break;
 
 			default:
 				fragment = new CurrentFragment();
@@ -131,21 +168,22 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			// Show 4 total pages.
-			return 3;
+			return 4;
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 			switch (position) {
+			case 0:
+				return getString(R.string.title_section0).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_section1).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_section2).toUpperCase(l);
 			case 3:
 				return getString(R.string.title_section3).toUpperCase(l);
-			case 0:
-				return getString(R.string.title_section4).toUpperCase(l);
+
 			}
 			return null;
 		}
@@ -173,32 +211,19 @@ public class MainActivity extends FragmentActivity {
 			final GridView grid = (GridView) getView().findViewById(
 					R.id.gridCurrent);
 			grid.setAdapter(new ImageAdapter(getActivity()));
-//			grid.setOnItemClickListener(new OnItemClickListener() {
-//				// When a users clicks an image
-//				public void onItemClick(AdapterView<?> parent, View v,
-//						int position, long id) {
-//					Toast.makeText(getActivity(), "" + position,
-//							Toast.LENGTH_SHORT).show();
-//					
-//				}
-//			});
 
-//			Thread loadPictures = new Thread(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					grid.setAdapter(new ImageAdapter(getActivity()));
-//					grid.setOnItemClickListener(new OnItemClickListener() {
-//						public void onItemClick(AdapterView<?> parent, View v,
-//								int position, long id) {
-//							Toast.makeText(getActivity(), "" + position,
-//									Toast.LENGTH_SHORT).show();
-//						}
-//					});
-//				}
-//			});
-//			loadPictures.start();
-
+			// Set font
+			Typeface zsFont = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/Orbitron-Regular.ttf");
+			TextView title = (TextView) getView().findViewById(
+					R.id.current_title);
+			title.setTypeface(zsFont);
+			Typeface zsLogo = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/capella.ttf");
+			TextView logo = (TextView) getView()
+					.findViewById(R.id.current_Logo);
+			logo.setTypeface(zsLogo);
+			System.out.println("kdj");
 		}
 	}
 
@@ -231,6 +256,15 @@ public class MainActivity extends FragmentActivity {
 							Toast.LENGTH_SHORT).show();
 				}
 			});
+			// Set font
+			Typeface zsFont = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/Orbitron-Regular.ttf");
+			TextView title = (TextView) getView().findViewById(
+					R.id.history_likedTitle);
+			title.setTypeface(zsFont);
+			TextView title2 = (TextView) getView().findViewById(
+					R.id.history_pastTitle);
+			title2.setTypeface(zsFont);
 		}
 	}
 
@@ -286,6 +320,12 @@ public class MainActivity extends FragmentActivity {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
+			// Set Fonts
+			Typeface zsLogo = Typeface.createFromAsset(getActivity()
+					.getAssets(), "fonts/capella.ttf");
+			TextView title = (TextView) getView().findViewById(
+					R.id.upload_title);
+			title.setTypeface(zsLogo);
 
 			imgTaken = false;
 
@@ -325,21 +365,25 @@ public class MainActivity extends FragmentActivity {
 			});
 
 			editTitle = (EditText) getView().findViewById(R.id.titleEdit);
-			
-			final NotificationManager notiMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-			//notify test button
+
+			final NotificationManager notiMgr = (NotificationManager) getActivity()
+					.getSystemService(NOTIFICATION_SERVICE);
+			// notify test button
 			notifybtn = (Button) getView().findViewById(R.id.notificationTest);
 			notifybtn.setOnClickListener(new OnClickListener() {
 				@SuppressLint({ "ServiceCast", "NewApi" })
 				public void onClick(View arg0) {
-					Intent notIntent = new Intent(getActivity(), MainActivity.class);
-					PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, notIntent, 0);
+					Intent notIntent = new Intent(getActivity(),
+							MainActivity.class);
+					PendingIntent pIntent = PendingIntent.getActivity(
+							getActivity(), 0, notIntent, 0);
 					Notification n = new Notification.Builder(getActivity())
 							.setContentTitle("Entered new zone.")
 							.setSmallIcon(R.drawable.zonesnap1_launcher)
-							.setContentText("Touch to view content of new zone.")
-							.setContentIntent(pIntent)
-							.setAutoCancel(true).build();
+							.setContentText(
+									"Touch to view content of new zone.")
+							.setContentIntent(pIntent).setAutoCancel(true)
+							.build();
 					notiMgr.notify(0, n);
 				}
 			});
@@ -360,7 +404,7 @@ public class MainActivity extends FragmentActivity {
 			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
 				Bitmap image = (Bitmap) data.getExtras().get("data");
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				image.compress(Bitmap.CompressFormat.JPEG,100, stream);
+				image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 				byte[] bytes = stream.toByteArray();
 				bytes = Base64.encodeBase64(bytes);
 
@@ -381,6 +425,18 @@ public class MainActivity extends FragmentActivity {
 			}
 
 		}
+	}
+
+	@Override
+	public void onTabReselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

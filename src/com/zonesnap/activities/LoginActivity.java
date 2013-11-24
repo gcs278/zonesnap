@@ -2,11 +2,13 @@ package com.zonesnap.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.zonesnap.zonesnap_app.R;
 
@@ -30,8 +32,10 @@ public class LoginActivity extends Activity {
 				finish();
 				
 			}
-			
 		});
+		Typeface zsFont = Typeface.createFromAsset(getAssets(), "fonts/capella.ttf");
+		TextView title = (TextView)findViewById(R.id.login_title);
+		title.setTypeface(zsFont);
 	}
 
 	@Override

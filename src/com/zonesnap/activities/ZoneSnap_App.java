@@ -2,6 +2,8 @@ package com.zonesnap.activities;
 
 import android.app.Application;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.sax.RootElement;
 import android.support.v4.util.LruCache;
 
 public class ZoneSnap_App extends Application {
