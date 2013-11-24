@@ -58,20 +58,10 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
 	int picIndex = 0;
 
-	public CurrentImageAdapter(Context c) {
+	public CurrentImageAdapter(Context c, ArrayList<Integer> pictureList) {
 		mContext = c;
-
-		NetworkGetPictureList task = new NetworkGetPictureList(mContext);
-		try {
-			task.execute().get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		pictureList = (ArrayList<Integer>) task.photoIDs.clone();
+		
+		this.pictureList = (ArrayList<Integer>) pictureList.clone();
 		System.out.println("Test: " + pictureList);
 	}
 
@@ -240,7 +230,6 @@ public class CurrentImageAdapter extends BaseAdapter implements OnTaskComplete {
 					e.printStackTrace();
 				}
 				String imageBase64 = (String) json.get("image");
-				System.out.println("Image" +imageBase64);
 				String title = (String) json.get("title");
 				
 				try {

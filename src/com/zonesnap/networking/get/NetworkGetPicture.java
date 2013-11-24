@@ -108,7 +108,7 @@ public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 				e.printStackTrace();
 			}
 			String imageBase64 = (String) json.get("image");
-			System.out.println(imageBase64);
+			
 			String title = (String) json.get("title");
 			
 			try {
