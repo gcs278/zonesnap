@@ -347,6 +347,7 @@ public class MainActivity extends FragmentActivity implements
 		EditText editTitle;
 		boolean imgTaken;
 		String image64;
+		Bitmap image;
 		Button notifybtn;
 
 		public UploadFragment() {
@@ -358,6 +359,11 @@ public class MainActivity extends FragmentActivity implements
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_upload,
 					container, false);
+			if (imgTaken) {
+				imageView.setVisibility(View.VISIBLE);
+				imageView.setImageBitmap(image);
+				camerabtn.setVisibility(View.GONE);
+			}
 			return rootView;
 		}
 
@@ -446,7 +452,7 @@ public class MainActivity extends FragmentActivity implements
 				Intent data) {
 			// camera
 			if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-				Bitmap image = (Bitmap) data.getExtras().get("data");
+				image = (Bitmap) data.getExtras().get("data");
 				ByteArrayOutputStream stream = new ByteArrayOutputStream();
 				image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
 				byte[] bytes = stream.toByteArray();
