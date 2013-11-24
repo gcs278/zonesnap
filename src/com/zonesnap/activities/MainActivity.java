@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 import com.zonesnap.zonesnap_app.R.id;
@@ -17,6 +18,7 @@ import com.zonesnap.zonesnap_app.R.string;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -222,7 +224,7 @@ public class MainActivity extends FragmentActivity implements
 			// Acquire a reference to the system Location Manager
 			LocationManager locationManager = (LocationManager) getActivity()
 					.getSystemService(Context.LOCATION_SERVICE);
-			// Register the listener with the Location Manager to receive
+			// Register the listener with the Location Manager to receive   
 			// location updates
 			locationManager.requestLocationUpdates(
 					LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
@@ -232,7 +234,15 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void onLocationChanged(final Location location) {
+				System.out.println("Lat: "+location.getLatitude());
+				System.out.println("Long: "+location.getLongitude());
+				System.out.println("Accuracy: "+location.getAccuracy());
 				
+				if ( location.getAccuracy() > 40.0 ) {
+				}
+				
+				NetworkGetZone task = new NetworkGetZone(getActivity(), logo, location.getLatitude(),location.getLongitude());
+				task.execute();
 			}
 
 			@Override
