@@ -80,7 +80,7 @@ public class CurrentFragment extends Fragment {
 		LocationManager locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);	
+				LocationManager.GPS_PROVIDER, 30000, 5, mLocationListener);	
 		latitude = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
 		longitude = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
 		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(getActivity());
