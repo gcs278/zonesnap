@@ -1,5 +1,7 @@
 package com.zonesnap.activities;
 
+import com.facebook.*;
+import com.facebook.model.*;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.Locale;
 
 import org.apache.commons.codec.binary.Base64;
 
+import com.facebook.Session;
 import com.zonesnap.fragments.CurrentFragment;
 import com.zonesnap.fragments.HistoryFragment;
 import com.zonesnap.fragments.ProfileFragment;
@@ -41,6 +44,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
@@ -67,9 +71,10 @@ public class MainActivity extends FragmentActivity implements
 	// Fragment Variables
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	
+	private static final String TAG = "MainFragment";
 	Location mCurrentLocation;
-
+	private UiLifecycleHelper uiHelper;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -110,7 +115,27 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		mViewPager.setCurrentItem(1);
+		
+	    uiHelper = new UiLifecycleHelper(this, callback);
+	    uiHelper.onCreate(savedInstanceState);
 	}
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		if (state.isOpened()) {
+			Log.i(TAG, "Logged in...");
+		} else if (state.isClosed()) {
+			Log.i(TAG, "Logged out...");
+		}
+	}
+
+	private Session.StatusCallback callback = new Session.StatusCallback() {
+		@Override
+		public void call(Session session, SessionState state,
+				Exception exception) {
+			onSessionStateChange(session, state, exception);
+		}
+	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -187,7 +212,6 @@ public class MainActivity extends FragmentActivity implements
 			return null;
 		}
 	}
-
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
