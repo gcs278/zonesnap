@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 //Fragment for user's profile

@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background4"
     android:orientation="vertical" 
-    android:background="@drawable/background4">
+    xmlns:facebook="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/profile_title"
@@ -12,12 +13,14 @@
         android:text="Your Profile:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#00FF26"
-        android:textSize="30sp"/>
+        android:textSize="30sp" />
 
-    <ImageView
-        android:id="@+id/imageView1"
+    <com.facebook.widget.ProfilePictureView
+        android:id="@+id/profilePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/placeholder" />
+        android:layout_marginBottom="10dp"
+        android:gravity="center_horizontal"
+        facebook:preset_size="normal" />
 
 </LinearLayout>
