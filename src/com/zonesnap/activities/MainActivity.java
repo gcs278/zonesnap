@@ -146,7 +146,13 @@ public class MainActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-
+	
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+	}
+	
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {

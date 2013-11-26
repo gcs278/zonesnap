@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.zonesnap.networking.post.NetworkPostLogin;
 import com.zonesnap.zonesnap_app.R;
 
 
@@ -46,6 +47,8 @@ public class LoginActivity extends Activity {
 	}
 
 	public void login(View view) {
+		NetworkPostLogin task = new NetworkPostLogin(this);
+		task.execute("grantspence");
 		Intent login = new Intent(this, HomeActivity.class);
 		startActivity(login);
 	}

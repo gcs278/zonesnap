@@ -47,8 +47,7 @@ public class HomeActivity extends Activity {
 			public void onClick(View arg0) {
 				Intent i = new Intent(getBaseContext(), MainActivity.class);
 				i.putExtra("position", 0);
-				startActivity(i);
-				finish();				
+				startActivity(i);		
 			}
 		});
 		
@@ -59,8 +58,7 @@ public class HomeActivity extends Activity {
 			public void onClick(View arg0) {
 				Intent i = new Intent(getBaseContext(), MainActivity.class);
 				i.putExtra("position", 1);
-				startActivity(i);
-				finish();				
+				startActivity(i);				
 			}
 		});
 		
@@ -71,8 +69,7 @@ public class HomeActivity extends Activity {
 			public void onClick(View arg0) {
 				Intent i = new Intent(getBaseContext(), MainActivity.class);
 				i.putExtra("position", 2);
-				startActivity(i);
-				finish();				
+				startActivity(i);			
 			}
 		});
 		
@@ -84,7 +81,7 @@ public class HomeActivity extends Activity {
 				Intent i = new Intent(getBaseContext(), MainActivity.class);
 				i.putExtra("position", 3);
 				startActivity(i);
-				finish();				
+				
 			}
 		});
 	}
