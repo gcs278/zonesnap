@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#000000">
+
+    <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Go places. Share pics."
+            android:layout_weight="3"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+    <com.google.android.gms.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            >
+    </com.google.android.gms.maps.MapView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="9" >
+
+        <ImageButton
+            android:id="@+id/toUploadBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:src="@android:drawable/ic_menu_upload"
+            android:layout_weight="8" />
+
+        <ImageButton
+            android:id="@+id/toCurrentBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:layout_weight="8" />
+        
+        <ImageButton
+            android:id="@+id/toPastBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:src="@android:drawable/ic_menu_recent_history"
+            android:layout_weight="8" />
+        
+        <ImageButton
+            android:id="@+id/toProfileBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:layout_weight="8" />
+
+    </LinearLayout>
+     
+</LinearLayout>

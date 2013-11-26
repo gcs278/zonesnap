@@ -46,7 +46,7 @@ public class LoginActivity extends Activity {
 	}
 
 	public void login(View view) {
-		Intent login = new Intent(this, MainActivity.class);
+		Intent login = new Intent(this, HomeActivity.class);
 		startActivity(login);
 	}
 }
