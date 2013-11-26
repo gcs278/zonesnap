@@ -40,7 +40,7 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 			holder = new StackHolder();
 			holder.img = (ImageView) row.findViewById(R.id.stackImage);
 			holder.text = (TextView) row.findViewById(R.id.stackText);
-			holder.like = (Button) row.findViewById(R.id.likeButton);
+			holder.like = (Button) row.findViewById(R.id.stackLike);
 			
 
 			row.setTag(holder);

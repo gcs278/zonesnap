@@ -89,5 +89,5 @@
             android:layout_marginRight="14dp"
             android:text="Notify" />
     </LinearLayout>
-
+   
 </ScrollView>

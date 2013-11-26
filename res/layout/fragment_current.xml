@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background4"
+    android:background="@drawable/background"
     android:baselineAligned="false"
     android:orientation="vertical" >
 
@@ -12,28 +12,25 @@
         android:layout_weight="2" 
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_weight="0.99"
+            android:src="@drawable/logo2" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4165.12"
             android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/current_Logo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Locating Zone..."
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#00FF26"
-                android:textSize="30sp" />
-
         </LinearLayout>
-     
+
         <TextView
-            android:id="@+id/current_title"
+            android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="575.93"
             android:text="Zone Activity:"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#00FF26"
@@ -46,7 +43,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="2" >
+        android:layout_weight="1" >
 
         <GridView
             android:id="@+id/gridCurrent"

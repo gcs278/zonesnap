@@ -14,7 +14,7 @@ import com.zonesnap.zonesnap_app.R;
 public class StackViewActivity extends Activity {
 	
 	private StackAdapter sa_;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,7 +30,7 @@ public class StackViewActivity extends Activity {
 		StackView stack = (StackView) findViewById(R.id.stackview);
 		
 		stack.setAdapter(sa_);
-		
+
 		StackItem item1 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID),"Lol");
 		sa_.add(item1);
 		StackItem item2 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+1),"Lol");
