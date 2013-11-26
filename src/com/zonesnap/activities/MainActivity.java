@@ -118,8 +118,7 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		mViewPager.setCurrentItem(startPosition);
-		mViewPager.setCurrentItem(1);
-		
+				
 	    uiHelper = new UiLifecycleHelper(this, callback);
 	    uiHelper.onCreate(savedInstanceState);
 	}
