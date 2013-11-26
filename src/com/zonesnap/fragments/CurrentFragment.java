@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -37,13 +38,12 @@ import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.zonesnap_app.R;
 
-
 // Fragment for the current zone
 public class CurrentFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	double latitude;
 	double longitude;
-	
+
 	TextView logo;
 
 	public CurrentFragment() {
@@ -52,58 +52,62 @@ public class CurrentFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View rootView = inflater.inflate(R.layout.fragment_current,
-				container, false);
-		getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+		View rootView = inflater.inflate(R.layout.fragment_current, container,
+				false);
+		getActivity().getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 		return rootView;
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
-		
 		// Set font
-		Typeface zsFont = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/Orbitron-Regular.ttf");
-		TextView title = (TextView) getView().findViewById(
-				R.id.current_title);
+		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/Orbitron-Regular.ttf");
+		TextView title = (TextView) getView().findViewById(R.id.current_title);
 		title.setTypeface(zsFont);
-		Typeface zsLogo = Typeface.createFromAsset(getActivity()
-				.getAssets(), "fonts/capella.ttf");
+		Typeface zsLogo = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/capella.ttf");
 		logo = (TextView) getView().findViewById(R.id.current_Logo);
 		logo.setTypeface(zsLogo);
-		
+
 		// Register the listener with the Location Manager to receive
 		// location updates
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, 30000, 5, mLocationListener);	
-		latitude = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLatitude();
-		longitude = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER).getLongitude();
-		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(getActivity());
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				0, 3, mLocationListener);
+		
+		updateLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+	}
+	public void updateLocation(final Location location) {
+		logo.setText("Polling GPS...");
+		System.out.println("Lat: " + location.getLatitude());
+		System.out.println("Long: " + location.getLongitude());
+		System.out.println("Accuracy: " + location.getAccuracy());
+		latitude = location.getLatitude();
+		longitude = location.getLongitude();
+//		if (location.getAccuracy() > 40.0) {
+//			logo.setText("Waiting for accuracy...");
+//			return;
+//		}
+
+		NetworkGetZone task = new NetworkGetZone(getActivity(), logo,
+				latitude, longitude);
+		task.execute();
+		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(
+				getActivity());
 		listTask.execute();
 	}
-
 	public final LocationListener mLocationListener = new LocationListener() {
-
+		
 		@Override
 		public void onLocationChanged(final Location location) {
-			System.out.println("Lat: " + location.getLatitude());
-			System.out.println("Long: " + location.getLongitude());
-			System.out.println("Accuracy: " + location.getAccuracy());
-			latitude = location.getLatitude();
-			longitude = location.getLongitude();
-			if (location.getAccuracy() > 40.0) {
-			}
-
-			NetworkGetZone task = new NetworkGetZone(getActivity(), logo,
-					latitude, longitude);
-			task.execute();
+			updateLocation(location);
 		}
-
+		
 		@Override
 		public void onProviderDisabled(String arg0) {
 			// TODO Auto-generated method stub
@@ -122,19 +126,16 @@ public class CurrentFragment extends Fragment {
 
 		}
 	};
-	
+
 	// This network activty retrieves and updates a picture
-	public class NetworkGetCurrentPictureList extends AsyncTask<String, Void, String> {
+	public class NetworkGetCurrentPictureList extends
+			AsyncTask<String, Void, String> {
 		Context activity;
-		int port;
-		String URL;
+
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
 
 		public NetworkGetCurrentPictureList(Context context) {
 			activity = context;
-			// Get the URL and port
-			port = 8080;
-			URL = "www.grantspence.com";
 		}
 
 		// Retrieve data
@@ -144,11 +145,13 @@ public class CurrentFragment extends Fragment {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, URL, port, "/uploadpic",
-						"type=list&order=date&lat="+latitude+"&long="+longitude, null);
+				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/uploadpic",
+						"type=list&order=date&lat=" + latitude + "&long="
+								+ longitude, null);
 				System.out.println(address.toString());
 				// Excecute
-				HttpResponse response = httpclient.execute(new HttpGet(address));
+				HttpResponse response = httpclient
+						.execute(new HttpGet(address));
 
 				// Check status
 				StatusLine statusLine = response.getStatusLine();
@@ -165,7 +168,7 @@ public class CurrentFragment extends Fragment {
 					throw new IOException(statusLine.getReasonPhrase());
 				}
 				System.out.println(photoListJSON);
-				
+
 				try {
 					JSONParser j = new JSONParser();
 					JSONObject json = (JSONObject) j.parse(photoListJSON);
@@ -178,7 +181,7 @@ public class CurrentFragment extends Fragment {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				
+
 			} catch (IOException e) {
 				return "connectFail";
 			} catch (URISyntaxException e) {
@@ -192,9 +195,14 @@ public class CurrentFragment extends Fragment {
 		protected void onPostExecute(String result) {
 			// check if it didn't fail
 			if (result != "connectFail") {
-				final GridView grid = (GridView) getView().findViewById(
-						R.id.gridCurrent);
-				grid.setAdapter(new ImageAdapter(getActivity(),ZoneSnap_App.CURRENT,photoIDs));
+				try {
+					GridView grid = (GridView) getView().findViewById(
+							R.id.gridCurrent);
+					grid.setAdapter(new ImageAdapter(getActivity(),
+							ZoneSnap_App.CURRENT, photoIDs));
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			} else {
 				System.out.println("FailGetPictureList");
 			}

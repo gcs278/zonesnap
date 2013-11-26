@@ -54,7 +54,7 @@ public class HistoryFragment extends Fragment {
 		likeTask.execute();
 		NetworkGetPastList pastTask = new NetworkGetPastList(getActivity());
 		pastTask.execute();
-		
+
 		// Set font
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Orbitron-Regular.ttf");
@@ -82,8 +82,8 @@ public class HistoryFragment extends Fragment {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/like",
-						"user=grantspence", null);
+				URI address = new URI("http", null, ZoneSnap_App.URL,
+						ZoneSnap_App.PORT, "/like", "user=grantspence", null);
 
 				// Excecute
 				HttpResponse response = httpclient
@@ -134,8 +134,10 @@ public class HistoryFragment extends Fragment {
 			System.out.println(result);
 			// check if it didn't fail
 			if (result != "connectFail") {
-				 GridView grid = (GridView) getView().findViewById(R.id.gridLiked);
-				 grid.setAdapter(new ImageAdapter(getActivity(),ZoneSnap_App.LIKED,photoIDs));
+				GridView grid = (GridView) getView().findViewById(
+						R.id.gridLiked);
+				grid.setAdapter(new ImageAdapter(getActivity(),
+						ZoneSnap_App.LIKED, photoIDs));
 			} else {
 				System.out.println("FailGetPictureList");
 			}
@@ -143,6 +145,7 @@ public class HistoryFragment extends Fragment {
 		}
 
 	}
+
 	// This network activty retrieves and updates a picture
 	public class NetworkGetPastList extends AsyncTask<String, Void, String> {
 		Context activity;
@@ -159,8 +162,9 @@ public class HistoryFragment extends Fragment {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/tracking",
-						"user=grantspence", null);
+				URI address = new URI("http", null, ZoneSnap_App.URL,
+						ZoneSnap_App.PORT, "/tracking", "user=grantspence",
+						null);
 
 				// Excecute
 				HttpResponse response = httpclient
@@ -211,8 +215,14 @@ public class HistoryFragment extends Fragment {
 			System.out.println(result);
 			// check if it didn't fail
 			if (result != "connectFail") {
-				 GridView grid = (GridView) getView().findViewById(R.id.gridHistory);
-				 grid.setAdapter(new ImageAdapter(getActivity(),ZoneSnap_App.LIKED,photoIDs));
+				try {
+					GridView grid = (GridView) getView().findViewById(
+							R.id.gridHistory);
+					grid.setAdapter(new ImageAdapter(getActivity(),
+							ZoneSnap_App.LIKED, photoIDs));
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			} else {
 				System.out.println("FailGetPictureList");
 			}
@@ -220,5 +230,5 @@ public class HistoryFragment extends Fragment {
 		}
 
 	}
-	
+
 }
