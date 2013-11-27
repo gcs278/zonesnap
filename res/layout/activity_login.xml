@@ -6,15 +6,6 @@
     android:background="@drawable/background4"
     tools:context=".LoginActivity" >
 
-    <Button
-        android:id="@+id/toStack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="49dp"
-        android:text="Picture View"
-        android:textSize="30sp" />
     <ImageButton
         android:id="@+id/button1"
         android:layout_width="wrap_content"

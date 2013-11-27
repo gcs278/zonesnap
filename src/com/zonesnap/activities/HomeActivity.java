@@ -20,6 +20,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.internal.p;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,41 +50,45 @@ import android.widget.ImageButton;
 
 public class HomeActivity extends FragmentActivity {
 	GoogleMap map;
+	List<Coordinates> markers = new ArrayList<Coordinates>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
-		SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+		SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.map);
 		map = fm.getMap();
 		map.setMyLocationEnabled(true);
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
-	    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-	    LatLng myCoor = null;
-	    if (location != null) {
-	    	System.out.println("Here");
-	    	myCoor = new LatLng(location.getLatitude(), location.getLongitude());
-	    }
-	    map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor,13));
-//	    map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-//	    map.addMarker(new MarkerOptions().position(myCoor).title("HEllo"));
-//		mapView.onCreate(savedInstanceState);
-//		GoogleMap map = mapView.getMap();
-//		try {
-//			map.getUiSettings().setMyLocationButtonEnabled(false);
-//			map.setMyLocationEnabled(true);
-//		} catch (NullPointerException e) {
-//			e.printStackTrace();
-//		}
-//
-//		try {
-//			MapsInitializer.initialize(this.getBaseContext());
-//		} catch (GooglePlayServicesNotAvailableException e) {
-//			e.printStackTrace();
-//		}
-	    NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
-	    task.execute();
+		Location location = locationManager
+				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		LatLng myCoor = null;
+		if (location != null) {
+			System.out.println("Here");
+			myCoor = new LatLng(location.getLatitude(), location.getLongitude());
+		}
+		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
+		// map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		// map.addMarker(new MarkerOptions().position(myCoor).title("HEllo"));
+		// mapView.onCreate(savedInstanceState);
+		// GoogleMap map = mapView.getMap();
+		// try {
+		// map.getUiSettings().setMyLocationButtonEnabled(false);
+		// map.setMyLocationEnabled(true);
+		// } catch (NullPointerException e) {
+		// e.printStackTrace();
+		// }
+		//
+		// try {
+		// MapsInitializer.initialize(this.getBaseContext());
+		// } catch (GooglePlayServicesNotAvailableException e) {
+		// e.printStackTrace();
+		// }
+		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
+		task.execute();
 		// navigate to upload fragment
 		ImageButton toUpload = (ImageButton) findViewById(R.id.toUploadBtn);
 		toUpload.setOnClickListener(new OnClickListener() {
@@ -129,14 +134,22 @@ public class HomeActivity extends FragmentActivity {
 	}
 
 	@Override
+	protected void onResume() {
+		super.onResume();
+		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
+		task.execute();
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.home, menu);
 		return true;
 	}
-	
+
 	// This network activty retrieves and updates a picture
-	public class NetworkGetPictureLocations extends AsyncTask<String, Void, String> {
+	public class NetworkGetPictureLocations extends
+			AsyncTask<String, Void, String> {
 		Context activity;
 		public ArrayList<Coordinates> photos = new ArrayList<Coordinates>();
 
@@ -151,11 +164,12 @@ public class HomeActivity extends FragmentActivity {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/mapdata",
-						"type=pics", null);
+				URI address = new URI("http", null, ZoneSnap_App.URL,
+						ZoneSnap_App.PORT, "/mapdata", "type=pics", null);
 
 				// Excecute
-				HttpResponse response = httpclient.execute(new HttpGet(address));
+				HttpResponse response = httpclient
+						.execute(new HttpGet(address));
 
 				// Check status
 				StatusLine statusLine = response.getStatusLine();
@@ -172,7 +186,7 @@ public class HomeActivity extends FragmentActivity {
 					throw new IOException(statusLine.getReasonPhrase());
 				}
 				System.out.println(photoListJSON);
-				
+
 				try {
 					JSONParser j = new JSONParser();
 					JSONObject json = (JSONObject) j.parse(photoListJSON);
@@ -185,13 +199,13 @@ public class HomeActivity extends FragmentActivity {
 						coor.photoId = Integer.parseInt(parts[0]);
 						coor.latitude = Double.parseDouble(parts[1]);
 						coor.longitude = Double.parseDouble(parts[2]);
-						
+
 						photos.add(coor);
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				
+
 			} catch (IOException e) {
 				return "connectFail";
 			} catch (URISyntaxException e) {
@@ -205,13 +219,19 @@ public class HomeActivity extends FragmentActivity {
 		protected void onPostExecute(String result) {
 			// check if it didn't fail
 			if (result != "connectFail") {
-				for(Iterator<Coordinates> i = photos.iterator();i.hasNext();) {
+				for (Iterator<Coordinates> i = photos.iterator(); i.hasNext();) {
+
 					Coordinates coor = i.next();
-					LatLng point = new LatLng(coor.latitude, coor.longitude );
-					map.addMarker(new MarkerOptions().position(point).title(String.valueOf(coor.photoId)));
+
+					if (!markers.contains(coor)) {
+						markers.add(coor);
+						LatLng point = new LatLng(coor.latitude, coor.longitude);
+						map.addMarker(new MarkerOptions().position(point)
+								.title(String.valueOf(coor.photoId)));
+					}
+
 				}
-			    
-			    
+
 			} else {
 				System.out.println("FailGetPictureList");
 			}
