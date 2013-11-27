@@ -92,14 +92,7 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 			json.put("long",longitude);
 			// TODO: Add latitude and longitude with picture
 			
-			request.setEntity(new StringEntity(json.toString().replace("\\", "")));
-			
-//			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-//			nameValuePairs.add(new BasicNameValuePair("title", title));
-//			nameValuePairs.add(new BasicNameValuePair("image", image));
-//			request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			//request.setEntity(new ByteArrayEntity(image));
-			
+			request.setEntity(new StringEntity(json.toString().replace("\\", "")));			
 
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
 			client.execute(request, responsehandler);

@@ -40,20 +40,16 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.zonesnap.activities.OnTaskComplete;
+import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 // This network activty retrieves and updates a picture
 public class NetworkGetPictureList extends AsyncTask<String, Void, String> {
 	Context activity;
-	int port;
-	String URL;
 	public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
 
 	public NetworkGetPictureList(Context context) {
 		activity = context;
-		// Get the URL and port
-		port = 8080;
-		URL = "www.grantspence.com";
 	}
 
 	// Retrieve data
@@ -63,7 +59,7 @@ public class NetworkGetPictureList extends AsyncTask<String, Void, String> {
 		try {
 			// Set up HTTP GET
 			HttpClient httpclient = new DefaultHttpClient();
-			URI address = new URI("http", null, URL, port, "/uploadpic",
+			URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/uploadpic",
 					"type=list&order=date&lat=0&long=0", null);
 
 			// Excecute
