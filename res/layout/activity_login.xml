@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background"
+    android:background="@drawable/background4"
     tools:context=".LoginActivity" >
 
     <Button
@@ -15,7 +15,6 @@
         android:layout_marginTop="49dp"
         android:text="Picture View"
         android:textSize="30sp" />
-
     <ImageButton
         android:id="@+id/button1"
         android:layout_width="wrap_content"
@@ -25,13 +24,24 @@
         android:onClick="login"
         android:src="@drawable/fb_fake_button" />
 
-    <ImageView
-        android:id="@+id/imageView1"
+    <TextView
+        android:id="@+id/login_title"
+        android:textColor="#00FF26"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="46dp"
-        android:src="@drawable/zonesnap2" />
+        android:layout_marginTop="42dp"
+        android:textSize="50sp"
+        android:text="@string/logo"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <com.facebook.widget.LoginButton
+        android:id="@+id/authButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button1"
+        android:layout_alignRight="@+id/toStack"
+        android:layout_marginBottom="21dp" />
 
 </RelativeLayout>

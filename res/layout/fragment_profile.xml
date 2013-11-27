@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background4"
     android:orientation="vertical" 
     android:background="@drawable/background">
     xmlns:facebook="http://schemas.android.com/apk/res-auto">
@@ -16,12 +15,12 @@
         android:textColor="#00FF26"
         android:textSize="30sp" />
 
-    <com.facebook.widget.ProfilePictureView
-        android:id="@+id/profilePicture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:gravity="center_horizontal"
-        facebook:preset_size="normal" />
+<!--     <com.facebook.widget.ProfilePictureView -->
+<!--         android:id="@+id/profilePicture" -->
+<!--         android:layout_width="wrap_content" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_marginBottom="10dp" -->
+<!--         android:gravity="center_horizontal" -->
+<!--         facebook:preset_size="normal" /> -->
 
 </LinearLayout>
