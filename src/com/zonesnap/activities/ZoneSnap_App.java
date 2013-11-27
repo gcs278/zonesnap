@@ -2,6 +2,9 @@ package com.zonesnap.activities;
 
 import com.zonesnap.networking.post.NetworkPostTracking;
 
+import com.facebook.model.GraphUser;
+import com.facebook.widget.ProfilePictureView;
+
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +25,8 @@ public class ZoneSnap_App extends Application {
 	public static String URL = "www.grantspence.com";
 	public static String CURRENT = "current";
 	public static String LIKED = "liked";
+	public static GraphUser user;
+	public static ProfilePictureView profilePic;
 	
 	public ZoneSnap_App() {
 		// Get max available VM memory, exceeding this amount will throw an
