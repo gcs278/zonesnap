@@ -1,5 +1,8 @@
 package com.zonesnap.activities;
 
+import com.facebook.model.GraphUser;
+import com.facebook.widget.ProfilePictureView;
+
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -15,6 +18,8 @@ public class ZoneSnap_App extends Application {
 	public static String URL = "www.grantspence.com";
 	public static String CURRENT = "current";
 	public static String LIKED = "liked";
+	public static GraphUser user;
+	public static ProfilePictureView profilePic;
 	
 	
 	public ZoneSnap_App() {

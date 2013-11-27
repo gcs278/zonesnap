@@ -34,6 +34,11 @@
     <string name="title_activity_stack_view">StackViewActivity</string>
     <string name="logo">ZoneSnap</string>
     <string name="title_activity_main_activity2">MainActivity2</string>
-    <string name="app_id">234413960058999</string>
+    <string name="app_id">447656745346770</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="ok">OK</string>
+    <string name="permission_not_granted">Permissions were not granted!</string>
+    <string name="hello_user">Hello %1$s!</string>
+    <string name="successfully_posted_post">Successfully posted \'%1$s\'.\nPost ID: %2$s</string>
 
 </resources>
