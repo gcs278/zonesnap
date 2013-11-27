@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -17,6 +18,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.internal.ac;
+import com.zonesnap.activities.HomeActivity;
+import com.zonesnap.activities.MainActivity;
 import com.zonesnap.activities.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostLogin extends AsyncTask<String, Void, String> {
@@ -66,8 +70,8 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 			e.printStackTrace();
 			return e.getMessage();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return e.getMessage();
 		}
 		return verified;
 	}
@@ -76,9 +80,11 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		if (result.contains("OK")) {
-
+			Intent login = new Intent(activity, HomeActivity.class);
+			activity.startActivity(login);
 		} else {
-
+			new AlertDialog.Builder(activity).setMessage("Unable to login: "
+					+ result).show();
 		}
 
 	}

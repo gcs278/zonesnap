@@ -49,8 +49,6 @@ public class LoginActivity extends Activity {
 	public void login(View view) {
 		NetworkPostLogin task = new NetworkPostLogin(this);
 		task.execute("grantspence");
-		Intent login = new Intent(this, HomeActivity.class);
-		startActivity(login);
 	}
 }
 

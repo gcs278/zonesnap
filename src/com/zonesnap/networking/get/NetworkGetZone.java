@@ -28,7 +28,12 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnManagerParamBean;
+import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -45,7 +50,7 @@ public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
 	int photoID;
 	Double latitude, longitude;
 	TextView textView;
-	
+
 	public NetworkGetZone(Context context, TextView title, Double latitude,
 			Double longitude) {
 		activity = context;
@@ -64,6 +69,10 @@ public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
 		try {
 			// Set up HTTP GET
 			HttpClient httpclient = new DefaultHttpClient();
+			HttpParams httpParams = httpclient.getParams();
+			ConnManagerParams.setTimeout(httpParams,4000);
+			HttpConnectionParams.setSoTimeout(httpParams, 4000);
+			HttpConnectionParams.setConnectionTimeout(httpParams,4000);
 			URI address = new URI("http", null, URL, port, "/zonelookup",
 					"lat=" + latitude + "&long=" + longitude, null);
 
@@ -112,7 +121,7 @@ public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
 	protected void onPostExecute(Integer result) {
 		// check if it didn't fail
 		if (result == -2) {
-			
+
 		} else if (result == -1) {
 			textView.setText("New Zone");
 		} else {

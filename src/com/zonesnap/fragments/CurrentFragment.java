@@ -12,6 +12,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -34,6 +37,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.zonesnap.activities.ImageAdapter;
+import com.zonesnap.activities.MainActivity;
 import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.zonesnap_app.R;
@@ -43,7 +47,7 @@ public class CurrentFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	double latitude;
 	double longitude;
-
+	Context m_classContext;
 	TextView logo;
 
 	public CurrentFragment() {
@@ -56,6 +60,7 @@ public class CurrentFragment extends Fragment {
 				false);
 		getActivity().getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+		m_classContext = getActivity();
 		return rootView;
 	}
 
@@ -77,11 +82,13 @@ public class CurrentFragment extends Fragment {
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) getActivity()
 				.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				0, 3, mLocationListener);
-		
-		updateLocation(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				3, mLocationListener);
+
+		updateLocation(locationManager
+				.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 	}
+
 	public void updateLocation(final Location location) {
 		logo.setText("Polling GPS...");
 		System.out.println("Lat: " + location.getLatitude());
@@ -89,25 +96,26 @@ public class CurrentFragment extends Fragment {
 		System.out.println("Accuracy: " + location.getAccuracy());
 		latitude = location.getLatitude();
 		longitude = location.getLongitude();
-//		if (location.getAccuracy() > 40.0) {
-//			logo.setText("Waiting for accuracy...");
-//			return;
-//		}
+		// if (location.getAccuracy() > 40.0) {
+		// logo.setText("Waiting for accuracy...");
+		// return;
+		// }
 
-		NetworkGetZone task = new NetworkGetZone(getActivity(), logo,
-				latitude, longitude);
+		NetworkGetZone task = new NetworkGetZone(getActivity(), logo, latitude,
+				longitude);
 		task.execute();
 		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(
 				getActivity());
 		listTask.execute();
 	}
+
 	public final LocationListener mLocationListener = new LocationListener() {
-		
+
 		@Override
 		public void onLocationChanged(final Location location) {
 			updateLocation(location);
 		}
-		
+
 		@Override
 		public void onProviderDisabled(String arg0) {
 			// TODO Auto-generated method stub
@@ -130,7 +138,8 @@ public class CurrentFragment extends Fragment {
 	// This network activty retrieves and updates a picture
 	public class NetworkGetCurrentPictureList extends
 			AsyncTask<String, Void, String> {
-		Context activity;
+		final Context activity;
+		boolean fail = true;
 
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
 
@@ -143,9 +152,13 @@ public class CurrentFragment extends Fragment {
 		protected String doInBackground(String... params) {
 			String photoListJSON = "";
 			try {
+				HttpParams httpParams = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
+				HttpConnectionParams.setSoTimeout(httpParams, 4000);
 				// Set up HTTP GET
-				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/uploadpic",
+				HttpClient httpclient = new DefaultHttpClient(httpParams);
+				URI address = new URI("http", null, ZoneSnap_App.URL,
+						ZoneSnap_App.PORT, "/uploadpic",
 						"type=list&order=date&lat=" + latitude + "&long="
 								+ longitude, null);
 				System.out.println(address.toString());
@@ -183,10 +196,13 @@ public class CurrentFragment extends Fragment {
 				}
 
 			} catch (IOException e) {
-				return "connectFail";
+				fail = true;
+				return e.getMessage();
 			} catch (URISyntaxException e) {
-				return "connectFail";
+				fail = true;
+				return e.getMessage();
 			}
+			fail = false;
 			return photoListJSON;
 		}
 
@@ -194,7 +210,7 @@ public class CurrentFragment extends Fragment {
 		@Override
 		protected void onPostExecute(String result) {
 			// check if it didn't fail
-			if (result != "connectFail") {
+			if (!fail) {
 				try {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
@@ -204,7 +220,12 @@ public class CurrentFragment extends Fragment {
 					e.printStackTrace();
 				}
 			} else {
-				System.out.println("FailGetPictureList");
+				try {
+					new AlertDialog.Builder(getActivity()).setMessage("Error: "
+							+ result).show();
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			}
 
 		}

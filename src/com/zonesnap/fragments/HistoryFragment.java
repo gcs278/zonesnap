@@ -134,10 +134,14 @@ public class HistoryFragment extends Fragment {
 			System.out.println(result);
 			// check if it didn't fail
 			if (result != "connectFail") {
-				GridView grid = (GridView) getView().findViewById(
-						R.id.gridLiked);
-				grid.setAdapter(new ImageAdapter(getActivity(),
-						ZoneSnap_App.LIKED, photoIDs));
+				try {
+					GridView grid = (GridView) getView().findViewById(
+							R.id.gridLiked);
+					grid.setAdapter(new ImageAdapter(getActivity(),
+							ZoneSnap_App.LIKED, photoIDs));
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			} else {
 				System.out.println("FailGetPictureList");
 			}
