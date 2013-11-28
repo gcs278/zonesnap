@@ -16,7 +16,7 @@ import com.zonesnap.zonesnap_app.R;
 //Fragment for user's profile
 public class ProfileFragment extends Fragment {
 	
-	//private ProfilePictureView profilePictureView;// = (ProfilePictureView) getView().findViewById(R.id.profilePicture);
+	private ProfilePictureView profilePictureView;// = (ProfilePictureView) getView().findViewById(R.id.profilePicture);
 	
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -41,16 +41,15 @@ public class ProfileFragment extends Fragment {
 		// Set Fonts
 		Typeface zsLogo = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/capella.ttf");
+		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/Orbitron-Regular.ttf");
 		TextView title = (TextView) getView().findViewById(R.id.profile_title);
 		title.setTypeface(zsLogo);
-		
-		TextView userId = (TextView) getView().findViewById(R.id.userId);
-		userId.setText(ZoneSnap_App.user.getName());
-		
-		//ZoneSnap_App.profilePic.setProfileId(ZoneSnap_App.user.getId());
-		
-		//profilePictureView = ZoneSnap_App.profilePic;
-		
-		
+		TextView userId = (TextView) getView().findViewById(R.id.profile_userId);
+		userId.setTypeface(zsFont);
+		userId.setText(ZoneSnap_App.user.getUsername());
+		profilePictureView = (ProfilePictureView) getActivity().findViewById(R.id.profilePicture);
+		profilePictureView.setProfileId(ZoneSnap_App.user.getId());
+
 	}
 }

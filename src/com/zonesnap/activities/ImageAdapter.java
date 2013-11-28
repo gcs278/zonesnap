@@ -49,21 +49,25 @@ import android.view.animation.RotateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class ImageAdapter extends BaseAdapter {
 	private Context mContext;
-
+	TextView title;
+	String previousTitle;
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
 	int picIndex = 0;
 	String type;
-	
-	
-	public ImageAdapter(Context c, String adapterType, ArrayList<Integer> pictureList) {
+
+	public ImageAdapter(Context c, String adapterType,
+			ArrayList<Integer> pictureList, TextView title) {
+		previousTitle = (String) title.getText();
 		mContext = c;
 		this.type = adapterType;
-		
+		this.title = title;
+		if (pictureList.size() != 0)
+			title.setText("Loading " + pictureList.size() + " pictures...");
 		this.pictureList = (ArrayList<Integer>) pictureList.clone();
-		System.out.println("Test: " + pictureList);
 	}
 
 	// How many pictures displaying
@@ -97,8 +101,8 @@ public class ImageAdapter extends BaseAdapter {
 	// Retrieves bitmap from cache
 	public Bitmap getBitmapFromMemCache(int key) {
 		Bitmap returnPic = ZoneSnap_App.currentImageCache.get(key);
-		
-		if ( returnPic != null ) {
+
+		if (returnPic != null) {
 			return returnPic;
 		} else {
 			return ZoneSnap_App.likedImageCache.get(key);
@@ -114,22 +118,24 @@ public class ImageAdapter extends BaseAdapter {
 		imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 		imageView.setPadding(8, 8, 8, 8);
 		// Get value from cache
-		Bitmap cached = getBitmapFromMemCache(pictureList
-				.get(position));
+		Bitmap cached = getBitmapFromMemCache(pictureList.get(position));
 
 		// Check if value exists in cache, otherwise use network to get it
 		if (cached != null) {
 			imageView.setImageBitmap(cached);
+			if (pictureList.get(pictureList.size() - 1) == pictureList
+					.get(position)) {
+				ImageAdapter.this.title.setText(previousTitle);
+			}
 			// imageView.setAnimation(null);
 		} else {
 
 			// Place holder picture while loading
 			// imageView.setImageResource(R.drawable.placeholder);
-
 			// Network task, passes imageview, like pass by reference
-			NetworkGetPicture task = new NetworkGetPicture(mContext,
-					imageView, pictureList.get(position));
-			task.execute("");
+			NetworkGetPicture task = new NetworkGetPicture(mContext, imageView,
+					pictureList.get(position));
+			task.execute();
 		}
 		// } else {
 		// System.out.println("lkjd");
@@ -165,8 +171,7 @@ public class ImageAdapter extends BaseAdapter {
 		ImageView view;
 		int photoID;
 
-		public NetworkGetPicture(Context context, 
-				ImageView view, int photoID) {
+		public NetworkGetPicture(Context context, ImageView view, int photoID) {
 			activity = context;
 			this.view = view;
 			this.photoID = photoID;
@@ -179,8 +184,9 @@ public class ImageAdapter extends BaseAdapter {
 			try {
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient();
-				URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/uploadpic",
-						"type=get&photoID=" + photoID, null);
+				URI address = new URI("http", null, ZoneSnap_App.URL,
+						ZoneSnap_App.PORT, "/uploadpic", "type=get&photoID="
+								+ photoID, null);
 
 				// Excecute
 				HttpResponse response = httpclient
@@ -207,12 +213,6 @@ public class ImageAdapter extends BaseAdapter {
 			return JSON;
 		}
 
-		@Override
-		protected void onProgressUpdate(Void... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-		}
-
 		// Process data, display
 		@Override
 		protected void onPostExecute(String result) {
@@ -229,11 +229,11 @@ public class ImageAdapter extends BaseAdapter {
 				}
 				String imageBase64 = (String) json.get("image");
 				String title = (String) json.get("title");
-				
+
 				try {
 					// Decode and set image to profile pic
-					byte[] decodedString = Base64
-							.decode(imageBase64, Base64.DEFAULT);
+					byte[] decodedString = Base64.decode(imageBase64,
+							Base64.DEFAULT);
 					Bitmap decodedByte = BitmapFactory.decodeByteArray(
 							decodedString, 0, decodedString.length);
 
@@ -244,6 +244,11 @@ public class ImageAdapter extends BaseAdapter {
 
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
+				}
+
+				// If we are at the last picture, change back to previous title
+				if (pictureList.get(pictureList.size() - 1) == photoID) {
+					ImageAdapter.this.title.setText(previousTitle);
 				}
 
 			} else {

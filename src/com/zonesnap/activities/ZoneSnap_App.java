@@ -25,9 +25,9 @@ public class ZoneSnap_App extends Application {
 	public static String URL = "www.grantspence.com";
 	public static String CURRENT = "current";
 	public static String LIKED = "liked";
-	public static GraphUser user;
 	public static ProfilePictureView profilePic;
-	
+    public static GraphUser user;
+    
 	public ZoneSnap_App() {
 		// Get max available VM memory, exceeding this amount will throw an
 		// OutOfMemory exception. Stored in kilobytes as LruCache takes an

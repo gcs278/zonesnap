@@ -35,7 +35,6 @@ public class LoginActivity extends Activity {
     private LoginButton loginButton;
 
     private TextView greeting;
-    private GraphUser user;
     private boolean canPresentShareDialog;
     private ProfilePictureView profilePictureView;
 
@@ -77,7 +76,7 @@ public class LoginActivity extends Activity {
         loginButton.setUserInfoChangedCallback(new LoginButton.UserInfoChangedCallback() {
             @Override
             public void onUserInfoFetched(GraphUser user) {
-                LoginActivity.this.user = user;
+                ZoneSnap_App.user = user;
                 
                 // pass user to global_App
                 ZoneSnap_App.user = user;
@@ -89,21 +88,6 @@ public class LoginActivity extends Activity {
 
         greeting = (TextView) findViewById(R.id.greeting);
 
- /// Original buttons and title support
-    	Button toStack = (Button) findViewById(R.id.toStack);
-    	
-    	toStack.setOnClickListener(new OnClickListener(){
-
-    		@Override
-    		public void onClick(View arg0) {
-    			// TODO Auto-generated method stub
-    			
-    			Intent i = new Intent(LoginActivity.this, StackViewActivity.class);
-    			startActivity(i);
-    			finish();
-    			
-    		}
-    	});
     	Typeface zsFont = Typeface.createFromAsset(getAssets(), "fonts/capella.ttf");
     	TextView title = (TextView)findViewById(R.id.login_title);
     	title.setTypeface(zsFont);
@@ -170,12 +154,15 @@ public class LoginActivity extends Activity {
         Session session = Session.getActiveSession();
         boolean enableButtons = (session != null && session.isOpened());
 
-        if (enableButtons && user != null) {
+        if (enableButtons && ZoneSnap_App.user != null) {
           //  profilePictureView.setProfileId(user.getId());
-            greeting.setText(getString(R.string.hello_user, user.getFirstName()));
+    		NetworkPostLogin task = new NetworkPostLogin(this);
+    		task.execute(ZoneSnap_App.user.getUsername());
+            greeting.setText(getString(R.string.hello_user, ZoneSnap_App.user.getFirstName()));
         } else {
          //   profilePictureView.setProfileId(null);
             greeting.setText("not logged in");
+            
         }
     }
 

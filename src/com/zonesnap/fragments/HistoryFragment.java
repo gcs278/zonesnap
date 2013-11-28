@@ -34,7 +34,8 @@ import com.zonesnap.zonesnap_app.R;
 //Fragment for the Historic ZoneSnap View
 public class HistoryFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
-
+	TextView likedTitle;
+	TextView historyTitle;
 	public HistoryFragment() {
 	}
 
@@ -58,12 +59,12 @@ public class HistoryFragment extends Fragment {
 		// Set font
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Orbitron-Regular.ttf");
-		TextView title = (TextView) getView().findViewById(
+		likedTitle = (TextView) getView().findViewById(
 				R.id.history_likedTitle);
-		title.setTypeface(zsFont);
-		TextView title2 = (TextView) getView().findViewById(
+		likedTitle.setTypeface(zsFont);
+		historyTitle = (TextView) getView().findViewById(
 				R.id.history_pastTitle);
-		title2.setTypeface(zsFont);
+		historyTitle.setTypeface(zsFont);
 	}
 
 	// This network activty retrieves and updates a picture
@@ -138,7 +139,7 @@ public class HistoryFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridLiked);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.LIKED, photoIDs));
+							ZoneSnap_App.LIKED, photoIDs,likedTitle));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -223,7 +224,7 @@ public class HistoryFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridHistory);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.LIKED, photoIDs));
+							ZoneSnap_App.LIKED, photoIDs,historyTitle));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}

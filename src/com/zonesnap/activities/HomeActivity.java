@@ -42,11 +42,13 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class HomeActivity extends FragmentActivity {
 	GoogleMap map;
@@ -131,6 +133,17 @@ public class HomeActivity extends FragmentActivity {
 
 			}
 		});
+		
+		// Set the fonts
+		Typeface zsLogo = Typeface.createFromAsset(this.getAssets(),
+				"fonts/capella.ttf");
+		TextView title = (TextView) findViewById(R.id.home_title);
+		title.setTypeface(zsLogo);
+		Typeface zsFont = Typeface.createFromAsset(this.getAssets(),
+				"fonts/Orbitron-Regular.ttf");
+		TextView slogan = (TextView) findViewById(R.id.home_slogan);
+		slogan.setTypeface(zsFont);
+
 	}
 
 	@Override

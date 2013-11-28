@@ -72,7 +72,6 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	// Retrieve data
 	@Override
 	protected String doInBackground(String... params) {
-		System.out.println("hereh");
 		String verified = "OK";
 		try {
 
@@ -85,12 +84,11 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 			// Grant new code
 			// Create JSON object for image
 			JSONObject json = new JSONObject();
-			System.out.println(params[1]);
 			json.put("image",params[1]);
 			json.put("title", params[0]);
 			json.put("lat", latitude);
 			json.put("long",longitude);
-			// TODO: Add latitude and longitude with picture
+			json.put("username", params[2]);
 			
 			request.setEntity(new StringEntity(json.toString().replace("\\", "")));			
 

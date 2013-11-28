@@ -4,18 +4,35 @@
     android:background="#000000"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:text="Go places. Share pics."
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="10"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/home_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|top"
+            android:text="ZoneSnap!"
+            android:textColor="#00FF26"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/home_slogan"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center|top"
+            android:text="Go places. Share pics."
+            android:textColor="#00FF26"
+            android:textSize="20sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1.0"
+        android:layout_weight="2"
         android:orientation="vertical" >
 
         <fragment
@@ -29,7 +46,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="9" >
+        android:layout_weight="10" >
 
         <ImageButton
             android:id="@+id/toUploadBtn"

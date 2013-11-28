@@ -29,6 +29,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ public class CurrentFragment extends Fragment {
 	double longitude;
 	Context m_classContext;
 	TextView logo;
+	TextView gridTitle;
 
 	public CurrentFragment() {
 	}
@@ -70,8 +72,8 @@ public class CurrentFragment extends Fragment {
 		// Set font
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Orbitron-Regular.ttf");
-		TextView title = (TextView) getView().findViewById(R.id.current_title);
-		title.setTypeface(zsFont);
+		gridTitle = (TextView) getView().findViewById(R.id.current_title);
+		gridTitle.setTypeface(zsFont);
 		Typeface zsLogo = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/capella.ttf");
 		logo = (TextView) getView().findViewById(R.id.current_Logo);
@@ -215,7 +217,7 @@ public class CurrentFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.CURRENT, photoIDs));
+							ZoneSnap_App.CURRENT, photoIDs,gridTitle));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}

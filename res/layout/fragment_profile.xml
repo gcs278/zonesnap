@@ -24,10 +24,10 @@
         facebook:preset_size="large" />
     
    <TextView
-        android:id="@+id/userId"
+        android:id="@+id/profile_userId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No ID passed from Facebook"
+        android:text="Error"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#00FF26"
         android:textSize="14sp" />

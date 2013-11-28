@@ -38,6 +38,7 @@ import org.json.JSONObject;
 
 import com.zonesnap.activities.MainActivity;
 import com.zonesnap.activities.UploadActivity;
+import com.zonesnap.activities.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	Context activity;
@@ -48,8 +49,6 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	
 	public NetworkPostLike(Context context) {
 		activity = context;
-		port = 8080;
-		URL = "www.grantspence.com";
 	}
 
 	// Let user know its updating
@@ -72,7 +71,7 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 
 			// Create the HTTP Post
 			HttpClient client = new DefaultHttpClient();
-			URI address = new URI("http", null, URL, port, "/like", null,
+			URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/like", null,
 					null);
 			HttpPost request = new HttpPost(address);
 			
