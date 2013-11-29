@@ -22,6 +22,7 @@ import org.json.simple.parser.ParseException;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -34,6 +35,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -51,6 +54,7 @@ public class CurrentFragment extends Fragment {
 	Context m_classContext;
 	TextView logo;
 	TextView gridTitle;
+	Button refresh;
 
 	public CurrentFragment() {
 	}
@@ -89,6 +93,16 @@ public class CurrentFragment extends Fragment {
 
 		updateLocation(locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+		refresh = (Button) getView().findViewById(R.id.refresh);
+		refresh.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				LocationManager locationManager = (LocationManager) getActivity()
+						.getSystemService(Context.LOCATION_SERVICE);
+				
+				updateLocation(locationManager
+						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+			}
+		});
 	}
 
 	public void updateLocation(final Location location) {
@@ -136,7 +150,8 @@ public class CurrentFragment extends Fragment {
 
 		}
 	};
-
+	
+	
 	// This network activty retrieves and updates a picture
 	public class NetworkGetCurrentPictureList extends
 			AsyncTask<String, Void, String> {

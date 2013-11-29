@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -27,25 +27,55 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#00FF26"
                 android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/refresh"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:layout_gravity="center"
+                android:background="@drawable/refresh"
+                android:gravity="center" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/current_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Zone Activity:"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#00FF26"
-            android:textSize="30sp"
-            android:textStyle="normal"
-            android:typeface="monospace" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="10"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/current_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Zone Activity:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#00FF26"
+                android:textSize="30sp"
+                android:textStyle="normal"
+
+                android:typeface="monospace" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4165.12"
+                android:text="RadioButton" />
+
+            <RadioButton
+                android:id="@+id/radioButton1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4165.12"
+                android:text="RadioButton" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="2" 
-        android:orientation="vertical">
+        android:layout_weight="1"
+        android:orientation="vertical" >
 
         <GridView
             android:id="@+id/gridCurrent"

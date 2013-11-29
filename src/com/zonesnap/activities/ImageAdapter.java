@@ -123,10 +123,7 @@ public class ImageAdapter extends BaseAdapter {
 		// Check if value exists in cache, otherwise use network to get it
 		if (cached != null) {
 			imageView.setImageBitmap(cached);
-			if (pictureList.get(pictureList.size() - 1) == pictureList
-					.get(position)) {
-				ImageAdapter.this.title.setText(previousTitle);
-			}
+			ImageAdapter.this.title.setText(previousTitle);
 			// imageView.setAnimation(null);
 		} else {
 
