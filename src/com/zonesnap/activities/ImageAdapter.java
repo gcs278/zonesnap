@@ -87,21 +87,21 @@ public class ImageAdapter extends BaseAdapter {
 	public void addBitmapToMemoryCache(int key, Bitmap bitmap) {
 		if (getBitmapFromMemCache(key) == null) {
 			if (type == ZoneSnap_App.CURRENT) {
-				ZoneSnap_App.currentImageCache.put(key, bitmap);
+				ZoneSnap_App.imageCache.put(key, bitmap);
 			} else if (type == ZoneSnap_App.LIKED) {
-				ZoneSnap_App.likedImageCache.put(key, bitmap);
+				ZoneSnap_App.likeCache.put(key, 1);
 			}
 		}
 	}
 
 	// Retrieves bitmap from cache
 	public Bitmap getBitmapFromMemCache(int key) {
-		Bitmap returnPic = ZoneSnap_App.currentImageCache.get(key);
+		Bitmap returnPic = ZoneSnap_App.imageCache.get(key);
 		
 		if ( returnPic != null ) {
 			return returnPic;
 		} else {
-			return ZoneSnap_App.likedImageCache.get(key);
+			return ZoneSnap_App.imageCache.get(key);
 		}
 	}
 

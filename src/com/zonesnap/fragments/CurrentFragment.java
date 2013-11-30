@@ -22,6 +22,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -261,7 +262,7 @@ public class CurrentFragment extends Fragment {
 				try {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
-					grid.setAdapter(new ImageAdapter(getActivity(),
+					grid.setAdapter(new ImageAdapter(getContext(),
 							ZoneSnap_App.CURRENT, photoIDs, progressBar,message));
 				} catch (NullPointerException e) {
 					e.printStackTrace();

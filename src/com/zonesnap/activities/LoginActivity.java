@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.TextView;
 import com.facebook.AppEventsLogger;
 import com.facebook.FacebookAuthorizationException;
@@ -160,9 +158,11 @@ public class LoginActivity extends Activity {
         boolean enableButtons = (session != null && session.isOpened());
 
         if (enableButtons && ZoneSnap_App.user != null) {
-          //  profilePictureView.setProfileId(user.getId());
+        	
+        	// Login User with our server
     		NetworkPostLogin task = new NetworkPostLogin(this);
     		task.execute(ZoneSnap_App.user.getUsername());
+    		
             greeting.setText(getString(R.string.hello_user, ZoneSnap_App.user.getFirstName()));
         } else {
          //   profilePictureView.setProfileId(null);
@@ -176,11 +176,6 @@ public class LoginActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.login, menu);
 		return true;
-	}
-
-	public void login(View view) {
-		NetworkPostLogin task = new NetworkPostLogin(this);
-		task.execute("grantspence");
 	}
 	
 }
