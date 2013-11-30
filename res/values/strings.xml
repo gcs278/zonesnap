@@ -6,7 +6,7 @@
     <string name="hello_world" translatable="false">Hello world!</string>
     <string name="title_activity_main" translatable="false">ZoneSnap</string>
     <string name="title_section1" translatable="false">Current</string>
-    <string name="title_section2" translatable="false">Past</string>
+    <string name="title_section2" translatable="false">Favorites</string>
     <string name="title_section3" translatable="false">Profile</string>
     <string name="title_activity_test" translatable="false">Test</string>
     <string name="title_activity_image_view" translatable="false">ImageViewActivity</string>

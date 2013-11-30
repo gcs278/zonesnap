@@ -88,9 +88,14 @@ public class LoginActivity extends Activity {
 
         greeting = (TextView) findViewById(R.id.greeting);
 
-    	Typeface zsFont = Typeface.createFromAsset(getAssets(), "fonts/capella.ttf");
+        // Set the font of the ZoneSnap logo
+    	Typeface zsLogo = Typeface.createFromAsset(getAssets(), "fonts/capella.ttf");
     	TextView title = (TextView)findViewById(R.id.login_title);
-    	title.setTypeface(zsFont);
+    	title.setTypeface(zsLogo);
+    	
+    	// Set the font of the login message
+    	Typeface zsFont = Typeface.createFromAsset(getAssets(), "fonts/Orbitron-Regular.ttf");
+    	greeting.setTypeface(zsFont);
 
         canPresentShareDialog = FacebookDialog.canPresentShareDialog(this,
                 FacebookDialog.ShareDialogFeature.SHARE_DIALOG);
@@ -140,7 +145,7 @@ public class LoginActivity extends Activity {
                 exception instanceof FacebookAuthorizationException)) {
                 new AlertDialog.Builder(LoginActivity.this)
                     .setTitle(R.string.cancelled)
-                    .setMessage(R.string.permission_not_granted)
+                    .setMessage(R.string.permission_not_granted + exception.getMessage())
                     .setPositiveButton(R.string.ok, null)
                     .show();
           //  pendingAction = PendingAction.NONE;
@@ -161,7 +166,7 @@ public class LoginActivity extends Activity {
             greeting.setText(getString(R.string.hello_user, ZoneSnap_App.user.getFirstName()));
         } else {
          //   profilePictureView.setProfileId(null);
-            greeting.setText("not logged in");
+            greeting.setText("Please log in");
             
         }
     }

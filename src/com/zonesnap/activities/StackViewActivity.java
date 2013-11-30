@@ -31,14 +31,9 @@ public class StackViewActivity extends Activity {
 		
 		stack.setAdapter(sa_);
 		
-		StackItem item1 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID),"Lol");
+		StackItem item1 = new StackItem(ZoneSnap_App.imageCache.get(photoID),"Lol");
 		sa_.add(item1);
-		StackItem item2 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+1),"Lol");
-		sa_.add(item2);
-		StackItem item3 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+2),"Lol");
-		sa_.add(item3);
-		StackItem item4 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+3),"Lol");
-		sa_.add(item4);
+		
 //		for(int i = 0; i < 5; i++){
 //			sa_.add(item);
 //		}

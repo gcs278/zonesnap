@@ -16,10 +16,12 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import com.zonesnap.networking.get.NetworkGetPictureList;
 import com.zonesnap.zonesnap_app.R;
 import android.content.Context;
 import android.content.Intent;
@@ -50,23 +52,36 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+// This class displays the images for the gridviews
 public class ImageAdapter extends BaseAdapter {
 	private Context mContext;
-	TextView title;
+	
+	// TextView Variables
+	TextView textView;
 	String previousTitle;
+	
+	// Picture list to retrieve
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
-	int picIndex = 0;
-	String type;
+	
+	// Fragment gridview type
+	String adapter_type;
 
 	public ImageAdapter(Context c, String adapterType,
 			ArrayList<Integer> pictureList, TextView title) {
+		
 		previousTitle = (String) title.getText();
 		mContext = c;
-		this.type = adapterType;
-		this.title = title;
+		
+		this.adapter_type = adapterType;
+		this.textView = title;
+		
+		// Show loading # pictures
 		if (pictureList.size() != 0)
 			title.setText("Loading " + pictureList.size() + " pictures...");
+		
+		// Copy picture list to local
 		this.pictureList = (ArrayList<Integer>) pictureList.clone();
 	}
 
@@ -90,62 +105,49 @@ public class ImageAdapter extends BaseAdapter {
 	// Adds a bitmap to our cache
 	public void addBitmapToMemoryCache(int key, Bitmap bitmap) {
 		if (getBitmapFromMemCache(key) == null) {
-			if (type == ZoneSnap_App.CURRENT) {
-				ZoneSnap_App.currentImageCache.put(key, bitmap);
-			} else if (type == ZoneSnap_App.LIKED) {
-				ZoneSnap_App.likedImageCache.put(key, bitmap);
-			}
+			ZoneSnap_App.imageCache.put(key, bitmap);
 		}
 	}
 
 	// Retrieves bitmap from cache
 	public Bitmap getBitmapFromMemCache(int key) {
-		Bitmap returnPic = ZoneSnap_App.currentImageCache.get(key);
+		// Try to get the picture from current cache
+		return ZoneSnap_App.imageCache.get(key);
 
-		if (returnPic != null) {
-			return returnPic;
-		} else {
-			return ZoneSnap_App.likedImageCache.get(key);
-		}
 	}
 
 	// create a new ImageView for each item referenced by the Adapter
 	public View getView(int position, View convertView, ViewGroup parent) {
+		// ImageView parameters
 		ImageView imageView;
-		// if (convertView == null) { // if it's not recycled, initialize some
 		imageView = new ImageView(mContext);
 		imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
 		imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 		imageView.setPadding(8, 8, 8, 8);
+		
 		// Get value from cache
 		Bitmap cached = getBitmapFromMemCache(pictureList.get(position));
 
 		// Check if value exists in cache, otherwise use network to get it
 		if (cached != null) {
 			imageView.setImageBitmap(cached);
-			ImageAdapter.this.title.setText(previousTitle);
-			// imageView.setAnimation(null);
+			ImageAdapter.this.textView.setText(previousTitle);
 		} else {
-
-			// Place holder picture while loading
-			// imageView.setImageResource(R.drawable.placeholder);
 			// Network task, passes imageview, like pass by reference
 			NetworkGetPicture task = new NetworkGetPicture(mContext, imageView,
 					pictureList.get(position));
 			task.execute();
 		}
-		// } else {
-		// System.out.println("lkjd");
-		// }
+		
 		imageView.setOnClickListener(new OnImageClickListener(pictureList
 				.get(position)));
+		
 		return imageView;
 	}
 
 	class OnImageClickListener implements OnClickListener {
-
 		int photoID;
-
+		
 		// constructor
 		public OnImageClickListener(int photoID) {
 			this.photoID = photoID;
@@ -153,8 +155,7 @@ public class ImageAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			// on selecting grid view image
-			// launch full screen activity
+			// Launch StackView Activity
 			Intent i = new Intent(mContext, StackViewActivity.class);
 			i.putExtra("position", photoID);
 			mContext.startActivity(i);
@@ -162,7 +163,7 @@ public class ImageAdapter extends BaseAdapter {
 
 	}
 
-	// This network activty retrieves and updates a picture
+	// This network activity retrieves and updates a picture
 	public class NetworkGetPicture extends AsyncTask<String, Void, String> {
 		Context activity;
 		ImageView view;
@@ -179,8 +180,13 @@ public class ImageAdapter extends BaseAdapter {
 		protected String doInBackground(String... params) {
 			String JSON = "";
 			try {
+				// Set Timeout
+				HttpParams httpParams = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
+				HttpConnectionParams.setSoTimeout(httpParams, 4000);
+				
 				// Set up HTTP GET
-				HttpClient httpclient = new DefaultHttpClient();
+				HttpClient httpclient = new DefaultHttpClient(httpParams);
 				URI address = new URI("http", null, ZoneSnap_App.URL,
 						ZoneSnap_App.PORT, "/uploadpic", "type=get&photoID="
 								+ photoID, null);
@@ -213,7 +219,7 @@ public class ImageAdapter extends BaseAdapter {
 		// Process data, display
 		@Override
 		protected void onPostExecute(String result) {
-			// check if it didn't fail
+			// Check if it didn't fail
 			if (result != "connectFail"
 					&& !result.trim().equalsIgnoreCase(new String("null"))) {
 
@@ -224,9 +230,12 @@ public class ImageAdapter extends BaseAdapter {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
+				
+				// Parse the data coming in
 				String imageBase64 = (String) json.get("image");
 				String title = (String) json.get("title");
-
+				String likes = (String) json.get("likes");
+				
 				try {
 					// Decode and set image to profile pic
 					byte[] decodedString = Base64.decode(imageBase64,
@@ -245,11 +254,12 @@ public class ImageAdapter extends BaseAdapter {
 
 				// If we are at the last picture, change back to previous title
 				if (pictureList.get(pictureList.size() - 1) == photoID) {
-					ImageAdapter.this.title.setText(previousTitle);
+					ImageAdapter.this.textView.setText(previousTitle);
 				}
 
 			} else {
-				System.out.println("Fail");
+				// Show a toast we failed to get image
+				Toast.makeText(mContext, "Failed to retrieve image "+photoID, Toast.LENGTH_SHORT).show();
 			}
 
 		}

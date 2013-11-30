@@ -40,15 +40,20 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.service.textservice.SpellCheckerService.Session;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HomeActivity extends FragmentActivity {
 	GoogleMap map;
@@ -71,24 +76,20 @@ public class HomeActivity extends FragmentActivity {
 		if (location != null) {
 			System.out.println("Here");
 			myCoor = new LatLng(location.getLatitude(), location.getLongitude());
+		} else {
+			new AlertDialog.Builder(this).setMessage(
+					"Location error. Is GPS enabled?").show();
 		}
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
-		// map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-		// map.addMarker(new MarkerOptions().position(myCoor).title("HEllo"));
-		// mapView.onCreate(savedInstanceState);
-		// GoogleMap map = mapView.getMap();
-		// try {
-		// map.getUiSettings().setMyLocationButtonEnabled(false);
-		// map.setMyLocationEnabled(true);
-		// } catch (NullPointerException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// try {
-		// MapsInitializer.initialize(this.getBaseContext());
-		// } catch (GooglePlayServicesNotAvailableException e) {
-		// e.printStackTrace();
-		// }
+
+		// Move the camera to current location
+		// This has been known to throw exception
+		try {
+			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
+		} catch (NullPointerException e) {
+			new AlertDialog.Builder(this).setMessage(
+					"Whoops. Something when wrong.").show();
+		}
+
 		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
 		task.execute();
 		// navigate to upload fragment
@@ -133,7 +134,7 @@ public class HomeActivity extends FragmentActivity {
 
 			}
 		});
-		
+
 		// Set the fonts
 		Typeface zsLogo = Typeface.createFromAsset(this.getAssets(),
 				"fonts/capella.ttf");
@@ -143,12 +144,41 @@ public class HomeActivity extends FragmentActivity {
 				"fonts/Orbitron-Regular.ttf");
 		TextView slogan = (TextView) findViewById(R.id.home_slogan);
 		slogan.setTypeface(zsFont);
+		
+		// Show a toast to welcome user
+		Toast.makeText(this, "Welcome to ZoneSnap "+ZoneSnap_App.user.getFirstName()+"!", Toast.LENGTH_LONG).show();
+	}
 
+	// Override OnBackPressed to make sure User wants to log out of ZoneSnap
+	@Override
+	public void onBackPressed() {
+		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				switch (which) {
+				case DialogInterface.BUTTON_POSITIVE:
+					finish();
+					HomeActivity.super.onBackPressed();
+					break;
+
+				case DialogInterface.BUTTON_NEGATIVE:
+					// No button clicked
+					break;
+				}
+			}
+		};
+
+		// Show dialog of logout
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Logout of ZoneSnap?")
+				.setPositiveButton("Yes", dialogClickListener)
+				.setNegativeButton("No", dialogClickListener).show();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		// Retrieve the picture marks again
 		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
 		task.execute();
 	}

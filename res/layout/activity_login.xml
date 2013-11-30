@@ -6,15 +6,6 @@
     android:background="@drawable/background4"
     tools:context=".LoginActivity" >
 
-    <ImageButton
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:onClick="login"
-        android:src="@drawable/fb_fake_button" />
-
     <TextView
         android:id="@+id/login_title"
         android:textColor="#00FF26"
@@ -42,8 +33,7 @@
         android:id="@+id/authButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignRight="@+id/toStack"
-        android:layout_marginBottom="21dp" />
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

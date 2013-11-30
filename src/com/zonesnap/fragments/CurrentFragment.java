@@ -11,6 +11,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -22,7 +23,6 @@ import org.json.simple.parser.ParseException;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,7 +30,6 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,23 +37,27 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zonesnap.activities.ImageAdapter;
-import com.zonesnap.activities.MainActivity;
 import com.zonesnap.activities.ZoneSnap_App;
-import com.zonesnap.networking.get.NetworkGetZone;
 import com.zonesnap.zonesnap_app.R;
 
 // Fragment for the current zone
 public class CurrentFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
-	double latitude;
-	double longitude;
-	Context m_classContext;
-	TextView logo;
-	TextView gridTitle;
+
+	// Location variables
+	double latitude, longitude;
+	LocationManager locationManager;
+
+	// Layout Variables
+	TextView logo, gridTitle;
 	Button refresh;
+
+	public int currentZone = 0;
 
 	public CurrentFragment() {
 	}
@@ -66,18 +69,19 @@ public class CurrentFragment extends Fragment {
 				false);
 		getActivity().getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-		m_classContext = getActivity();
 		return rootView;
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		// Set font
+		// Set Font of the Grid Title
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Orbitron-Regular.ttf");
 		gridTitle = (TextView) getView().findViewById(R.id.current_title);
 		gridTitle.setTypeface(zsFont);
+
+		// Set font of Zonesnap logo
 		Typeface zsLogo = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/capella.ttf");
 		logo = (TextView) getView().findViewById(R.id.current_Logo);
@@ -86,78 +90,92 @@ public class CurrentFragment extends Fragment {
 		// Register the listener with the Location Manager to receive
 		// location updates
 		// Acquire a reference to the system Location Manager
-		LocationManager locationManager = (LocationManager) getActivity()
-				.getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager) getActivity().getSystemService(
+				Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 				3, mLocationListener);
 
+		// Call First update
 		updateLocation(locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+
+		// Set the refresh button to refresh
 		refresh = (Button) getView().findViewById(R.id.refresh);
 		refresh.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				LocationManager locationManager = (LocationManager) getActivity()
 						.getSystemService(Context.LOCATION_SERVICE);
-				
+				// Update Location
 				updateLocation(locationManager
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 			}
 		});
 	}
 
+	// Update location and GUI
 	public void updateLocation(final Location location) {
-		logo.setText("Polling GPS...");
-		System.out.println("Lat: " + location.getLatitude());
-		System.out.println("Long: " + location.getLongitude());
-		System.out.println("Accuracy: " + location.getAccuracy());
+		logo.setText("Finding Zone...");
+
+		// Check if GPS is disabled
+		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+			new AlertDialog.Builder(getActivity())
+					.setMessage("Error: GPS is disabled");
+			return;
+		}
+
+		// Get location
 		latitude = location.getLatitude();
 		longitude = location.getLongitude();
+
 		// if (location.getAccuracy() > 40.0) {
 		// logo.setText("Waiting for accuracy...");
 		// return;
 		// }
 
-		NetworkGetZone task = new NetworkGetZone(getActivity(), logo, latitude,
-				longitude);
-		task.execute();
+		// Get the current zone information
+		NetworkGetZone zoneTask = new NetworkGetZone(getActivity(), logo,
+				latitude, longitude, currentZone);
+		zoneTask.execute();
+
+		// Get the current picture list
 		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(
 				getActivity());
 		listTask.execute();
 	}
 
+	// Listen for location changes
 	public final LocationListener mLocationListener = new LocationListener() {
-
 		@Override
 		public void onLocationChanged(final Location location) {
+			// Update location
 			updateLocation(location);
 		}
 
 		@Override
 		public void onProviderDisabled(String arg0) {
-			// TODO Auto-generated method stub
-
+			// Let client know that GPS was disabled
+			new AlertDialog.Builder(getActivity())
+					.setMessage(
+							"It seems your GPS has been disabled. Please enable it for ZoneSnap to work.")
+					.show();
 		}
 
 		@Override
 		public void onProviderEnabled(String arg0) {
-			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-			// TODO Auto-generated method stub
-
 		}
 	};
-	
-	
-	// This network activty retrieves and updates a picture
+
+	// This network activity retrieves the current Zone picture list
 	public class NetworkGetCurrentPictureList extends
 			AsyncTask<String, Void, String> {
-		final Context activity;
-		boolean fail = true;
+		Context activity;
+		boolean fail = true; // Success variable
 
+		// List of photo IDs to retrieve
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
 
 		public NetworkGetCurrentPictureList(Context context) {
@@ -169,9 +187,11 @@ public class CurrentFragment extends Fragment {
 		protected String doInBackground(String... params) {
 			String photoListJSON = "";
 			try {
+				// Set Timeout
 				HttpParams httpParams = new BasicHttpParams();
 				HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
 				HttpConnectionParams.setSoTimeout(httpParams, 4000);
+
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient(httpParams);
 				URI address = new URI("http", null, ZoneSnap_App.URL,
@@ -197,7 +217,6 @@ public class CurrentFragment extends Fragment {
 					response.getEntity().getContent().close();
 					throw new IOException(statusLine.getReasonPhrase());
 				}
-				System.out.println(photoListJSON);
 
 				try {
 					JSONParser j = new JSONParser();
@@ -207,7 +226,7 @@ public class CurrentFragment extends Fragment {
 					for (int i = 0; i < array.size(); i++) {
 						photoIDs.add(Integer.parseInt(array.get(i).toString()));
 					}
-					System.out.println("LOL:" + photoIDs);
+
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
@@ -226,20 +245,22 @@ public class CurrentFragment extends Fragment {
 		// Process data, display
 		@Override
 		protected void onPostExecute(String result) {
-			// check if it didn't fail
+			// Check if it didn't fail
 			if (!fail) {
+				// Call image adapter to retrieve the images
 				try {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.CURRENT, photoIDs,gridTitle));
+							ZoneSnap_App.CURRENT, photoIDs, gridTitle));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
 			} else {
+				// Display the error if we can't connect
 				try {
-					new AlertDialog.Builder(getActivity()).setMessage("Error: "
-							+ result).show();
+					new AlertDialog.Builder(getActivity()).setMessage(
+							"Error: " + result).show();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -247,6 +268,106 @@ public class CurrentFragment extends Fragment {
 
 		}
 
+	}
+
+	// This network activty retrieves and updates a picture
+	public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
+		Context activity;
+		ImageView view;
+		int photoID, previousZone;
+		Double latitude, longitude;
+		TextView textView;
+		boolean failed = false;
+
+		public NetworkGetZone(Context context, TextView title, Double latitude,
+				Double longitude, int previousZone) {
+			activity = context;
+			this.latitude = latitude;
+			this.longitude = longitude;
+			textView = title;
+			this.previousZone = previousZone;
+		}
+
+		// Retrieve data
+		@Override
+		protected Integer doInBackground(String... params) {
+			int returnData = -1;
+			try {
+				// Set up HTTP GET
+				HttpClient httpclient = new DefaultHttpClient();
+				HttpParams httpParams = httpclient.getParams();
+				ConnManagerParams.setTimeout(httpParams, 4000);
+				HttpConnectionParams.setSoTimeout(httpParams, 4000);
+				HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
+				URI address = new URI("http", null, ZoneSnap_App.URL,
+						ZoneSnap_App.PORT, "/zonelookup", "lat=" + latitude
+								+ "&long=" + longitude, null);
+
+				// Excecute
+				HttpResponse response = httpclient
+						.execute(new HttpGet(address));
+
+				// Check status
+				StatusLine statusLine = response.getStatusLine();
+				if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					response.getEntity().writeTo(out);
+					out.close();
+					// Get the image
+					String jsonData = out.toString();
+					JSONParser j = new JSONParser();
+					JSONObject json;
+					try {
+						json = (JSONObject) j.parse(jsonData);
+					} catch (ParseException e) {
+						e.printStackTrace();
+						return -2;
+					}
+					returnData = Integer.parseInt(json.get("zone").toString());
+
+				} else {
+					// Closes the connection.
+					response.getEntity().getContent().close();
+					throw new IOException(statusLine.getReasonPhrase());
+				}
+			} catch (IOException e) {
+				failed = true;
+				return -2;
+			} catch (URISyntaxException e) {
+				failed = true;
+				return -2;
+			}
+			return returnData;
+		}
+
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+		}
+
+		// Process data, display
+		@Override
+		protected void onPostExecute(Integer result) {
+			// check if it didn't fail
+			if (failed) {
+				// Show a toast we failed to get zone
+				Toast.makeText(activity, "Failed to find zone",
+						Toast.LENGTH_LONG).show();
+			} else {
+
+				// Notify user of new zone
+				if (result != currentZone)
+					Toast.makeText(activity, "New Zone!", Toast.LENGTH_SHORT)
+							.show();
+				currentZone = result;
+
+				// Set title
+				textView.setText("Zone " + result);
+
+			}
+
+		}
 	}
 
 }
