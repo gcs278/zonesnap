@@ -19,20 +19,20 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		Button toStack = (Button) findViewById(R.id.toStack);
-		
-		toStack.setOnClickListener(new OnClickListener(){
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				
-				Intent i = new Intent(LoginActivity.this, StackViewActivity.class);
-				startActivity(i);
-				finish();
-				
-			}
-		});
+//		Button toStack = (Button) findViewById(R.id.toStack);
+//		
+//		toStack.setOnClickListener(new OnClickListener(){
+//
+//			@Override
+//			public void onClick(View arg0) {
+//				// TODO Auto-generated method stub
+//				
+//				Intent i = new Intent(LoginActivity.this, StackViewActivity.class);
+//				startActivity(i);
+//				finish();
+//				
+//			}
+//		});
 		Typeface zsFont = Typeface.createFromAsset(getAssets(), "fonts/capella.ttf");
 		TextView title = (TextView)findViewById(R.id.login_title);
 		title.setTypeface(zsFont);

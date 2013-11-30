@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zonesnap.networking.post.NetworkPostLike;
 import com.zonesnap.zonesnap_app.R;
 
 public class StackAdapter extends ArrayAdapter<StackItem> {
@@ -52,7 +54,7 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 
 		holder.img.setImageBitmap(item.getImg());
 		holder.text.setText(item.getText());
-/*		
+		
 		holder.like.setOnClickListener(new OnClickListener(){
 
 			@Override
@@ -61,14 +63,27 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 				
 				
 				
-			//	Button l = (Button) v.findViewById(R.id.likeButton);
-			//	l.setText("Liked");
+				Button l = (Button) v.findViewById(R.id.stackLike);
+				l.setText("Liked");
+				l.setClickable(false);
+				NetworkPostLike post = new NetworkPostLike(getContext());
+				post.execute();
 				
 				
 			}
 			
 		});
-*/
+		
+		row.setOnLongClickListener(new OnLongClickListener(){
+
+			@Override
+			public boolean onLongClick(View arg0) {
+				arg0.findViewById(R.id.stackText).setAlpha(100);
+				return false;
+			}
+			
+		});
+
 		return row;
 	}
 	

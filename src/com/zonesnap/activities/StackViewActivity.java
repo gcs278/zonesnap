@@ -21,27 +21,32 @@ public class StackViewActivity extends Activity {
 		setContentView(R.layout.activity_stack_view);
 		int photoID = this.getIntent().getExtras().getInt("position");
 		
-		Bitmap b = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
-		
-		StackItem item = new StackItem(b, "Test Image");
-		
 		sa_ = new StackAdapter(this, new ArrayList<StackItem>());
 		
 		StackView stack = (StackView) findViewById(R.id.stackview);
 		
 		stack.setAdapter(sa_);
+		
+		Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		
+		StackItem item = new StackItem(b,"Test Description");
+		
+		sa_.add(item);
+		
+		try {
+			for(int i = 0; i < ZoneSnap_App.currentImageCache.size(); i++){
+				
+				if(ZoneSnap_App.currentImageCache.get(i) != null){
+					sa_.add(new StackItem(ZoneSnap_App.currentImageCache.get(i), "Test Description"));
+				}
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		stack.setDisplayedChild(photoID);
 
-		StackItem item1 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID),"Lol");
-		sa_.add(item1);
-		StackItem item2 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+1),"Lol");
-		sa_.add(item2);
-		StackItem item3 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+2),"Lol");
-		sa_.add(item3);
-		StackItem item4 = new StackItem(ZoneSnap_App.currentImageCache.get(photoID+3),"Lol");
-		sa_.add(item4);
-//		for(int i = 0; i < 5; i++){
-//			sa_.add(item);
-//		}
 		
 	}
 
