@@ -19,35 +19,23 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.internal.p;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.zonesnap.networking.get.Coordinates;
 import com.zonesnap.zonesnap_app.R;
-import com.zonesnap.zonesnap_app.R.id;
-import com.zonesnap.zonesnap_app.R.layout;
-import com.zonesnap.zonesnap_app.R.menu;
-
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.service.textservice.SpellCheckerService.Session;
 import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -66,24 +54,25 @@ public class HomeActivity extends FragmentActivity {
 
 		SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
-		map = fm.getMap();
-		map.setMyLocationEnabled(true);
-		LocationManager locationManager = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
-		Location location = locationManager
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		LatLng myCoor = null;
-		if (location != null) {
-			System.out.println("Here");
-			myCoor = new LatLng(location.getLatitude(), location.getLongitude());
-		} else {
-			new AlertDialog.Builder(this).setMessage(
-					"Location error. Is GPS enabled?").show();
-		}
-
-		// Move the camera to current location
-		// This has been known to throw exception
 		try {
+			map = fm.getMap();
+			map.setMyLocationEnabled(true);
+			LocationManager locationManager = (LocationManager) this
+					.getSystemService(Context.LOCATION_SERVICE);
+			Location location = locationManager
+					.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			LatLng myCoor = null;
+			if (location != null) {
+				System.out.println("Here");
+				myCoor = new LatLng(location.getLatitude(),
+						location.getLongitude());
+			} else {
+				new AlertDialog.Builder(this).setMessage(
+						"Location error. Is GPS enabled?").show();
+			}
+
+			// Move the camera to current location
+			// This has been known to throw exception
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
 		} catch (NullPointerException e) {
 			new AlertDialog.Builder(this).setMessage(
@@ -144,9 +133,12 @@ public class HomeActivity extends FragmentActivity {
 				"fonts/Orbitron-Regular.ttf");
 		TextView slogan = (TextView) findViewById(R.id.home_slogan);
 		slogan.setTypeface(zsFont);
-		
+
 		// Show a toast to welcome user
-		Toast.makeText(this, "Welcome to ZoneSnap "+ZoneSnap_App.user.getFirstName()+"!", Toast.LENGTH_LONG).show();
+		Toast.makeText(
+				this,
+				"Welcome to ZoneSnap " + ZoneSnap_App.user.getFirstName() + "!",
+				Toast.LENGTH_LONG).show();
 	}
 
 	// Override OnBackPressed to make sure User wants to log out of ZoneSnap

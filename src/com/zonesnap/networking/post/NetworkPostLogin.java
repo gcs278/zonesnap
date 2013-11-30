@@ -15,6 +15,9 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,9 +44,13 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	protected String doInBackground(String... params) {
 		String verified = "OK";
 		try {
+			// Set Timeout
+			HttpParams httpParams = new BasicHttpParams();
+			HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
+			HttpConnectionParams.setSoTimeout(httpParams, 4000);
 
-			// Create the HTTP Post
-			HttpClient client = new DefaultHttpClient();
+			// Set up HTTP POST
+			HttpClient httpclient = new DefaultHttpClient(httpParams);
 			URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/login", null,
 					null);
 			HttpPost request = new HttpPost(address);
@@ -58,7 +65,7 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 				
 
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
-			client.execute(request, responsehandler);
+			httpclient.execute(request, responsehandler);
 
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
