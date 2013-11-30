@@ -23,6 +23,9 @@ public class ZoneSnap_App extends Application {
 	// Cache for storing pictures from network
 	public static LruCache<Integer, Bitmap> imageCache; 
 	
+	// Description cache for picture's descriptions
+	public static LruCache<Integer, String> descCache;
+	
 	/////////////////// SERVER INFORMATION ///////////////////////////
 	
 	public static int PORT = 8080;
@@ -38,7 +41,7 @@ public class ZoneSnap_App extends Application {
 	public static ProfilePictureView profilePic;
     public static GraphUser user;
     
-    // Construtor
+    // Constructor
 	public ZoneSnap_App() {
 		// Get max available VM memory, exceeding this amount will throw an
 		// OutOfMemory exception. Stored in kilobytes as LruCache takes an
@@ -57,6 +60,8 @@ public class ZoneSnap_App extends Application {
 			}
 
 		};
+		
+		descCache = new LruCache<Integer, String>(cacheSize);
 		
 	}
 }
