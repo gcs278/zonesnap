@@ -1,20 +1,10 @@
 package com.zonesnap.activities;
 
-import com.zonesnap.networking.post.NetworkPostTracking;
-
-import com.facebook.Session;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
 
 import android.app.Application;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.sax.RootElement;
 import android.support.v4.util.LruCache;
 
 public class ZoneSnap_App extends Application {
@@ -25,6 +15,9 @@ public class ZoneSnap_App extends Application {
 	
 	// Description cache for picture's descriptions
 	public static LruCache<Integer, String> descCache;
+	
+	// How many likes a picture has
+	public static LruCache<Integer, Integer> likeCache;
 	
 	/////////////////// SERVER INFORMATION ///////////////////////////
 	
@@ -63,5 +56,6 @@ public class ZoneSnap_App extends Application {
 		
 		descCache = new LruCache<Integer, String>(cacheSize);
 		
+		likeCache = new LruCache<Integer, Integer>(cacheSize);
 	}
 }
