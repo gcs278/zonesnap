@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.zonesnap.activities.ImageAdapter;
 import com.zonesnap.activities.ZoneSnap_App;
@@ -34,8 +35,9 @@ import com.zonesnap.zonesnap_app.R;
 //Fragment for the Historic ZoneSnap View
 public class HistoryFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
-	TextView likedTitle;
-	TextView historyTitle;
+	TextView likedTitle, historyTitle, message;
+	
+	ProgressBar progressBar;
 	public HistoryFragment() {
 	}
 
@@ -62,6 +64,10 @@ public class HistoryFragment extends Fragment {
 		likedTitle = (TextView) getView().findViewById(
 				R.id.history_likedTitle);
 		likedTitle.setTypeface(zsFont);
+		message = (TextView) getActivity().findViewById(R.id.history_message);
+		message.setTypeface(zsFont);
+		
+		progressBar = (ProgressBar) getActivity().findViewById(R.id.history_progress);
 	}
 
 	// This network activty retrieves and updates a picture
@@ -111,7 +117,6 @@ public class HistoryFragment extends Fragment {
 					for (int i = 0; i < array.size(); i++) {
 						photoIDs.add(Integer.parseInt(array.get(i).toString()));
 					}
-					System.out.println("LOL:" + photoIDs);
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
@@ -136,7 +141,7 @@ public class HistoryFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridLiked);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.LIKED, photoIDs,likedTitle));
+							ZoneSnap_App.LIKED, photoIDs,progressBar,message));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}

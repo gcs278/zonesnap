@@ -5,11 +5,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -27,30 +22,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Bitmap.Config;
-import android.graphics.PorterDuff.Mode;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Parcelable;
-import android.support.v4.util.LruCache;
 import android.util.Base64;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,8 +40,8 @@ public class ImageAdapter extends BaseAdapter {
 	private Context mContext;
 	
 	// TextView Variables
-	TextView textView;
-	String previousTitle;
+	ProgressBar progressBar;
+	TextView message;
 	
 	// Picture list to retrieve
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
@@ -69,17 +50,28 @@ public class ImageAdapter extends BaseAdapter {
 	String adapter_type;
 
 	public ImageAdapter(Context c, String adapterType,
-			ArrayList<Integer> pictureList, TextView title) {
+			ArrayList<Integer> pictureList, ProgressBar progressBar, TextView message) {
 		
-		previousTitle = (String) title.getText();
 		mContext = c;
 		
 		this.adapter_type = adapterType;
-		this.textView = title;
+		this.progressBar = progressBar;
+		this.message = message;
 		
 		// Show loading # pictures
-		if (pictureList.size() != 0)
-			title.setText("Loading " + pictureList.size() + " pictures...");
+		if (pictureList.size() != 0) {
+			progressBar.setVisibility(View.VISIBLE);
+			message.setVisibility(View.GONE);
+		}
+		else {
+			message.setVisibility(View.VISIBLE);
+			if (adapterType == ZoneSnap_App.CURRENT) {
+				message.setText("No pictures found here. Claim this zone!");
+			} else {
+				message.setText("No liked Pictures. Explore more zones!");
+			}
+			progressBar.setVisibility(View.GONE);
+		}
 		
 		// Copy picture list to local
 		this.pictureList = (ArrayList<Integer>) pictureList.clone();
@@ -131,7 +123,7 @@ public class ImageAdapter extends BaseAdapter {
 		// Check if value exists in cache, otherwise use network to get it
 		if (cached != null) {
 			imageView.setImageBitmap(cached);
-			ImageAdapter.this.textView.setText(previousTitle);
+			this.progressBar.setVisibility(View.GONE);
 		} else {
 			// Network task, passes imageview, like pass by reference
 			NetworkGetPicture task = new NetworkGetPicture(mContext, imageView,
@@ -254,7 +246,7 @@ public class ImageAdapter extends BaseAdapter {
 
 				// If we are at the last picture, change back to previous title
 				if (pictureList.get(pictureList.size() - 1) == photoID) {
-					ImageAdapter.this.textView.setText(previousTitle);
+					ImageAdapter.this.progressBar.setVisibility(View.GONE);
 				}
 
 			} else {

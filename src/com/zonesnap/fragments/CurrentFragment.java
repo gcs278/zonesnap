@@ -22,6 +22,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -38,9 +39,11 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.internal.ac;
 import com.zonesnap.activities.ImageAdapter;
 import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
@@ -54,9 +57,10 @@ public class CurrentFragment extends Fragment {
 	LocationManager locationManager;
 
 	// Layout Variables
-	TextView logo, gridTitle;
+	TextView logo, gridTitle, message;
 	Button refresh;
-
+	ProgressBar progressBar;
+	
 	public int currentZone = 0;
 
 	public CurrentFragment() {
@@ -86,7 +90,9 @@ public class CurrentFragment extends Fragment {
 				"fonts/capella.ttf");
 		logo = (TextView) getView().findViewById(R.id.current_Logo);
 		logo.setTypeface(zsLogo);
-
+		message = (TextView) getView().findViewById(R.id.current_message);
+		message.setTypeface(zsFont);
+		
 		// Register the listener with the Location Manager to receive
 		// location updates
 		// Acquire a reference to the system Location Manager
@@ -110,6 +116,10 @@ public class CurrentFragment extends Fragment {
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 			}
 		});
+		
+		// Get the progress bar
+		progressBar = (ProgressBar)getActivity().findViewById(R.id.current_progress);
+		progressBar.setEnabled(true);
 	}
 
 	// Update location and GUI
@@ -252,7 +262,7 @@ public class CurrentFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.CURRENT, photoIDs, gridTitle));
+							ZoneSnap_App.CURRENT, photoIDs, progressBar,message));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -270,7 +280,7 @@ public class CurrentFragment extends Fragment {
 
 	}
 
-	// This network activty retrieves and updates a picture
+	// This task gets the current zone that user is located
 	public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
 		Context activity;
 		ImageView view;
@@ -355,10 +365,9 @@ public class CurrentFragment extends Fragment {
 				Toast.makeText(activity, "Failed to find zone",
 						Toast.LENGTH_LONG).show();
 			} else {
-
 				// Notify user of new zone
 				if (result != currentZone)
-					Toast.makeText(activity, "New Zone!", Toast.LENGTH_SHORT)
+					Toast.makeText(getActivity(), "New Zone!", Toast.LENGTH_SHORT)
 							.show();
 				currentZone = result;
 
