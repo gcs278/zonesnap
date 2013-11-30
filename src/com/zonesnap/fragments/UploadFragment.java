@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zonesnap.activities.MainActivity;
+import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.networking.post.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 
@@ -105,7 +106,7 @@ public class UploadFragment extends Fragment {
 			public void onClick(View arg0) {
 				String title = editTitle.getText().toString();
 				NetworkPostPicture task = new NetworkPostPicture(getActivity());
-				task.execute(title, image64);
+				task.execute(title, image64, ZoneSnap_App.user.getUsername());
 				uploadClear();
 			}
 		});

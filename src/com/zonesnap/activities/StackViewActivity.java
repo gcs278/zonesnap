@@ -34,10 +34,10 @@ public class StackViewActivity extends Activity {
 		sa_.add(item);
 		
 		try {
-			for(int i = 0; i < ZoneSnap_App.currentImageCache.size(); i++){
+			for(int i = 0; i < ZoneSnap_App.imageCache.size(); i++){
 				
-				if(ZoneSnap_App.currentImageCache.get(i) != null){
-					sa_.add(new StackItem(ZoneSnap_App.currentImageCache.get(i), "Test Description"));
+				if(ZoneSnap_App.imageCache.get(i) != null){
+					sa_.add(new StackItem(ZoneSnap_App.imageCache.get(i), "Test Description"));
 				}
 			}
 		} catch (Exception e) {
@@ -46,8 +46,7 @@ public class StackViewActivity extends Activity {
 		}
 		
 		stack.setDisplayedChild(photoID);
-
-		
+	
 	}
 
 	@Override
