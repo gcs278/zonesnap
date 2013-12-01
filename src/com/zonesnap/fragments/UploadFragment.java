@@ -118,24 +118,7 @@ public class UploadFragment extends Fragment {
 			}
 		});
 
-		final NotificationManager notiMgr = (NotificationManager) getActivity()
-				.getSystemService(getActivity().NOTIFICATION_SERVICE);
-		// notify test button
-		notifybtn = (Button) getView().findViewById(R.id.notificationTest);
-		notifybtn.setOnClickListener(new OnClickListener() {
-			@SuppressLint({ "ServiceCast", "NewApi" })
-			public void onClick(View arg0) {
-				Intent notIntent = new Intent(getActivity(), MainActivity.class);
-				PendingIntent pIntent = PendingIntent.getActivity(
-						getActivity(), 0, notIntent, 0);
-				Notification n = new Notification.Builder(getActivity())
-						.setContentTitle("Entered new zone.")
-						.setSmallIcon(R.drawable.zonesnap1_launcher)
-						.setContentText("Touch to view content of new zone.")
-						.setContentIntent(pIntent).setAutoCancel(true).build();
-				notiMgr.notify(0, n);
-			}
-		});
+		
 
 	}
 

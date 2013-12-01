@@ -21,9 +21,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -44,6 +49,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.internal.ac;
+import com.zonesnap.activities.HomeActivity;
 import com.zonesnap.activities.ImageAdapter;
 import com.zonesnap.activities.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
@@ -151,6 +157,8 @@ public class CurrentFragment extends Fragment {
 		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(
 				getActivity());
 		listTask.execute();
+		
+		
 	}
 
 	// Listen for location changes
@@ -357,6 +365,7 @@ public class CurrentFragment extends Fragment {
 		}
 
 		// Process data, display
+		@SuppressLint("NewApi")
 		@Override
 		protected void onPostExecute(Integer result) {
 			// check if it didn't fail
@@ -366,9 +375,22 @@ public class CurrentFragment extends Fragment {
 						Toast.LENGTH_LONG).show();
 			} else {
 				// Notify user of new zone
-				if (result != currentZone)
+				if (result != currentZone) {
 					Toast.makeText(getActivity(), "New Zone!", Toast.LENGTH_SHORT)
 							.show();
+					// send notification to system that user entered new zone
+					final NotificationManager notiMgr = (NotificationManager) getActivity()
+							.getSystemService(getActivity().NOTIFICATION_SERVICE);
+					Intent notIntent = new Intent(getActivity(), HomeActivity.class);
+					PendingIntent pIntent = PendingIntent.getActivity(
+							getActivity(), 0, notIntent, 0);
+					Notification n = new Notification.Builder(getActivity())
+							.setContentTitle("Entered new zone.")
+							.setSmallIcon(R.drawable.zonesnap1_launcher)
+							.setContentText("Touch to view content of new zone.")
+							.setContentIntent(pIntent).setAutoCancel(true).build();
+					notiMgr.notify(0, n);
+				}
 				currentZone = result;
 
 				// Set title
