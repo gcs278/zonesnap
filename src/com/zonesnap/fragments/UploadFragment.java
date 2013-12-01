@@ -58,6 +58,7 @@ public class UploadFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_upload, container,
 				false);
+		//if an image is taken, set the ui components to display it
 		if (imgTaken) {
 			imageView.setVisibility(View.VISIBLE);
 			imageView.setImageBitmap(image);
@@ -105,9 +106,15 @@ public class UploadFragment extends Fragment {
 		uploadbtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				String title = editTitle.getText().toString();
-				NetworkPostPicture task = new NetworkPostPicture(getActivity());
-				task.execute(title, image64, ZoneSnap_App.user.getUsername());
-				uploadClear();
+				//make sure that the user has taken an picture and entered a title
+				if (imgTaken && title != "") {
+					NetworkPostPicture task = new NetworkPostPicture(getActivity());
+					task.execute(title, image64, ZoneSnap_App.user.getUsername());
+					uploadClear();
+				}
+				else 
+					Toast.makeText(getActivity(), "You must first take a photo and enter a title.", Toast.LENGTH_SHORT)
+					.show();
 			}
 		});
 
@@ -132,6 +139,7 @@ public class UploadFragment extends Fragment {
 
 	}
 
+	// resets the fragment
 	public void uploadClear() {
 		imgTaken = false;
 		imageView.setVisibility(View.GONE);
@@ -157,6 +165,7 @@ public class UploadFragment extends Fragment {
 				e.printStackTrace();
 			}
 
+			// reset variables tracking progress
 			Toast.makeText(getActivity(), "photo taken!", Toast.LENGTH_SHORT)
 					.show();
 			imgTaken = true;
