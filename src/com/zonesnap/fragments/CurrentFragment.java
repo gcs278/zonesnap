@@ -48,7 +48,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.internal.ac;
 import com.zonesnap.activities.HomeActivity;
 import com.zonesnap.activities.ImageAdapter;
 import com.zonesnap.activities.ZoneSnap_App;
@@ -66,7 +65,7 @@ public class CurrentFragment extends Fragment {
 	TextView logo, gridTitle, message;
 	Button refresh;
 	ProgressBar progressBar;
-	
+
 	public int currentZone = 0;
 
 	public CurrentFragment() {
@@ -98,7 +97,7 @@ public class CurrentFragment extends Fragment {
 		logo.setTypeface(zsLogo);
 		message = (TextView) getView().findViewById(R.id.current_message);
 		message.setTypeface(zsFont);
-		
+
 		// Register the listener with the Location Manager to receive
 		// location updates
 		// Acquire a reference to the system Location Manager
@@ -122,10 +121,10 @@ public class CurrentFragment extends Fragment {
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 			}
 		});
-		
+
 		// Get the progress bar
-		progressBar = (ProgressBar)getActivity().findViewById(R.id.current_progress);
-		progressBar.setEnabled(true);
+		progressBar = (ProgressBar) getActivity().findViewById(
+				R.id.current_progress);
 	}
 
 	// Update location and GUI
@@ -161,6 +160,21 @@ public class CurrentFragment extends Fragment {
 		
 	}
 
+	// Pause the zone searching
+	@Override
+	public void onPause() {
+		locationManager.removeUpdates(mLocationListener);
+		super.onPause();
+	}
+	
+	// Resume the zone listening
+	@Override
+	public void onResume() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				3, mLocationListener);
+		super.onResume();
+	}
+	
 	// Listen for location changes
 	public final LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -270,15 +284,16 @@ public class CurrentFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.CURRENT, photoIDs, progressBar,message));
+							ZoneSnap_App.CURRENT, photoIDs, progressBar,
+							message));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
 			} else {
 				// Display the error if we can't connect
 				try {
-					new AlertDialog.Builder(getActivity()).setMessage(
-							"Error: " + result).show();
+					new AlertDialog.Builder(activity).setMessage(
+							ZoneSnap_App.getErrorMessage() + result).show();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -370,14 +385,24 @@ public class CurrentFragment extends Fragment {
 		protected void onPostExecute(Integer result) {
 			// check if it didn't fail
 			if (failed) {
-				// Show a toast we failed to get zone
-				Toast.makeText(activity, "Failed to find zone",
-						Toast.LENGTH_LONG).show();
+				try {
+					// Show a toast we failed to get zone
+					Toast.makeText(activity, "Failed to find zone. Please check connection.",
+							Toast.LENGTH_LONG).show();
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			} else {
 				// Notify user of new zone
+
 				if (result != currentZone) {
-					Toast.makeText(getActivity(), "New Zone!", Toast.LENGTH_SHORT)
-							.show();
+					try {
+						Toast.makeText(getActivity(), "New Zone!",
+								Toast.LENGTH_SHORT).show();
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					}
+				}
 					// send notification to system that user entered new zone
 					final NotificationManager notiMgr = (NotificationManager) getActivity()
 							.getSystemService(getActivity().NOTIFICATION_SERVICE);

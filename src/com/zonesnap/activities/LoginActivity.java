@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -139,6 +140,13 @@ public class LoginActivity extends Activity {
         uiHelper.onDestroy();
     }
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent settings = new Intent(this, SettingsActivity.class);
+		startActivity(settings);
+		return super.onOptionsItemSelected(item);
+	}
+	
     private void onSessionStateChange(Session session, SessionState state, Exception exception) {
         if (//pendingAction != PendingAction.NONE &&
                 (exception instanceof FacebookOperationCanceledException ||

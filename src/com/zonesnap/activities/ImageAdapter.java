@@ -95,9 +95,10 @@ public class ImageAdapter extends BaseAdapter {
 	}
 
 	// Adds a bitmap to our cache
-	public void addBitmapToMemoryCache(int key, Bitmap bitmap) {
+	public void addBitmapToMemoryCache(int key, Bitmap bitmap, String desc) {
 		if (getBitmapFromMemCache(key) == null) {
 			ZoneSnap_App.imageCache.put(key, bitmap);
+			ZoneSnap_App.descCache.put(key,desc);
 		}
 	}
 
@@ -105,9 +106,13 @@ public class ImageAdapter extends BaseAdapter {
 	public Bitmap getBitmapFromMemCache(int key) {
 		// Try to get the picture from current cache
 		return ZoneSnap_App.imageCache.get(key);
-
 	}
 
+	// Retrieves desc from cache
+	public String getDescFromMemCache(int key) {
+		return ZoneSnap_App.descCache.get(key);
+	}
+	
 	// create a new ImageView for each item referenced by the Adapter
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// ImageView parameters
@@ -236,7 +241,8 @@ public class ImageAdapter extends BaseAdapter {
 							decodedString, 0, decodedString.length);
 
 					view.setImageBitmap(decodedByte);
-					addBitmapToMemoryCache(photoID, decodedByte);
+					addBitmapToMemoryCache(photoID, decodedByte,title);
+					
 					view.setAnimation(AnimationUtils.loadAnimation(activity,
 							R.anim.zoom_enter));
 

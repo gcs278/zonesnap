@@ -9,9 +9,12 @@ import com.zonesnap.fragments.HistoryFragment;
 import com.zonesnap.fragments.ProfileFragment;
 import com.zonesnap.fragments.UploadFragment;
 import com.zonesnap.zonesnap_app.R;
+
+import com.zonesnap.activities.SettingsActivity;
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +24,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends FragmentActivity implements
 		ActionBar.TabListener {
@@ -102,6 +106,13 @@ public class MainActivity extends FragmentActivity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent settings = new Intent(this, SettingsActivity.class);
+		startActivity(settings);
+		return super.onOptionsItemSelected(item);
 	}
 	
 	@Override

@@ -84,7 +84,6 @@ public class NetworkPostTracking extends AsyncTask<String, Void, String> {
 
 
 		} else {
-
 		}
 
 	}
