@@ -425,5 +425,3 @@ public class CurrentFragment extends Fragment {
 
 		}
 	}
-
-}
