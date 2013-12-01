@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.zonesnap.activities.ZoneSnap_App;
+
 // This task is for uploading a picture to the database
 public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	Context activity;
@@ -25,7 +26,7 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	ProgressDialog pd;
 	int port;
 	String URL;
-	
+
 	public NetworkPostLike(Context context) {
 		activity = context;
 	}
@@ -50,19 +51,18 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 
 			// Create the HTTP Post
 			HttpClient client = new DefaultHttpClient();
-			URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/like", null,
-					null);
+			URI address = new URI("http", null, ZoneSnap_App.URL,
+					ZoneSnap_App.PORT, "/like", null, null);
 			HttpPost request = new HttpPost(address);
-			
+
 			// Grant new code
 			// Create JSON object for image
 			JSONObject json = new JSONObject();
-			
-			json.put("username",params[0]);
+
+			json.put("username", params[0]);
 			json.put("photoID", params[1]);
-			
+
 			request.setEntity(new StringEntity(json.toString()));
-				
 
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
 			client.execute(request, responsehandler);
@@ -77,8 +77,8 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 			e.printStackTrace();
 			return e.getMessage();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return e.getMessage();
 		}
 		return verified;
 	}
@@ -88,12 +88,11 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	protected void onPostExecute(String result) {
 		// Close progress dialog
 		pd.dismiss();
-		if (result.contains("OK")) {
-			new AlertDialog.Builder(activity).setMessage(
-					"Picture successfully uploaded to database").show();
-
+		if (!result.contains("SUCCESS")) {
+			// Put error code here
 		} else {
-
+			new AlertDialog.Builder(activity).setMessage(
+					ZoneSnap_App.getErrorMessage() + result).show();
 		}
 
 	}

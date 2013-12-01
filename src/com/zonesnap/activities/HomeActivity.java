@@ -49,6 +49,7 @@ import android.service.textservice.SpellCheckerService.Session;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
@@ -144,11 +145,25 @@ public class HomeActivity extends FragmentActivity {
 				"fonts/Orbitron-Regular.ttf");
 		TextView slogan = (TextView) findViewById(R.id.home_slogan);
 		slogan.setTypeface(zsFont);
-		
-		// Show a toast to welcome user
-		Toast.makeText(this, "Welcome to ZoneSnap "+ZoneSnap_App.user.getFirstName()+"!", Toast.LENGTH_LONG).show();
+
+		try {
+			// Show a toast to welcome user
+			Toast.makeText(
+					this,
+					"Welcome to ZoneSnap " + ZoneSnap_App.user.getFirstName()
+							+ "!", Toast.LENGTH_LONG).show();
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent settings = new Intent(this, SettingsActivity.class);
+		startActivity(settings);
+		return super.onOptionsItemSelected(item);
+	}
+	
 	// Override OnBackPressed to make sure User wants to log out of ZoneSnap
 	@Override
 	public void onBackPressed() {
@@ -276,7 +291,8 @@ public class HomeActivity extends FragmentActivity {
 				}
 
 			} else {
-				System.out.println("FailGetPictureList");
+				new AlertDialog.Builder(activity).setMessage(
+						ZoneSnap_App.getErrorMessage() + result).show();
 			}
 
 		}

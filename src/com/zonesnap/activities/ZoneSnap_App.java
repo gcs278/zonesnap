@@ -1,9 +1,9 @@
 package com.zonesnap.activities;
 
+import android.app.Application;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
-
-import android.app.Application;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
@@ -33,9 +33,11 @@ public class ZoneSnap_App extends Application {
 	
 	public static ProfilePictureView profilePic;
     public static GraphUser user;
-    
+	private static Context s_instance;
+	
     // Constructor
 	public ZoneSnap_App() {
+		s_instance = this;
 		// Get max available VM memory, exceeding this amount will throw an
 		// OutOfMemory exception. Stored in kilobytes as LruCache takes an
 		// int in its constructor.
@@ -57,5 +59,39 @@ public class ZoneSnap_App extends Application {
 		descCache = new LruCache<Integer, String>(cacheSize);
 		
 		likeCache = new LruCache<Integer, Integer>(cacheSize);
+	}
+	
+	// Port Getter
+	public static int getPort() {
+		return PORT;
+	}
+	
+	// Port Setter
+	public static void setPort(int value) {
+		PORT = value;
+	}
+	
+	// Url Getter
+	public static String getURL() {
+		return URL;
+	}
+	
+	// URL setter
+	public static void setURL(String value) {
+		URL = value;
+	}
+	
+	// The following is code for getting a resource string
+	public static Context getContext(){
+        return s_instance;
+    }
+	
+	public static String getResourceString(int resId){
+        return getContext().getString(resId);       
+    }
+	
+	// Unify error message
+	public static String getErrorMessage() {
+		return "Error: Could not connect. Please check the URL and port settings. Message: ";
 	}
 }
