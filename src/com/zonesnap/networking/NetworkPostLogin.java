@@ -65,7 +65,7 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 				
 
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
-			httpclient.execute(request, responsehandler);
+			client.execute(request, responsehandler);
 
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();

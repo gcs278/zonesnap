@@ -85,9 +85,6 @@ public class MapMenuActivity extends FragmentActivity {
 			// This has been known to throw exception
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
 			map.setMapType(ZoneSnap_App.MAP_TYPE);
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		}
 
 		// Get all of the markers for pictures
 		NetworkGetPictureLocations task = new NetworkGetPictureLocations();
