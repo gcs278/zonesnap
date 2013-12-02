@@ -1,0 +1,36 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:defaultValue="grantspence.com"
+        android:inputType="textCapWords"
+        android:key="@string/pref_key_url"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="URL" />
+    <EditTextPreference
+        android:defaultValue="8080"
+        android:inputType="number"
+        android:key="@string/pref_key_port"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Port Number" />
+    <EditTextPreference
+        android:defaultValue="3"
+        android:inputType="number"
+        android:key="@string/pref_key_distance"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="Min GPS Update Distance" />
+
+    <ListPreference
+        android:defaultValue="2"
+        android:dialogTitle="Select a map type"
+        android:entries="@array/pref_list_map_types"
+        android:entryValues="@array/pref_sync_map_type_values"
+        android:key="@string/pref_key_map"
+        android:title="Google Maps Type" />
+
+</PreferenceScreen>

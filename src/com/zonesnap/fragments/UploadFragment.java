@@ -4,17 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.codec.binary.Base64;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.annotation.SuppressLint;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -28,9 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zonesnap.activities.MainActivity;
-import com.zonesnap.activities.ZoneSnap_App;
-import com.zonesnap.networking.post.NetworkPostPicture;
+import com.zonesnap.classes.ZoneSnap_App;
+import com.zonesnap.networking.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 
 // fragment for camera
@@ -39,25 +32,26 @@ public class UploadFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	private static final int CAMERA_REQUEST = 1888;
 
+	// GUI Variables
 	ImageButton camerabtn;
 	Button uploadbtn;
 	Button clearbtn;
 	ImageView imageView;
 	EditText editTitle;
+
+	// Upload Variables
 	boolean imgTaken;
 	String image64;
 	Bitmap image;
 	Button notifybtn;
-
-	public UploadFragment() {
-
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_upload, container,
 				false);
+
+		// if an image is taken, set the ui components to display it
 		if (imgTaken) {
 			imageView.setVisibility(View.VISIBLE);
 			imageView.setImageBitmap(image);
@@ -72,8 +66,13 @@ public class UploadFragment extends Fragment {
 		// Set Fonts
 		Typeface zsLogo = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/capella.ttf");
+		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
+				"fonts/Orbitron-Regular.ttf");
 		TextView title = (TextView) getView().findViewById(R.id.upload_title);
 		title.setTypeface(zsLogo);
+		TextView description = (TextView) getView().findViewById(
+				R.id.upload_titleLabel);
+		description.setTypeface(zsFont);
 
 		imgTaken = false;
 		editTitle = (EditText) getView().findViewById(R.id.titleEdit);
@@ -105,33 +104,26 @@ public class UploadFragment extends Fragment {
 		uploadbtn.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
 				String title = editTitle.getText().toString();
-				NetworkPostPicture task = new NetworkPostPicture(getActivity());
-				task.execute(title, image64, ZoneSnap_App.user.getUsername());
-				uploadClear();
+				
+				// make sure that the user has taken an picture and entered a
+				// title
+				if (imgTaken && title != "") {
+					NetworkPostPicture task = new NetworkPostPicture(
+							getActivity());
+					task.execute(title, image64,
+							ZoneSnap_App.user.getUsername());
+					uploadClear();
+				} else
+					Toast.makeText(getActivity(),
+							"You must first take a photo and enter a title.",
+							Toast.LENGTH_SHORT).show();
 			}
 		});
-
-		final NotificationManager notiMgr = (NotificationManager) getActivity()
-				.getSystemService(getActivity().NOTIFICATION_SERVICE);
-		// notify test button
-		notifybtn = (Button) getView().findViewById(R.id.notificationTest);
-		notifybtn.setOnClickListener(new OnClickListener() {
-			@SuppressLint({ "ServiceCast", "NewApi" })
-			public void onClick(View arg0) {
-				Intent notIntent = new Intent(getActivity(), MainActivity.class);
-				PendingIntent pIntent = PendingIntent.getActivity(
-						getActivity(), 0, notIntent, 0);
-				Notification n = new Notification.Builder(getActivity())
-						.setContentTitle("Entered new zone.")
-						.setSmallIcon(R.drawable.zonesnap1_launcher)
-						.setContentText("Touch to view content of new zone.")
-						.setContentIntent(pIntent).setAutoCancel(true).build();
-				notiMgr.notify(0, n);
-			}
-		});
-
+		
+		editTitle.setText("");
 	}
 
+	// resets the fragment
 	public void uploadClear() {
 		imgTaken = false;
 		imageView.setVisibility(View.GONE);
@@ -141,9 +133,12 @@ public class UploadFragment extends Fragment {
 
 	// Called when the camera activities respond when finished
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		getActivity();
 		// camera
 		if (requestCode == CAMERA_REQUEST
-				&& resultCode == getActivity().RESULT_OK) {
+				&& resultCode == Activity.RESULT_OK) {
+			
+			// Get Image and conver to bytes
 			image = (Bitmap) data.getExtras().get("data");
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -157,9 +152,12 @@ public class UploadFragment extends Fragment {
 				e.printStackTrace();
 			}
 
+			// reset variables tracking progress
 			Toast.makeText(getActivity(), "photo taken!", Toast.LENGTH_SHORT)
 					.show();
 			imgTaken = true;
+			
+			// Set Image
 			imageView.setVisibility(View.VISIBLE);
 			imageView.setImageBitmap(image);
 			camerabtn.setVisibility(View.GONE);

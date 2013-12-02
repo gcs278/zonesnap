@@ -21,9 +21,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -43,9 +48,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.internal.ac;
-import com.zonesnap.activities.ImageAdapter;
-import com.zonesnap.activities.ZoneSnap_App;
+import com.google.android.gms.internal.cu;
+import com.google.android.gms.wallet.EnableWalletOptimizationReceiver;
+import com.zonesnap.activities.MapMenuActivity;
+import com.zonesnap.adapters.ImageAdapter;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 // Fragment for the current zone
@@ -60,11 +67,9 @@ public class CurrentFragment extends Fragment {
 	TextView logo, gridTitle, message;
 	Button refresh;
 	ProgressBar progressBar;
-	
-	public int currentZone = 0;
 
-	public CurrentFragment() {
-	}
+	// Current Zone variable, used to display toast in walking into new zone
+	public int currentZone = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -92,14 +97,14 @@ public class CurrentFragment extends Fragment {
 		logo.setTypeface(zsLogo);
 		message = (TextView) getView().findViewById(R.id.current_message);
 		message.setTypeface(zsFont);
-		
+
 		// Register the listener with the Location Manager to receive
 		// location updates
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				3, mLocationListener);
+				ZoneSnap_App.GPS_MIN_DISTANCE, mLocationListener);
 
 		// Call First update
 		updateLocation(locationManager
@@ -116,10 +121,10 @@ public class CurrentFragment extends Fragment {
 						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 			}
 		});
-		
+
 		// Get the progress bar
-		progressBar = (ProgressBar)getActivity().findViewById(R.id.current_progress);
-		progressBar.setEnabled(true);
+		progressBar = (ProgressBar) getActivity().findViewById(
+				R.id.current_progress);
 	}
 
 	// Update location and GUI
@@ -127,9 +132,9 @@ public class CurrentFragment extends Fragment {
 		logo.setText("Finding Zone...");
 
 		// Check if GPS is disabled
-		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-			new AlertDialog.Builder(getActivity())
-					.setMessage("Error: GPS is disabled");
+		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+				|| location == null) {
+			EnableGPS();
 			return;
 		}
 
@@ -148,11 +153,52 @@ public class CurrentFragment extends Fragment {
 		zoneTask.execute();
 
 		// Get the current picture list
-		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(
-				getActivity());
+		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList();
 		listTask.execute();
+
 	}
 
+	// Pause the zone searching
+	@Override
+	public void onPause() {
+		locationManager.removeUpdates(mLocationListener);
+		super.onPause();
+	}
+
+	// Resume the zone listening
+	@Override
+	public void onResume() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
+				ZoneSnap_App.GPS_MIN_DISTANCE, mLocationListener);
+		super.onResume();
+	}
+
+	private void EnableGPS() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setMessage(
+				"Your GPS seems to be disabled, do you want to enable it?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									@SuppressWarnings("unused") final DialogInterface dialog,
+									@SuppressWarnings("unused") final int id) {
+								startActivity(new Intent(
+										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							}
+						})
+				.setNegativeButton("No",
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									final DialogInterface dialog,
+									@SuppressWarnings("unused") final int id) {
+								dialog.cancel();
+							}
+						});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	// Listen for location changes
 	public final LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -163,11 +209,7 @@ public class CurrentFragment extends Fragment {
 
 		@Override
 		public void onProviderDisabled(String arg0) {
-			// Let client know that GPS was disabled
-			new AlertDialog.Builder(getActivity())
-					.setMessage(
-							"It seems your GPS has been disabled. Please enable it for ZoneSnap to work.")
-					.show();
+
 		}
 
 		@Override
@@ -182,15 +224,10 @@ public class CurrentFragment extends Fragment {
 	// This network activity retrieves the current Zone picture list
 	public class NetworkGetCurrentPictureList extends
 			AsyncTask<String, Void, String> {
-		Context activity;
 		boolean fail = true; // Success variable
 
 		// List of photo IDs to retrieve
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
-
-		public NetworkGetCurrentPictureList(Context context) {
-			activity = context;
-		}
 
 		// Retrieve data
 		@Override
@@ -229,10 +266,12 @@ public class CurrentFragment extends Fragment {
 				}
 
 				try {
+					// Parse the data
 					JSONParser j = new JSONParser();
 					JSONObject json = (JSONObject) j.parse(photoListJSON);
 					JSONArray array = (JSONArray) json.get("photoIDs");
 
+					// Add JSON list to local list
 					for (int i = 0; i < array.size(); i++) {
 						photoIDs.add(Integer.parseInt(array.get(i).toString()));
 					}
@@ -262,7 +301,8 @@ public class CurrentFragment extends Fragment {
 					GridView grid = (GridView) getView().findViewById(
 							R.id.gridCurrent);
 					grid.setAdapter(new ImageAdapter(getActivity(),
-							ZoneSnap_App.CURRENT, photoIDs, progressBar,message));
+							ZoneSnap_App.CURRENT, photoIDs, progressBar,
+							message));
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -270,7 +310,7 @@ public class CurrentFragment extends Fragment {
 				// Display the error if we can't connect
 				try {
 					new AlertDialog.Builder(getActivity()).setMessage(
-							"Error: " + result).show();
+							ZoneSnap_App.getErrorMessage() + result).show();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -282,7 +322,6 @@ public class CurrentFragment extends Fragment {
 
 	// This task gets the current zone that user is located
 	public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
-		Context activity;
 		ImageView view;
 		int photoID, previousZone;
 		Double latitude, longitude;
@@ -291,7 +330,6 @@ public class CurrentFragment extends Fragment {
 
 		public NetworkGetZone(Context context, TextView title, Double latitude,
 				Double longitude, int previousZone) {
-			activity = context;
 			this.latitude = latitude;
 			this.longitude = longitude;
 			textView = title;
@@ -350,33 +388,50 @@ public class CurrentFragment extends Fragment {
 			return returnData;
 		}
 
-		@Override
-		protected void onProgressUpdate(Void... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-		}
-
 		// Process data, display
+		@SuppressLint("NewApi")
 		@Override
 		protected void onPostExecute(Integer result) {
 			// check if it didn't fail
 			if (failed) {
-				// Show a toast we failed to get zone
-				Toast.makeText(activity, "Failed to find zone",
-						Toast.LENGTH_LONG).show();
+				try {
+					// Show a toast we failed to get zone
+					Toast.makeText(getActivity(),
+							"Failed to find zone. Please check connection.",
+							Toast.LENGTH_LONG).show();
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			} else {
 				// Notify user of new zone
-				if (result != currentZone)
-					Toast.makeText(getActivity(), "New Zone!", Toast.LENGTH_SHORT)
-							.show();
-				currentZone = result;
-
-				// Set title
-				textView.setText("Zone " + result);
-
+				if (result != currentZone && currentZone != 0) {
+					try {
+						Toast.makeText(getActivity(), "New Zone!",
+								Toast.LENGTH_SHORT).show();
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					}
+				}
+				// send notification to system that user entered new zone
+				final NotificationManager notiMgr = (NotificationManager) getActivity()
+						.getSystemService(getActivity().NOTIFICATION_SERVICE);
+				Intent notIntent = new Intent(getActivity(),
+						MapMenuActivity.class);
+				PendingIntent pIntent = PendingIntent.getActivity(
+						getActivity(), 0, notIntent, 0);
+				Notification n = new Notification.Builder(getActivity())
+						.setContentTitle("Entered new zone.")
+						.setSmallIcon(R.drawable.zonesnap1_launcher)
+						.setContentText("Touch to view content of new zone.")
+						.setContentIntent(pIntent).setAutoCancel(true).build();
+				notiMgr.notify(0, n);
 			}
+			// Set current Zone
+			currentZone = result;
 
+			// Set title
+			textView.setText("Zone " + currentZone);
 		}
-	}
 
+	}
 }

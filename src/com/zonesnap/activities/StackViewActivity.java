@@ -1,6 +1,7 @@
 package com.zonesnap.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -9,6 +10,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.StackView;
 
+import com.zonesnap.adapters.StackAdapter;
+import com.zonesnap.classes.StackItem;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 public class StackViewActivity extends Activity {
@@ -21,6 +25,8 @@ public class StackViewActivity extends Activity {
 		setContentView(R.layout.activity_stack_view);
 		int photoID = this.getIntent().getExtras().getInt("position");
 		
+		ArrayList<Integer> pictureList = this.getIntent().getIntegerArrayListExtra("picture_list");
+		
 		Bitmap b = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
 		
 		StackItem item = new StackItem(b, "Test Image");
@@ -31,12 +37,10 @@ public class StackViewActivity extends Activity {
 		
 		stack.setAdapter(sa_);
 		
-		StackItem item1 = new StackItem(ZoneSnap_App.imageCache.get(photoID),"Lol");
-		sa_.add(item1);
-		
-//		for(int i = 0; i < 5; i++){
-//			sa_.add(item);
-//		}
+		for (Integer i : pictureList) {
+			StackItem item1 = new StackItem(ZoneSnap_App.imageCache.get(i),ZoneSnap_App.descCache.get(i));
+			sa_.add(item1);
+		}
 		
 	}
 

@@ -1,0 +1,23 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string-array name="pref_list_map_types">
+        <item>Normal</item>
+        <item>Hybrid</item>
+        <item>Satellite</item>
+        <item>Terrain</item>
+    </string-array>
+    <string-array name="pref_sync_map_type_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string name="pref_key_port">port_text</string>
+    <string name="pref_key_url">url_text</string>
+    <string name="pref_key_distance">distance_text</string>
+    <string name="pref_key_map">map_list</string>
+
+</resources>
