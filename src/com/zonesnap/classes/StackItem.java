@@ -1,4 +1,4 @@
-package com.zonesnap.activities;
+package com.zonesnap.classes;
 
 import android.graphics.Bitmap;
 import android.view.View;

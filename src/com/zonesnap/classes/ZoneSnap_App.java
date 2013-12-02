@@ -1,13 +1,17 @@
-package com.zonesnap.activities;
+package com.zonesnap.classes;
 
 import android.app.Application;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.ProfilePictureView;
+import com.google.android.gms.maps.GoogleMap;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
 
 public class ZoneSnap_App extends Application {
+	private static Context s_instance;
+	
 	//////////////////// GLOBAL CACHES ///////////////////////////////
 	
 	// Cache for storing pictures from network
@@ -28,12 +32,13 @@ public class ZoneSnap_App extends Application {
 	
 	public static String CURRENT = "current";
 	public static String LIKED = "liked";
+	public static int MAP_TYPE = GoogleMap.MAP_TYPE_HYBRID;
 	
 	///////////////// FACEBOOK VARS //////////////////////////////////
 	
 	public static ProfilePictureView profilePic;
     public static GraphUser user;
-	private static Context s_instance;
+
 	
     // Constructor
 	public ZoneSnap_App() {

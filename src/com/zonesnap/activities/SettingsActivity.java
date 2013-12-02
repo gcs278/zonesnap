@@ -21,10 +21,11 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 import com.zonesnap.zonesnap_app.R.string;
 import com.zonesnap.zonesnap_app.R.xml;
-
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -75,6 +76,7 @@ public class SettingsActivity extends PreferenceActivity {
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("url_text"));
 		bindPreferenceSummaryToValue(findPreference("port_text"));
+		bindPreferenceSummaryToValue(findPreference("map_list"));
 	}
 
 	/** {@inheritDoc} */
@@ -114,6 +116,7 @@ public class SettingsActivity extends PreferenceActivity {
 			String stringValue = value.toString();
 
 			if (preference instanceof ListPreference) {
+				System.out.println("heres");
 				// For list preferences, look up the correct display value in
 				// the preference's 'entries' list.
 				ListPreference listPreference = (ListPreference) preference;
@@ -123,18 +126,34 @@ public class SettingsActivity extends PreferenceActivity {
 				preference
 						.setSummary(index >= 0 ? listPreference.getEntries()[index]
 								: null);
+				if (preference.getKey() == ZoneSnap_App
+						.getResourceString(R.string.pref_key_map)) {
+					System.out.println("Lol");
+					if (Integer.parseInt(value.toString()) == 1) {
+						System.out.println("here2");
+						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_NORMAL;
+					} else if (Integer.parseInt(value.toString()) == 2) {
+						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_HYBRID;
+					} else if (Integer.parseInt(value.toString()) == 3) {
+						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_SATELLITE;
+					} else if (Integer.parseInt(value.toString()) == 4) {
+						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_TERRAIN;
+					}
+				}
 
 			} else {
-		
+				System.out.println("heres3");
 				// Check whether which one changed
-				if (preference.getKey() == ZoneSnap_App.getResourceString(R.string.pref_key_port)) {
+				if (preference.getKey() == ZoneSnap_App
+						.getResourceString(R.string.pref_key_port)) {
 					// Change port
 					ZoneSnap_App.setPort(Integer.parseInt(value.toString()));
-				} else if(preference.getKey() == ZoneSnap_App.getResourceString(R.string.pref_key_url)){
+				} else if (preference.getKey() == ZoneSnap_App
+						.getResourceString(R.string.pref_key_url)) {
 					// Change URL
-					ZoneSnap_App.setURL((String)value);
-				}
-					
+					ZoneSnap_App.setURL((String) value);
+				} 
+
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
 				preference.setSummary(stringValue);
@@ -183,8 +202,8 @@ public class SettingsActivity extends PreferenceActivity {
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("url_text"));
 			bindPreferenceSummaryToValue(findPreference("port_text"));
+			bindPreferenceSummaryToValue(findPreference("map_list"));
 		}
 	}
-
 
 }

@@ -1,4 +1,4 @@
-package com.zonesnap.activities;
+package com.zonesnap.classes;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +17,8 @@ import org.apache.http.params.HttpParams;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import com.zonesnap.activities.StackViewActivity;
 import com.zonesnap.zonesnap_app.R;
 import android.content.Context;
 import android.content.Intent;

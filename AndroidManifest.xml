@@ -26,7 +26,7 @@
         android:required="true" />
 
     <application
-        android:name="com.zonesnap.activities.ZoneSnap_App"
+        android:name="com.zonesnap.classes.ZoneSnap_App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/zonesnap1_launcher"

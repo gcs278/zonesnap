@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.widget.StackView;
 
+import com.zonesnap.classes.StackAdapter;
+import com.zonesnap.classes.StackItem;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 public class StackViewActivity extends Activity {
