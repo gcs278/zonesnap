@@ -209,7 +209,8 @@ public class MapMenuActivity extends FragmentActivity {
 
 					// Destroy the facebook session
 					Session session = Session.getActiveSession();
-					session.closeAndClearTokenInformation();
+					if (session.isOpened())
+						session.closeAndClearTokenInformation();
 
 					// Go back to login
 					MapMenuActivity.super.onBackPressed();
