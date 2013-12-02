@@ -19,13 +19,9 @@ import org.json.JSONObject;
 
 import com.zonesnap.classes.ZoneSnap_App;
 
-// This task is for uploading a picture to the database
+// This task is for liking a picture
 public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	Context activity;
-	// Progress display
-	ProgressDialog pd;
-	int port;
-	String URL;
 
 	public NetworkPostLike(Context context) {
 		activity = context;
@@ -34,13 +30,7 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	// Let user know its updating
 	@Override
 	protected void onPreExecute() {
-		// Display a loading widget to keep user happy
-		pd = new ProgressDialog(activity);
-		pd.setTitle("Uploading Picture...");
-		pd.setMessage("Please wait.");
-		pd.setCancelable(false);
-		pd.setIndeterminate(true);
-		pd.show();
+
 	}
 
 	// Retrieve data
@@ -55,8 +45,7 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 					ZoneSnap_App.PORT, "/like", null, null);
 			HttpPost request = new HttpPost(address);
 
-			// Grant new code
-			// Create JSON object for image
+			// Create JSON object for like
 			JSONObject json = new JSONObject();
 
 			json.put("username", params[0]);
@@ -86,8 +75,6 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	// Process data, display
 	@Override
 	protected void onPostExecute(String result) {
-		// Close progress dialog
-		pd.dismiss();
 		if (!result.contains("SUCCESS")) {
 			// Put error code here
 		} else {

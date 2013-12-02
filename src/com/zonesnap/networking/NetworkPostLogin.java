@@ -22,8 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.google.android.gms.internal.ac;
-import com.zonesnap.activities.HomeActivity;
-import com.zonesnap.activities.MainActivity;
+import com.zonesnap.activities.MapMenuActivity;
+import com.zonesnap.activities.MainFragmentActivity;
 import com.zonesnap.classes.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostLogin extends AsyncTask<String, Void, String> {
@@ -87,7 +87,7 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		if (result.contains("OK")) {
-			Intent login = new Intent(activity, HomeActivity.class);
+			Intent login = new Intent(activity, MapMenuActivity.class);
 			activity.startActivity(login);
 		} else {
 			new AlertDialog.Builder(activity).setMessage(

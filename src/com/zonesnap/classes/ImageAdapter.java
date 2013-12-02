@@ -40,41 +40,48 @@ import android.widget.Toast;
 // This class displays the images for the gridviews
 public class ImageAdapter extends BaseAdapter {
 	private Context mContext;
-	
+
 	// TextView Variables
 	ProgressBar progressBar;
 	TextView message;
-	
+
 	// Picture list to retrieve
 	ArrayList<Integer> pictureList = new ArrayList<Integer>();
-	
-	// Fragment gridview type
+
+	// Fragment gridview type, tells what fragment coming from
 	String adapter_type;
 
 	public ImageAdapter(Context c, String adapterType,
-			ArrayList<Integer> pictureList, ProgressBar progressBar, TextView message) {
-		
+			ArrayList<Integer> pictureList, ProgressBar progressBar,
+			TextView message) {
+
 		mContext = c;
-		
+
 		this.adapter_type = adapterType;
 		this.progressBar = progressBar;
 		this.message = message;
-		
+
 		// Show loading # pictures
 		if (pictureList.size() != 0) {
+			// Show progress bar and hide messsage
 			progressBar.setVisibility(View.VISIBLE);
 			message.setVisibility(View.GONE);
-		}
-		else {
+		} else {
+			// If no pictures avaible, show message
 			message.setVisibility(View.VISIBLE);
+
+			// Determine what message to display
 			if (adapterType == ZoneSnap_App.CURRENT) {
 				message.setText("No pictures found here. Claim this zone!");
-			} else {
+			} else if (adapterType == ZoneSnap_App.LIKED) {
 				message.setText("No liked Pictures. Explore more zones!");
+			} else {
+				message.setText("No pictures found here. Start uploading!");
 			}
+			// Remove progress bar
 			progressBar.setVisibility(View.GONE);
 		}
-		
+
 		// Copy picture list to local
 		this.pictureList = (ArrayList<Integer>) pictureList.clone();
 	}
@@ -100,7 +107,7 @@ public class ImageAdapter extends BaseAdapter {
 	public void addBitmapToMemoryCache(int key, Bitmap bitmap, String desc) {
 		if (getBitmapFromMemCache(key) == null) {
 			ZoneSnap_App.imageCache.put(key, bitmap);
-			ZoneSnap_App.descCache.put(key,desc);
+			ZoneSnap_App.descCache.put(key, desc);
 		}
 	}
 
@@ -114,16 +121,15 @@ public class ImageAdapter extends BaseAdapter {
 	public String getDescFromMemCache(int key) {
 		return ZoneSnap_App.descCache.get(key);
 	}
-	
+
 	// create a new ImageView for each item referenced by the Adapter
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// ImageView parameters
-		ImageView imageView;
-		imageView = new ImageView(mContext);
+		ImageView imageView = new ImageView(mContext);
 		imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
 		imageView.setScaleType(ImageView.ScaleType.FIT_XY);
 		imageView.setPadding(8, 8, 8, 8);
-		
+
 		// Get value from cache
 		Bitmap cached = getBitmapFromMemCache(pictureList.get(position));
 
@@ -137,16 +143,18 @@ public class ImageAdapter extends BaseAdapter {
 					pictureList.get(position));
 			task.execute();
 		}
-		
+
+		// Set on click listen to display bigger photo
 		imageView.setOnClickListener(new OnImageClickListener(pictureList
 				.get(position)));
-		
+
 		return imageView;
 	}
 
+	// When a image is clicked
 	class OnImageClickListener implements OnClickListener {
 		int photoID;
-		
+
 		// constructor
 		public OnImageClickListener(int photoID) {
 			this.photoID = photoID;
@@ -183,7 +191,7 @@ public class ImageAdapter extends BaseAdapter {
 				HttpParams httpParams = new BasicHttpParams();
 				HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
 				HttpConnectionParams.setSoTimeout(httpParams, 4000);
-				
+
 				// Set up HTTP GET
 				HttpClient httpclient = new DefaultHttpClient(httpParams);
 				URI address = new URI("http", null, ZoneSnap_App.URL,
@@ -229,22 +237,24 @@ public class ImageAdapter extends BaseAdapter {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
-				
+
 				// Parse the data coming in
 				String imageBase64 = (String) json.get("image");
 				String title = (String) json.get("title");
-				String likes = String.valueOf(Integer.parseInt(json.get("likes").toString()));
-				
+				String likes = String.valueOf(Integer.parseInt(json
+						.get("likes").toString()));
+
 				try {
 					// Decode and set image to profile pic
 					byte[] decodedString = Base64.decode(imageBase64,
 							Base64.DEFAULT);
 					Bitmap decodedByte = BitmapFactory.decodeByteArray(
 							decodedString, 0, decodedString.length);
-
-					view.setImageBitmap(decodedByte);
-					addBitmapToMemoryCache(photoID, decodedByte,title);
 					
+					// Set the bitmap to the view and add to cache
+					view.setImageBitmap(decodedByte);
+					addBitmapToMemoryCache(photoID, decodedByte, title);
+
 					view.setAnimation(AnimationUtils.loadAnimation(activity,
 							R.anim.zoom_enter));
 
@@ -259,7 +269,8 @@ public class ImageAdapter extends BaseAdapter {
 
 			} else {
 				// Show a toast we failed to get image
-				Toast.makeText(mContext, "Failed to retrieve image "+photoID, Toast.LENGTH_SHORT).show();
+				Toast.makeText(mContext, "Failed to retrieve image " + photoID,
+						Toast.LENGTH_SHORT).show();
 			}
 
 		}

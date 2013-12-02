@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -15,14 +14,17 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.facebook.Session;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -47,8 +49,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class HomeActivity extends FragmentActivity {
-	GoogleMap map;
+public class MapMenuActivity extends FragmentActivity {
+	GoogleMap map; // Map Var
+
+	// Marker array of pictures on the map
 	List<Coordinates> markers = new ArrayList<Coordinates>();
 
 	@Override
@@ -56,15 +60,20 @@ public class HomeActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
+		// Get the map fragment
 		SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
 		map = fm.getMap();
+
+		// Set the current location to the last known location
 		map.setMyLocationEnabled(true);
 		LocationManager locationManager = (LocationManager) this
 				.getSystemService(Context.LOCATION_SERVICE);
 		Location location = locationManager
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		LatLng myCoor = null;
+
+		// Verify that GPS is running
 		if (location != null) {
 			myCoor = new LatLng(location.getLatitude(), location.getLongitude());
 		} else {
@@ -82,14 +91,17 @@ public class HomeActivity extends FragmentActivity {
 					"Whoops. Something when wrong.").show();
 		}
 
-		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
+		// Get all of the markers for pictures
+		NetworkGetPictureLocations task = new NetworkGetPictureLocations();
 		task.execute();
+
+		// ////////////////////// BUTTON CODE//////////////////////////////////
 		// navigate to upload fragment
 		ImageButton toUpload = (ImageButton) findViewById(R.id.toUploadBtn);
 		toUpload.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainActivity.class);
+				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
 				i.putExtra("position", 0);
 				startActivity(i);
 			}
@@ -100,27 +112,29 @@ public class HomeActivity extends FragmentActivity {
 		toCurrent.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainActivity.class);
+				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
 				i.putExtra("position", 1);
 				startActivity(i);
 			}
 		});
 
+		// navigate to past fragment
 		ImageButton toPast = (ImageButton) findViewById(R.id.toPastBtn);
 		toPast.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainActivity.class);
+				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
 				i.putExtra("position", 2);
 				startActivity(i);
 			}
 		});
 
+		// navigate to profile fragment
 		ImageButton toProfile = (ImageButton) findViewById(R.id.toProfileBtn);
 		toProfile.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainActivity.class);
+				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
 				i.putExtra("position", 3);
 				startActivity(i);
 
@@ -150,11 +164,12 @@ public class HomeActivity extends FragmentActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		// Start Settings acivity
 		Intent settings = new Intent(this, SettingsActivity.class);
 		startActivity(settings);
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	// Override OnBackPressed to make sure User wants to log out of ZoneSnap
 	@Override
 	public void onBackPressed() {
@@ -164,7 +179,13 @@ public class HomeActivity extends FragmentActivity {
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
 					finish();
-					HomeActivity.super.onBackPressed();
+					
+					// Destroy the facebook session
+					Session session = Session.getActiveSession();
+					session.closeAndClearTokenInformation();
+					
+					// Go back to login
+					MapMenuActivity.super.onBackPressed();
 					break;
 
 				case DialogInterface.BUTTON_NEGATIVE:
@@ -185,9 +206,10 @@ public class HomeActivity extends FragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		// Retrieve the picture marks again
-		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
+		NetworkGetPictureLocations task = new NetworkGetPictureLocations();
 		task.execute();
-		
+
+		// Reset the map type
 		map.setMapType(ZoneSnap_App.MAP_TYPE);
 	}
 
@@ -198,23 +220,25 @@ public class HomeActivity extends FragmentActivity {
 		return true;
 	}
 
-	// This network activty retrieves and updates a picture
+	// This network activity get the info from all pictures and displays the
+	// markers on Map
 	public class NetworkGetPictureLocations extends
 			AsyncTask<String, Void, String> {
-		Context activity;
-		public ArrayList<Coordinates> photos = new ArrayList<Coordinates>();
-
-		public NetworkGetPictureLocations(Context context) {
-			activity = context;
-		}
+		// Local markers array list
+		public ArrayList<Coordinates> currentMarkers = new ArrayList<Coordinates>();
 
 		// Retrieve data
 		@Override
 		protected String doInBackground(String... params) {
-			String photoListJSON = "";
+			String jsonData = "";
 			try {
+				// Set Timeout
+				HttpParams httpParams = new BasicHttpParams();
+				HttpConnectionParams.setConnectionTimeout(httpParams, 4000);
+				HttpConnectionParams.setSoTimeout(httpParams, 4000);
+
 				// Set up HTTP GET
-				HttpClient httpclient = new DefaultHttpClient();
+				HttpClient httpclient = new DefaultHttpClient(httpParams);
 				URI address = new URI("http", null, ZoneSnap_App.URL,
 						ZoneSnap_App.PORT, "/mapdata", "type=pics", null);
 
@@ -228,8 +252,8 @@ public class HomeActivity extends FragmentActivity {
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					response.getEntity().writeTo(out);
 					out.close();
-					// Get the image
-					photoListJSON = out.toString();
+					// Get the data
+					jsonData = out.toString();
 
 				} else {
 					// Closes the connection.
@@ -238,11 +262,14 @@ public class HomeActivity extends FragmentActivity {
 				}
 
 				try {
+					// Parse the json data
 					JSONParser j = new JSONParser();
-					JSONObject json = (JSONObject) j.parse(photoListJSON);
+					JSONObject json = (JSONObject) j.parse(jsonData);
 					JSONArray array = (JSONArray) json.get("pics");
 
+					// Get each pictures information
 					for (int i = 0; i < array.size(); i++) {
+						// Create a coordinate and add to the photos list
 						String data = array.get(i).toString();
 						String[] parts = data.split(",");
 						Coordinates coor = new Coordinates();
@@ -254,8 +281,8 @@ public class HomeActivity extends FragmentActivity {
 						} catch (ArrayIndexOutOfBoundsException e) {
 							e.printStackTrace();
 						}
-						
-						photos.add(coor);
+
+						currentMarkers.add(coor);
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();
@@ -266,7 +293,7 @@ public class HomeActivity extends FragmentActivity {
 			} catch (URISyntaxException e) {
 				return "connectFail";
 			}
-			return photoListJSON;
+			return jsonData;
 		}
 
 		// Process data, display
@@ -274,21 +301,25 @@ public class HomeActivity extends FragmentActivity {
 		protected void onPostExecute(String result) {
 			// check if it didn't fail
 			if (result != "connectFail") {
-				for (Iterator<Coordinates> i = photos.iterator(); i.hasNext();) {
-
+				// Go through current markers and add if needed to map
+				for (Iterator<Coordinates> i = currentMarkers.iterator(); i
+						.hasNext();) {
 					Coordinates coor = i.next();
 
+					// If marker isn't on map already, add to map
 					if (!markers.contains(coor)) {
 						markers.add(coor);
 						LatLng point = new LatLng(coor.latitude, coor.longitude);
-						map.addMarker(new MarkerOptions().position(point)
-								.title("Photo #"+String.valueOf(coor.photoId)).snippet(coor.title));
+						map.addMarker(new MarkerOptions()
+								.position(point)
+								.title("Photo #" + String.valueOf(coor.photoId))
+								.snippet(coor.title));
 					}
 
 				}
 
 			} else {
-				new AlertDialog.Builder(activity).setMessage(
+				new AlertDialog.Builder(MapMenuActivity.this).setMessage(
 						ZoneSnap_App.getErrorMessage() + result).show();
 			}
 

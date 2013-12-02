@@ -4,28 +4,16 @@ package com.zonesnap.activities;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
-
-import java.util.List;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
-import com.zonesnap.zonesnap_app.R.string;
-import com.zonesnap.zonesnap_app.R.xml;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -74,9 +62,12 @@ public class SettingsActivity extends PreferenceActivity {
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
 		// to reflect the new value, per the Android Design guidelines.
-		bindPreferenceSummaryToValue(findPreference("url_text"));
-		bindPreferenceSummaryToValue(findPreference("port_text"));
-		bindPreferenceSummaryToValue(findPreference("map_list"));
+		bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+				.getResourceString(R.string.pref_key_url)));
+		bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+				.getResourceString(R.string.pref_key_port)));
+		bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+				.getResourceString(R.string.pref_key_map)));
 	}
 
 	/** {@inheritDoc} */
@@ -116,7 +107,6 @@ public class SettingsActivity extends PreferenceActivity {
 			String stringValue = value.toString();
 
 			if (preference instanceof ListPreference) {
-				System.out.println("heres");
 				// For list preferences, look up the correct display value in
 				// the preference's 'entries' list.
 				ListPreference listPreference = (ListPreference) preference;
@@ -126,23 +116,26 @@ public class SettingsActivity extends PreferenceActivity {
 				preference
 						.setSummary(index >= 0 ? listPreference.getEntries()[index]
 								: null);
+				
+				// If its our map select, chose the correct option
 				if (preference.getKey() == ZoneSnap_App
 						.getResourceString(R.string.pref_key_map)) {
-					System.out.println("Lol");
 					if (Integer.parseInt(value.toString()) == 1) {
-						System.out.println("here2");
+						// Normal Map type
 						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_NORMAL;
 					} else if (Integer.parseInt(value.toString()) == 2) {
+						// Hybrid Map type
 						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_HYBRID;
 					} else if (Integer.parseInt(value.toString()) == 3) {
+						// Satellite map type
 						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_SATELLITE;
 					} else if (Integer.parseInt(value.toString()) == 4) {
+						// Terrian Map Type
 						ZoneSnap_App.MAP_TYPE = GoogleMap.MAP_TYPE_TERRAIN;
 					}
 				}
 
 			} else {
-				System.out.println("heres3");
 				// Check whether which one changed
 				if (preference.getKey() == ZoneSnap_App
 						.getResourceString(R.string.pref_key_port)) {
@@ -152,7 +145,7 @@ public class SettingsActivity extends PreferenceActivity {
 						.getResourceString(R.string.pref_key_url)) {
 					// Change URL
 					ZoneSnap_App.setURL((String) value);
-				} 
+				}
 
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
@@ -200,9 +193,12 @@ public class SettingsActivity extends PreferenceActivity {
 			// to their values. When their values change, their summaries are
 			// updated to reflect the new value, per the Android Design
 			// guidelines.
-			bindPreferenceSummaryToValue(findPreference("url_text"));
-			bindPreferenceSummaryToValue(findPreference("port_text"));
-			bindPreferenceSummaryToValue(findPreference("map_list"));
+			bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+					.getResourceString(R.string.pref_key_url)));
+			bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+					.getResourceString(R.string.pref_key_port)));
+			bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+					.getResourceString(R.string.pref_key_map)));
 		}
 	}
 

@@ -26,7 +26,6 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -48,7 +47,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.zonesnap.activities.HomeActivity;
+import com.google.android.gms.internal.cu;
+import com.zonesnap.activities.MapMenuActivity;
 import com.zonesnap.classes.ImageAdapter;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
@@ -66,10 +66,8 @@ public class CurrentFragment extends Fragment {
 	Button refresh;
 	ProgressBar progressBar;
 
+	// Current Zone variable, used to display toast in walking into new zone
 	public int currentZone = 0;
-
-	public CurrentFragment() {
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -153,11 +151,9 @@ public class CurrentFragment extends Fragment {
 		zoneTask.execute();
 
 		// Get the current picture list
-		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(
-				getActivity());
+		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList();
 		listTask.execute();
-		
-		
+
 	}
 
 	// Pause the zone searching
@@ -166,7 +162,7 @@ public class CurrentFragment extends Fragment {
 		locationManager.removeUpdates(mLocationListener);
 		super.onPause();
 	}
-	
+
 	// Resume the zone listening
 	@Override
 	public void onResume() {
@@ -174,7 +170,7 @@ public class CurrentFragment extends Fragment {
 				3, mLocationListener);
 		super.onResume();
 	}
-	
+
 	// Listen for location changes
 	public final LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -204,15 +200,10 @@ public class CurrentFragment extends Fragment {
 	// This network activity retrieves the current Zone picture list
 	public class NetworkGetCurrentPictureList extends
 			AsyncTask<String, Void, String> {
-		Context activity;
 		boolean fail = true; // Success variable
 
 		// List of photo IDs to retrieve
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
-
-		public NetworkGetCurrentPictureList(Context context) {
-			activity = context;
-		}
 
 		// Retrieve data
 		@Override
@@ -251,10 +242,12 @@ public class CurrentFragment extends Fragment {
 				}
 
 				try {
+					// Parse the data
 					JSONParser j = new JSONParser();
 					JSONObject json = (JSONObject) j.parse(photoListJSON);
 					JSONArray array = (JSONArray) json.get("photoIDs");
 
+					// Add JSON list to local list
 					for (int i = 0; i < array.size(); i++) {
 						photoIDs.add(Integer.parseInt(array.get(i).toString()));
 					}
@@ -292,7 +285,7 @@ public class CurrentFragment extends Fragment {
 			} else {
 				// Display the error if we can't connect
 				try {
-					new AlertDialog.Builder(activity).setMessage(
+					new AlertDialog.Builder(getActivity()).setMessage(
 							ZoneSnap_App.getErrorMessage() + result).show();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
@@ -305,7 +298,6 @@ public class CurrentFragment extends Fragment {
 
 	// This task gets the current zone that user is located
 	public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
-		Context activity;
 		ImageView view;
 		int photoID, previousZone;
 		Double latitude, longitude;
@@ -314,7 +306,6 @@ public class CurrentFragment extends Fragment {
 
 		public NetworkGetZone(Context context, TextView title, Double latitude,
 				Double longitude, int previousZone) {
-			activity = context;
 			this.latitude = latitude;
 			this.longitude = longitude;
 			textView = title;
@@ -372,13 +363,7 @@ public class CurrentFragment extends Fragment {
 			}
 			return returnData;
 		}
-
-		@Override
-		protected void onProgressUpdate(Void... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-		}
-
+		
 		// Process data, display
 		@SuppressLint("NewApi")
 		@Override
@@ -387,15 +372,15 @@ public class CurrentFragment extends Fragment {
 			if (failed) {
 				try {
 					// Show a toast we failed to get zone
-					Toast.makeText(activity, "Failed to find zone. Please check connection.",
+					Toast.makeText(getActivity(),
+							"Failed to find zone. Please check connection.",
 							Toast.LENGTH_LONG).show();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
 			} else {
 				// Notify user of new zone
-
-				if (result != currentZone) {
+				if (result != currentZone && currentZone != 0) {
 					try {
 						Toast.makeText(getActivity(), "New Zone!",
 								Toast.LENGTH_SHORT).show();
@@ -403,25 +388,26 @@ public class CurrentFragment extends Fragment {
 						e.printStackTrace();
 					}
 				}
-					// send notification to system that user entered new zone
-					final NotificationManager notiMgr = (NotificationManager) getActivity()
-							.getSystemService(getActivity().NOTIFICATION_SERVICE);
-					Intent notIntent = new Intent(getActivity(), HomeActivity.class);
-					PendingIntent pIntent = PendingIntent.getActivity(
-							getActivity(), 0, notIntent, 0);
-					Notification n = new Notification.Builder(getActivity())
-							.setContentTitle("Entered new zone.")
-							.setSmallIcon(R.drawable.zonesnap1_launcher)
-							.setContentText("Touch to view content of new zone.")
-							.setContentIntent(pIntent).setAutoCancel(true).build();
-					notiMgr.notify(0, n);
-				}
-				currentZone = result;
-
-				// Set title
-				textView.setText("Zone " + result);
-
+				// send notification to system that user entered new zone
+				final NotificationManager notiMgr = (NotificationManager) getActivity()
+						.getSystemService(getActivity().NOTIFICATION_SERVICE);
+				Intent notIntent = new Intent(getActivity(),
+						MapMenuActivity.class);
+				PendingIntent pIntent = PendingIntent.getActivity(
+						getActivity(), 0, notIntent, 0);
+				Notification n = new Notification.Builder(getActivity())
+						.setContentTitle("Entered new zone.")
+						.setSmallIcon(R.drawable.zonesnap1_launcher)
+						.setContentText("Touch to view content of new zone.")
+						.setContentIntent(pIntent).setAutoCancel(true).build();
+				notiMgr.notify(0, n);
 			}
+			// Set current Zone
+			currentZone = result;
 
+			// Set title
+			textView.setText("Zone " + currentZone);
 		}
+
 	}
+}

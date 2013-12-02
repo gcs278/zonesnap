@@ -39,12 +39,14 @@ import com.zonesnap.zonesnap_app.R;
 
 //Fragment for user's profile
 public class ProfileFragment extends Fragment {
-
+	public static final String ARG_SECTION_NUMBER = "section_number";
+	
+	// Facebook profile pic
 	private ProfilePictureView profilePictureView;
+
+	// GUI variables
 	ProgressBar progressBar;
 	TextView message, acquired, ranking;
-
-	public static final String ARG_SECTION_NUMBER = "section_number";
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,12 +87,14 @@ public class ProfileFragment extends Fragment {
 		acquired.setTypeface(zsFont);
 		ranking = (TextView) getView().findViewById(R.id.profile_rankingNum);
 		ranking.setTypeface(zsFont);
-		profilePictureView = (ProfilePictureView) getActivity().findViewById(
-				R.id.profilePicture);
-		profilePictureView.setProfileId(ZoneSnap_App.user.getId());
 		message = (TextView) getView().findViewById(R.id.profile_message);
 		message.setTypeface(zsFont);
 		// //////////////////////////////////////////////////////////////
+
+		// Set the profile picture
+		profilePictureView = (ProfilePictureView) getActivity().findViewById(
+				R.id.profilePicture);
+		profilePictureView.setProfileId(ZoneSnap_App.user.getId());
 
 		// Get the progress bar
 		progressBar = (ProgressBar) getActivity().findViewById(
