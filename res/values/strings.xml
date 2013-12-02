@@ -1,26 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" translatable="false">ZoneSnap_App</string>
+    <string name="app_name" translatable="false">ZoneSnap</string>
     <string name="action_settings" translatable="false">Settings</string>
     <string name="title_activity_main" translatable="false">ZoneSnap</string>
     <string name="title_section1" translatable="false">Current</string>
     <string name="title_section2" translatable="false">Favorites</string>
     <string name="title_section3" translatable="false">Profile</string>
-    <string name="title_activity_test" translatable="false">Test</string>
-    <string name="title_activity_image_view" translatable="false">ImageViewActivity</string>
-    <string name="title_activity_upload" translatable="false">UploadActivity</string>
     <string name="title_section0" translatable="false">Camera</string>
     <string name="title_activity_stack_view" translatable="false"> View Pictures</string>
     <string name="logo" translatable="false">ZoneSnap</string>
     <string name="title_activity_home" translatable="false">Main Menu</string>
-    <string name="app_name">ZoneSnap_App</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_section1">Current</string>
-    <string name="title_section2">Favorites</string>
-    <string name="title_section3">Profile</string>
-    <string name="title_activity_test">Test</string>
     <string name="title_section0">Camera</string>
     <string name="logo">ZoneSnap</string>
     <string name="app_id">234413960058999</string>
