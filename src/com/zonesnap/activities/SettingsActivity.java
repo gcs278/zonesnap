@@ -68,6 +68,8 @@ public class SettingsActivity extends PreferenceActivity {
 				.getResourceString(R.string.pref_key_port)));
 		bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
 				.getResourceString(R.string.pref_key_map)));
+		bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+				.getResourceString(R.string.pref_key_distance)));
 	}
 
 	/** {@inheritDoc} */
@@ -145,7 +147,11 @@ public class SettingsActivity extends PreferenceActivity {
 						.getResourceString(R.string.pref_key_url)) {
 					// Change URL
 					ZoneSnap_App.setURL((String) value);
-				}
+				} else if (preference.getKey() == ZoneSnap_App
+						.getResourceString(R.string.pref_key_distance)) {
+					// Change URL
+					ZoneSnap_App.GPS_MIN_DISTANCE = Integer.parseInt(value.toString());
+				} 
 
 				// For all other preferences, set the summary to the value's
 				// simple string representation.
@@ -199,6 +205,8 @@ public class SettingsActivity extends PreferenceActivity {
 					.getResourceString(R.string.pref_key_port)));
 			bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
 					.getResourceString(R.string.pref_key_map)));
+			bindPreferenceSummaryToValue(findPreference(ZoneSnap_App
+					.getResourceString(R.string.pref_key_distance)));
 		}
 	}
 

@@ -104,7 +104,7 @@ public class CurrentFragment extends Fragment {
 		locationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				3, mLocationListener);
+				ZoneSnap_App.GPS_MIN_DISTANCE, mLocationListener);
 
 		// Call First update
 		updateLocation(locationManager
@@ -169,7 +169,7 @@ public class CurrentFragment extends Fragment {
 	@Override
 	public void onResume() {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				3, mLocationListener);
+				ZoneSnap_App.GPS_MIN_DISTANCE, mLocationListener);
 		super.onResume();
 	}
 

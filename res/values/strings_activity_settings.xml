@@ -17,6 +17,7 @@
 
     <string name="pref_key_port">port_text</string>
     <string name="pref_key_url">url_text</string>
+    <string name="pref_key_distance">distance_text</string>
     <string name="pref_key_map">map_list</string>
 
 </resources>

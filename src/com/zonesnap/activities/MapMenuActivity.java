@@ -45,6 +45,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,7 +96,7 @@ public class MapMenuActivity extends FragmentActivity {
 
 		// ////////////////////// BUTTON CODE//////////////////////////////////
 		// navigate to upload fragment
-		ImageButton toUpload = (ImageButton) findViewById(R.id.toUploadBtn);
+		Button toUpload = (Button) findViewById(R.id.toUploadBtn);
 		toUpload.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -106,7 +107,7 @@ public class MapMenuActivity extends FragmentActivity {
 		});
 
 		// nvaigate to current fragment
-		ImageButton toCurrent = (ImageButton) findViewById(R.id.toCurrentBtn);
+		Button toCurrent = (Button) findViewById(R.id.toCurrentBtn);
 		toCurrent.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -117,7 +118,7 @@ public class MapMenuActivity extends FragmentActivity {
 		});
 
 		// navigate to past fragment
-		ImageButton toPast = (ImageButton) findViewById(R.id.toPastBtn);
+		Button toPast = (Button) findViewById(R.id.toPastBtn);
 		toPast.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -128,7 +129,7 @@ public class MapMenuActivity extends FragmentActivity {
 		});
 
 		// navigate to profile fragment
-		ImageButton toProfile = (ImageButton) findViewById(R.id.toProfileBtn);
+		Button toProfile = (Button) findViewById(R.id.toProfileBtn);
 		toProfile.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
@@ -158,6 +159,10 @@ public class MapMenuActivity extends FragmentActivity {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
+		toUpload.setTypeface(zsFont);
+		toPast.setTypeface(zsFont);
+		toCurrent.setTypeface(zsFont);
+		toProfile.setTypeface(zsFont);
 	}
 
 	private void EnableGPS() {

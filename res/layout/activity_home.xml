@@ -1,8 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="@drawable/background4" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center|top"
             android:text="Go places. Share pics."
-            android:textColor="#00FF26"
+            android:textColor="#FF0000"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -48,33 +48,41 @@
         android:layout_height="match_parent"
         android:layout_weight="10" >
 
-        <ImageButton
+        <Button
             android:id="@+id/toUploadBtn"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_weight="8"
-            android:src="@android:drawable/ic_menu_upload" />
+            android:src="@android:drawable/ic_menu_upload"
+            android:text="Upload"
+            android:textColor="#00FF26" />
 
-        <ImageButton
+        <Button
             android:id="@+id/toCurrentBtn"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_weight="8"
-            android:src="@android:drawable/ic_menu_mylocation" />
+            android:src="@android:drawable/ic_menu_mylocation"
+            android:text="Current"
+            android:textColor="#00FF26" />
 
-        <ImageButton
+        <Button
             android:id="@+id/toPastBtn"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_weight="8"
-            android:src="@android:drawable/ic_menu_recent_history" />
+            android:src="@android:drawable/ic_menu_recent_history"
+            android:text="Favorites"
+            android:textColor="#00FF26" />
 
-        <ImageButton
+        <Button
             android:id="@+id/toProfileBtn"
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_weight="8"
-            android:src="@android:drawable/ic_menu_myplaces" />
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:text="Profile"
+            android:textColor="#00FF26" />
     </LinearLayout>
 
 </LinearLayout>
