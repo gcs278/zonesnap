@@ -29,17 +29,6 @@
             android:textColor="#00FF26"
             android:textSize="30sp" />
 
-        <TextView
-            android:id="@+id/image_likesNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="42dp"
-            android:layout_toRightOf="@+id/image_likesTitle"
-            android:text="0"
-            android:textColor="#00FF26"
-            android:textSize="30sp" />
-
            <Button
                android:id="@+id/btnClose"
                android:layout_width="wrap_content"
@@ -63,5 +52,25 @@
                android:paddingTop="2dp"
                android:text="Like"
                android:textColor="#ffffff" />
+
+           <ImageView
+               android:id="@+id/image_liked"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignTop="@+id/image_btnLike"
+               android:layout_centerHorizontal="true"
+               android:visibility="gone"
+               android:src="@drawable/com_facebook_button_check_on" />
+
+           <TextView
+               android:id="@+id/image_likesNum"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:layout_marginLeft="35dp"
+               android:layout_toRightOf="@+id/image_likesTitle"
+               android:text="0"
+               android:textColor="#00FF26"
+               android:textSize="30sp" />
  
 </RelativeLayout>

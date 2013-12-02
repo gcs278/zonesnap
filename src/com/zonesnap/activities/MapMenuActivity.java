@@ -81,10 +81,10 @@ public class MapMenuActivity extends FragmentActivity {
 			EnableGPS();
 		}
 
-			// Move the camera to current location
-			// This has been known to throw exception
-			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
-			map.setMapType(ZoneSnap_App.MAP_TYPE);
+		// Move the camera to current location
+		// This has been known to throw exception
+		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
+		map.setMapType(ZoneSnap_App.MAP_TYPE);
 
 		// Get all of the markers for pictures
 		NetworkGetPictureLocations task = new NetworkGetPictureLocations();
@@ -96,7 +96,8 @@ public class MapMenuActivity extends FragmentActivity {
 		toUpload.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
+				Intent i = new Intent(getBaseContext(),
+						MainFragmentActivity.class);
 				i.putExtra("position", 0);
 				startActivity(i);
 			}
@@ -107,7 +108,8 @@ public class MapMenuActivity extends FragmentActivity {
 		toCurrent.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
+				Intent i = new Intent(getBaseContext(),
+						MainFragmentActivity.class);
 				i.putExtra("position", 1);
 				startActivity(i);
 			}
@@ -118,7 +120,8 @@ public class MapMenuActivity extends FragmentActivity {
 		toPast.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
+				Intent i = new Intent(getBaseContext(),
+						MainFragmentActivity.class);
 				i.putExtra("position", 2);
 				startActivity(i);
 			}
@@ -129,7 +132,8 @@ public class MapMenuActivity extends FragmentActivity {
 		toProfile.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Intent i = new Intent(getBaseContext(), MainFragmentActivity.class);
+				Intent i = new Intent(getBaseContext(),
+						MainFragmentActivity.class);
 				i.putExtra("position", 3);
 				startActivity(i);
 
@@ -175,18 +179,16 @@ public class MapMenuActivity extends FragmentActivity {
 										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 							}
 						})
-				.setNegativeButton("No",
-						new DialogInterface.OnClickListener() {
-							public void onClick(
-									final DialogInterface dialog,
-									@SuppressWarnings("unused") final int id) {
-								dialog.cancel();
-							}
-						});
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(final DialogInterface dialog,
+							@SuppressWarnings("unused") final int id) {
+						dialog.cancel();
+					}
+				});
 		final AlertDialog alert = builder.create();
 		alert.show();
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Start Settings acivity
@@ -204,11 +206,11 @@ public class MapMenuActivity extends FragmentActivity {
 				switch (which) {
 				case DialogInterface.BUTTON_POSITIVE:
 					finish();
-					
+
 					// Destroy the facebook session
 					Session session = Session.getActiveSession();
 					session.closeAndClearTokenInformation();
-					
+
 					// Go back to login
 					MapMenuActivity.super.onBackPressed();
 					break;

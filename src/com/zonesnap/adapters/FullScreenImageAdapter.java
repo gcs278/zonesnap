@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+// This is the adapter for the full screen image view
 public class FullScreenImageAdapter extends PagerAdapter {
 
 	private Activity _activity;
@@ -46,9 +47,11 @@ public class FullScreenImageAdapter extends PagerAdapter {
 	@Override
 	public Object instantiateItem(ViewGroup container, final int position) {
 		ImageView imgDisplay;
+		final ImageView imgLiked;
 		TextView desc, likesTitle;
 		final TextView likes;
-		Button btnClose, btnLike;
+		Button btnClose;
+		final Button btnLike;
 
 		inflater = (LayoutInflater) _activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -62,7 +65,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		desc = (TextView) viewLayout.findViewById(R.id.image_desc);
 		likes = (TextView) viewLayout.findViewById(R.id.image_likesNum);
 		likesTitle = (TextView) viewLayout.findViewById(R.id.image_likesTitle);
-
+		imgLiked = (ImageView) viewLayout.findViewById(R.id.image_liked);
+		
 		// Set Font of text Views
 		Typeface zsFont = Typeface.createFromAsset(_activity.getAssets(),
 				"fonts/Orbitron-Regular.ttf");
@@ -77,8 +81,20 @@ public class FullScreenImageAdapter extends PagerAdapter {
 				.get(position)));
 
 		desc.setText(ZoneSnap_App.descCache.get(photoIDs.get(position)));
-		likes.setText(String.valueOf(ZoneSnap_App.likeCache.get(photoIDs.get(position))));
+		likes.setText(String.valueOf(ZoneSnap_App.likeCache.get(photoIDs
+				.get(position))));
 		
+		// See if photo has been liked
+		try {
+			if (ZoneSnap_App.likeCache.get(photoIDs.get(position)) != 0) {
+				imgLiked.setVisibility(View.VISIBLE);
+				btnLike.setEnabled(false);
+				btnLike.setText("Liked");
+			}
+		} catch (NullPointerException e) {
+			// Do nothing
+		}
+
 		// close button click event
 		btnClose.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -86,14 +102,22 @@ public class FullScreenImageAdapter extends PagerAdapter {
 				_activity.finish();
 			}
 		});
-		
+
 		btnLike.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
+				// Network task to like photo
 				NetworkPostLike likeTask = new NetworkPostLike(_activity);
-				likeTask.execute(ZoneSnap_App.user.getUsername(),String.valueOf(photoIDs.get(position)));
-				likes.setText(String.valueOf(ZoneSnap_App.likeCache.get(photoIDs.get(position))+1));
+				likeTask.execute(ZoneSnap_App.user.getUsername(),
+						String.valueOf(photoIDs.get(position)));
+
+				int prevLikes = ZoneSnap_App.likeCache.get(photoIDs
+						.get(position));
+				imgLiked.setVisibility(View.VISIBLE);
+				btnLike.setEnabled(false);
+				btnLike.setText("Liked");
+				likes.setText(String.valueOf(prevLikes + 1));
 			}
 		});
 

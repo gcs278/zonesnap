@@ -22,7 +22,7 @@ import com.zonesnap.classes.ZoneSnap_App;
 // This task is for liking a picture
 public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	Context activity;
-
+	int photoId;
 	public NetworkPostLike(Context context) {
 		activity = context;
 	}
@@ -49,6 +49,7 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 			JSONObject json = new JSONObject();
 
 			json.put("username", params[0]);
+			photoId = Integer.parseInt(params[1]);
 			json.put("photoID", params[1]);
 
 			request.setEntity(new StringEntity(json.toString()));
@@ -76,7 +77,8 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		if (!result.contains("SUCCESS")) {
-			// Put error code here
+			int prevLikes = ZoneSnap_App.likeCache.get(photoId);
+			ZoneSnap_App.likeCache.put(photoId, prevLikes+1);
 		} else {
 			new AlertDialog.Builder(activity).setMessage(
 					ZoneSnap_App.getErrorMessage() + result).show();
