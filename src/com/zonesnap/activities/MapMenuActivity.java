@@ -77,8 +77,7 @@ public class MapMenuActivity extends FragmentActivity {
 		if (location != null) {
 			myCoor = new LatLng(location.getLatitude(), location.getLongitude());
 		} else {
-			new AlertDialog.Builder(this).setMessage(
-					"Location error. Is GPS enabled?").show();
+			EnableGPS();
 		}
 
 		// Move the camera to current location
@@ -87,8 +86,7 @@ public class MapMenuActivity extends FragmentActivity {
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
 			map.setMapType(ZoneSnap_App.MAP_TYPE);
 		} catch (NullPointerException e) {
-			new AlertDialog.Builder(this).setMessage(
-					"Whoops. Something when wrong.").show();
+			e.printStackTrace();
 		}
 
 		// Get all of the markers for pictures
@@ -162,6 +160,32 @@ public class MapMenuActivity extends FragmentActivity {
 		}
 	}
 
+	private void EnableGPS() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(
+				"Your GPS seems to be disabled, do you want to enable it?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									@SuppressWarnings("unused") final DialogInterface dialog,
+									@SuppressWarnings("unused") final int id) {
+								startActivity(new Intent(
+										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							}
+						})
+				.setNegativeButton("No",
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									final DialogInterface dialog,
+									@SuppressWarnings("unused") final int id) {
+								dialog.cancel();
+							}
+						});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Start Settings acivity

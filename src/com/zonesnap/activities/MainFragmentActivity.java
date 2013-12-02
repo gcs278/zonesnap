@@ -33,7 +33,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main_fragments);
 
 		// get intent extras (postition)
 		Bundle extras = getIntent().getExtras();

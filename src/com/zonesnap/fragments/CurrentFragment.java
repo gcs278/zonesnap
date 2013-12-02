@@ -27,6 +27,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -48,6 +49,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.internal.cu;
+import com.google.android.gms.wallet.EnableWalletOptimizationReceiver;
 import com.zonesnap.activities.MapMenuActivity;
 import com.zonesnap.classes.ImageAdapter;
 import com.zonesnap.classes.ZoneSnap_App;
@@ -130,9 +132,9 @@ public class CurrentFragment extends Fragment {
 		logo.setText("Finding Zone...");
 
 		// Check if GPS is disabled
-		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-			new AlertDialog.Builder(getActivity())
-					.setMessage("Error: GPS is disabled");
+		if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+				|| location == null) {
+			EnableGPS();
 			return;
 		}
 
@@ -171,6 +173,32 @@ public class CurrentFragment extends Fragment {
 		super.onResume();
 	}
 
+	private void EnableGPS() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		builder.setMessage(
+				"Your GPS seems to be disabled, do you want to enable it?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									@SuppressWarnings("unused") final DialogInterface dialog,
+									@SuppressWarnings("unused") final int id) {
+								startActivity(new Intent(
+										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							}
+						})
+				.setNegativeButton("No",
+						new DialogInterface.OnClickListener() {
+							public void onClick(
+									final DialogInterface dialog,
+									@SuppressWarnings("unused") final int id) {
+								dialog.cancel();
+							}
+						});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	// Listen for location changes
 	public final LocationListener mLocationListener = new LocationListener() {
 		@Override
@@ -181,11 +209,7 @@ public class CurrentFragment extends Fragment {
 
 		@Override
 		public void onProviderDisabled(String arg0) {
-			// Let client know that GPS was disabled
-			new AlertDialog.Builder(getActivity())
-					.setMessage(
-							"It seems your GPS has been disabled. Please enable it for ZoneSnap to work.")
-					.show();
+
 		}
 
 		@Override
@@ -363,7 +387,7 @@ public class CurrentFragment extends Fragment {
 			}
 			return returnData;
 		}
-		
+
 		// Process data, display
 		@SuppressLint("NewApi")
 		@Override

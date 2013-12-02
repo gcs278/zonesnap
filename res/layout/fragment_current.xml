@@ -5,63 +5,63 @@
     android:background="@drawable/background"
     android:baselineAligned="false"
     android:orientation="vertical" >
-            <TextView
-                android:id="@+id/current_Logo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Locating Zone..."
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#00FF26"
-                android:textSize="30sp" />
 
-            <Button
-                android:id="@+id/refresh"
-                android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:layout_gravity="center"
-                android:background="@drawable/refresh"
-                android:gravity="center" />
+    <TextView
+        android:id="@+id/current_Logo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Locating Zone..."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#00FF26"
+        android:textSize="30sp" />
 
-            <TextView
-                android:id="@+id/current_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Zone Activity:"
-                android:layout_gravity="bottom"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#00FF26"
-                android:textSize="30sp"
-                android:textStyle="normal"
+    <Button
+        android:id="@+id/refresh"
+        android:layout_width="40sp"
+        android:layout_height="40sp"
+        android:layout_gravity="center"
+        android:background="@drawable/refresh"
+        android:gravity="center" />
 
-                android:typeface="monospace" />
+    <TextView
+        android:id="@+id/current_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="Zone Activity:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#00FF26"
+        android:textSize="30sp"
+        android:textStyle="normal"
+        android:typeface="monospace" />
 
+    <ProgressBar
+        android:id="@+id/current_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
 
-            <ProgressBar
-                android:id="@+id/current_progress"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/current_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Loading..."
+        android:textColor="#FF0000"
+        android:textSize="25sp"
+        android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/current_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textColor="#FF0000"
-                android:visibility="gone"
-                android:textSize="25sp"
-                android:text="Loading..." />
+    <GridView
+        android:id="@+id/gridCurrent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:columnWidth="90dp"
+        android:gravity="center"
+        android:horizontalSpacing="10dp"
+        android:numColumns="3"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="10dp" >
+    </GridView>
 
-        <GridView
-            android:id="@+id/gridCurrent"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:columnWidth="90dp"
-            android:gravity="center"
-            android:horizontalSpacing="10dp"
-            android:numColumns="3"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="10dp" >
-        </GridView>
-    </LinearLayout>
+</LinearLayout>
