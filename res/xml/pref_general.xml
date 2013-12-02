@@ -21,6 +21,7 @@
         android:dialogTitle="Select a map type"
         android:entries="@array/pref_list_map_types"
         android:entryValues="@array/pref_sync_map_type_values"
+        android:defaultValue="2"
         android:key="@string/pref_key_map"
         android:title="Google Maps Type" />
 
