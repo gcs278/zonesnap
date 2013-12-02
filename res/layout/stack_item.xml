@@ -24,10 +24,12 @@
         android:id="@+id/stackText"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
         android:gravity="center"
         android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#00FF26" />
 
 </RelativeLayout>

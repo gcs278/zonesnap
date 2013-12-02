@@ -33,7 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.widget.ProfilePictureView;
-import com.zonesnap.classes.ImageAdapter;
+import com.zonesnap.activities.MainFragmentActivity;
+import com.zonesnap.adapters.ImageAdapter;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
@@ -66,7 +67,7 @@ public class ProfileFragment extends Fragment {
 				"fonts/capella.ttf");
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Orbitron-Regular.ttf");
-
+		
 		// /////////////// Set all of the textview font's ////////////////////
 		TextView title = (TextView) getView().findViewById(R.id.profile_title);
 		title.setTypeface(zsLogo);

@@ -2,7 +2,6 @@ package com.zonesnap.classes;
 
 import android.app.Application;
 import com.facebook.model.GraphUser;
-import com.facebook.widget.ProfilePictureView;
 import com.google.android.gms.maps.GoogleMap;
 
 import android.content.Context;
@@ -61,9 +60,9 @@ public class ZoneSnap_App extends Application {
 			}
 
 		};
-		
-		descCache = new LruCache<Integer, String>(cacheSize);
 		likeCache = new LruCache<Integer, Integer>(cacheSize);
+		descCache = new LruCache<Integer, String>(cacheSize);
+		
 	}
 	
 	// Port Getter

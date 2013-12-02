@@ -51,7 +51,7 @@ import android.widget.Toast;
 import com.google.android.gms.internal.cu;
 import com.google.android.gms.wallet.EnableWalletOptimizationReceiver;
 import com.zonesnap.activities.MapMenuActivity;
-import com.zonesnap.classes.ImageAdapter;
+import com.zonesnap.adapters.ImageAdapter;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 

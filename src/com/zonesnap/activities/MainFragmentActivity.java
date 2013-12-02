@@ -9,6 +9,8 @@ import com.zonesnap.fragments.UploadFragment;
 import com.zonesnap.zonesnap_app.R;
 
 import com.zonesnap.activities.SettingsActivity;
+import com.zonesnap.classes.ZoneSnap_App;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
@@ -74,6 +76,12 @@ public class MainFragmentActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		mViewPager.setCurrentItem(startPosition);
+		
+		// Check that user is logged in
+		if (ZoneSnap_App.user == null) {
+			finish();
+			return;
+		}
 	}
 
 	@Override
