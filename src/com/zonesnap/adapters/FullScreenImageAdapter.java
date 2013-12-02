@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,7 +52,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		final ImageView imgLiked;
 		TextView desc, likesTitle;
 		final TextView likes;
-		Button btnClose;
+		ImageButton btnClose;
 		final Button btnLike;
 
 		inflater = (LayoutInflater) _activity
@@ -60,7 +62,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
 		// Get the GUI variables
 		imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
-		btnClose = (Button) viewLayout.findViewById(R.id.btnClose);
+		btnClose = (ImageButton) viewLayout.findViewById(R.id.btnClose);
 		btnLike = (Button) viewLayout.findViewById(R.id.image_btnLike);
 		desc = (TextView) viewLayout.findViewById(R.id.image_desc);
 		likes = (TextView) viewLayout.findViewById(R.id.image_likesNum);
@@ -113,6 +115,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 				imgLiked.setVisibility(View.VISIBLE);
 				btnLike.setEnabled(false);
 				btnLike.setText("Liked");
+				btnLike.setTextColor(Color.parseColor("#00FF26"));				
 				likes.setText(String.valueOf(prevLikes + 1));
 			}
 		});

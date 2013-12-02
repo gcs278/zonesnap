@@ -238,8 +238,9 @@ public class CurrentFragment extends Fragment {
 	 */
 	private Location getLocationByProvider(String provider) {
 		Location location = null;
-		LocationManager locationManager = (LocationManager) getActivity().getApplicationContext()
-				.getSystemService(Context.LOCATION_SERVICE);
+		LocationManager locationManager = (LocationManager) getActivity()
+				.getApplicationContext().getSystemService(
+						Context.LOCATION_SERVICE);
 		try {
 			if (locationManager.isProviderEnabled(provider)) {
 				location = locationManager.getLastKnownLocation(provider);
@@ -463,19 +464,26 @@ public class CurrentFragment extends Fragment {
 						e.printStackTrace();
 					}
 				}
-				// send notification to system that user entered new zone
-				final NotificationManager notiMgr = (NotificationManager) getActivity()
-						.getSystemService(getActivity().NOTIFICATION_SERVICE);
-				Intent notIntent = new Intent(getActivity(),
-						MapMenuActivity.class);
-				PendingIntent pIntent = PendingIntent.getActivity(
-						getActivity(), 0, notIntent, 0);
-				Notification n = new Notification.Builder(getActivity())
-						.setContentTitle("Entered new zone.")
-						.setSmallIcon(R.drawable.zonesnap1_launcher)
-						.setContentText("Touch to view content of new zone.")
-						.setContentIntent(pIntent).setAutoCancel(true).build();
-				notiMgr.notify(0, n);
+				try {
+					// send notification to system that user entered new zone
+					final NotificationManager notiMgr = (NotificationManager) getActivity()
+							.getSystemService(
+									getActivity().NOTIFICATION_SERVICE);
+					Intent notIntent = new Intent(getActivity(),
+							MapMenuActivity.class);
+					PendingIntent pIntent = PendingIntent.getActivity(
+							getActivity(), 0, notIntent, 0);
+					Notification n = new Notification.Builder(getActivity())
+							.setContentTitle("Entered new zone.")
+							.setSmallIcon(R.drawable.zonesnap1_launcher)
+							.setContentText(
+									"Touch to view content of new zone.")
+							.setContentIntent(pIntent).setAutoCancel(true)
+							.build();
+					notiMgr.notify(0, n);
+				} catch (NullPointerException e) {
+
+				}
 			}
 			// Set current Zone
 			currentZone = result;

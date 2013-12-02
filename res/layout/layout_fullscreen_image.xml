@@ -2,12 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
- 
-    <ImageView
-        android:id="@+id/imgDisplay"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:scaleType="fitCenter" />
     
         <TextView
         android:id="@+id/image_desc"
@@ -29,38 +23,16 @@
             android:textColor="#00FF26"
             android:textSize="30sp" />
 
-           <Button
+           <ImageButton
                android:id="@+id/btnClose"
-               android:layout_width="wrap_content"
+               android:layout_width="30dp"
                android:layout_height="30dp"
                android:layout_alignParentRight="true"
                android:layout_alignParentTop="true"
-               android:background="@drawable/button_background"
                android:paddingBottom="2dp"
                android:paddingTop="2dp"
-               android:text="Close"
-               android:textColor="#ffffff" />
-
-           <Button
-               android:id="@+id/image_btnLike"
-               android:layout_width="wrap_content"
-               android:layout_height="30dp"
-               android:layout_alignParentBottom="true"
-               android:layout_alignParentRight="true"
-               android:background="@drawable/button_background"
-               android:paddingBottom="2dp"
-               android:paddingTop="2dp"
-               android:text="Like"
-               android:textColor="#ffffff" />
-
-           <ImageView
-               android:id="@+id/image_liked"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_alignTop="@+id/image_btnLike"
-               android:layout_centerHorizontal="true"
-               android:visibility="gone"
-               android:src="@drawable/com_facebook_button_check_on" />
+               android:background="@drawable/close"
+               android:textColor="#00FF26" />
 
            <TextView
                android:id="@+id/image_likesNum"
@@ -72,5 +44,35 @@
                android:text="0"
                android:textColor="#00FF26"
                android:textSize="30sp" />
+
+           <ImageView
+               android:id="@+id/imgDisplay"
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:layout_alignParentLeft="true"
+               android:layout_alignParentTop="true"
+               android:scaleType="fitCenter" />
+
+           <Button
+               android:id="@+id/image_btnLike"
+               android:layout_width="wrap_content"
+               android:layout_height="30dp"
+               android:layout_alignTop="@+id/image_likesNum"
+               android:layout_marginTop="2dp"
+               android:layout_toLeftOf="@+id/btnClose"
+               android:background="@drawable/button_background"
+               android:paddingBottom="2dp"
+               android:paddingTop="2dp"
+               android:text="Like"
+               android:textColor="#FF0000" />
+
+           <ImageView
+               android:id="@+id/image_liked"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_alignBottom="@+id/image_btnLike"
+               android:layout_centerHorizontal="true"
+               android:visibility="gone"
+               android:src="@drawable/com_facebook_button_check_on" />
  
 </RelativeLayout>
