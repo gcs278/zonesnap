@@ -33,12 +33,12 @@ import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 //Fragment for the Historic ZoneSnap View
-public class HistoryFragment extends Fragment {
+public class LikedFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	TextView likedTitle, historyTitle, message;
 	
 	ProgressBar progressBar;
-	public HistoryFragment() {
+	public LikedFragment() {
 	}
 
 	@Override

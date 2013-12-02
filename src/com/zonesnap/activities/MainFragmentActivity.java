@@ -1,11 +1,9 @@
 package com.zonesnap.activities;
 
-import com.facebook.*;
 import java.util.Locale;
 
-import com.facebook.Session;
 import com.zonesnap.fragments.CurrentFragment;
-import com.zonesnap.fragments.HistoryFragment;
+import com.zonesnap.fragments.LikedFragment;
 import com.zonesnap.fragments.ProfileFragment;
 import com.zonesnap.fragments.UploadFragment;
 import com.zonesnap.zonesnap_app.R;
@@ -15,35 +13,32 @@ import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.location.Location;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends FragmentActivity implements
+// This is the activity that the fragments run off of
+public class MainFragmentActivity extends FragmentActivity implements
 		ActionBar.TabListener {
 	// Fragment Variables
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	private static final String TAG = "MainFragment";
-	Location mCurrentLocation;
-	private UiLifecycleHelper uiHelper;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		//get intent extras (postition)
+		// get intent extras (postition)
 		Bundle extras = getIntent().getExtras();
 		int startPosition = extras.getInt("position");
-		
+
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -52,7 +47,7 @@ public class MainActivity extends FragmentActivity implements
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
- 
+
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -79,27 +74,7 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		mViewPager.setCurrentItem(startPosition);
-				
-	    uiHelper = new UiLifecycleHelper(this, callback);
-	    uiHelper.onCreate(savedInstanceState);
 	}
-
-	private void onSessionStateChange(Session session, SessionState state,
-			Exception exception) {
-		if (state.isOpened()) {
-			Log.i(TAG, "Logged in...");
-		} else if (state.isClosed()) {
-			Log.i(TAG, "Logged out...");
-		}
-	}
-
-	private Session.StatusCallback callback = new Session.StatusCallback() {
-		@Override
-		public void call(Session session, SessionState state,
-				Exception exception) {
-			onSessionStateChange(session, state, exception);
-		}
-	};
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,20 +82,15 @@ public class MainActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
+	// Settings
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent settings = new Intent(this, SettingsActivity.class);
 		startActivity(settings);
 		return super.onOptionsItemSelected(item);
 	}
-	
-	@Override
-	public void onBackPressed() {
-		// TODO Auto-generated method stub
-		super.onBackPressed();
-	}
-	
+
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -139,6 +109,7 @@ public class MainActivity extends FragmentActivity implements
 			super(fm);
 		}
 
+		// Order of the fragments
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
@@ -153,7 +124,7 @@ public class MainActivity extends FragmentActivity implements
 				fragment = new CurrentFragment();
 				break;
 			case 2:
-				fragment = new HistoryFragment();
+				fragment = new LikedFragment();
 				break;
 			case 3:
 				fragment = new ProfileFragment();
@@ -166,12 +137,14 @@ public class MainActivity extends FragmentActivity implements
 			return fragment;
 		}
 
+		// Get count
 		@Override
 		public int getCount() {
 			// Show 4 total pages.
 			return 4;
 		}
 
+		// Get Titles
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
@@ -192,13 +165,13 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onTabReselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
+		// Nothing
 
 	}
 
 	@Override
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-		// TODO Auto-generated method stub
+		// Nothing
 
 	}
 

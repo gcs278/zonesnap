@@ -36,7 +36,6 @@ public class ZoneSnap_App extends Application {
 	
 	///////////////// FACEBOOK VARS //////////////////////////////////
 	
-	public static ProfilePictureView profilePic;
     public static GraphUser user;
 
 	
@@ -51,6 +50,7 @@ public class ZoneSnap_App extends Application {
 		// Use 1/8th of the available memory for this memory cache.
 		final int cacheSize = maxMemory / 8;
 
+		// Initialize the caches
 		imageCache = new LruCache<Integer, Bitmap>(cacheSize) {
 			@Override
 			protected int sizeOf(Integer key, Bitmap bitmap) {
@@ -62,7 +62,6 @@ public class ZoneSnap_App extends Application {
 		};
 		
 		descCache = new LruCache<Integer, String>(cacheSize);
-		
 		likeCache = new LruCache<Integer, Integer>(cacheSize);
 	}
 	
@@ -91,6 +90,7 @@ public class ZoneSnap_App extends Application {
         return s_instance;
     }
 	
+	// To get the string associated with a resource
 	public static String getResourceString(int resId){
         return getContext().getString(resId);       
     }

@@ -42,6 +42,8 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 		pd.setCancelable(false);
 		pd.setIndeterminate(true);
 		pd.show();
+		
+		// Get Current location
 		LocationManager locationManager = (LocationManager) activity
 				.getSystemService(Context.LOCATION_SERVICE);
 		latitude = locationManager.getLastKnownLocation(
@@ -67,7 +69,6 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 					null);
 			HttpPost request = new HttpPost(address);
 			
-			// Grant new code
 			// Create JSON object for image
 			JSONObject json = new JSONObject();
 			json.put("image",params[1]);
@@ -91,8 +92,8 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 			e.printStackTrace();
 			return e.getMessage();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return e.getMessage();
 		}
 		return verified;
 	}
