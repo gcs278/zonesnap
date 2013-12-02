@@ -2,10 +2,6 @@ package com.zonesnap.adapters;
 
 import java.util.ArrayList;
 
-import com.zonesnap.classes.ZoneSnap_App;
-import com.zonesnap.networking.NetworkPostLike;
-import com.zonesnap.zonesnap_app.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -22,6 +18,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.zonesnap.classes.TouchImageView;
+import com.zonesnap.classes.ZoneSnap_App;
+import com.zonesnap.networking.NetworkPostLike;
+import com.zonesnap.zonesnap_app.R;
 
 // This is the adapter for the full screen image view
 public class FullScreenImageAdapter extends PagerAdapter {
@@ -48,7 +49,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
 	@Override
 	public Object instantiateItem(ViewGroup container, final int position) {
-		ImageView imgDisplay;
+		TouchImageView imgDisplay;
 		final ImageView imgLiked;
 		TextView desc, likesTitle;
 		final TextView likes;
@@ -61,7 +62,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 				container, false);
 
 		// Get the GUI variables
-		imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
+		imgDisplay = (TouchImageView) viewLayout.findViewById(R.id.imgDisplay);
 		btnClose = (ImageButton) viewLayout.findViewById(R.id.btnClose);
 		btnLike = (Button) viewLayout.findViewById(R.id.image_btnLike);
 		desc = (TextView) viewLayout.findViewById(R.id.image_desc);

@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -58,7 +61,8 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 
 		holder.img.setImageBitmap(item.getImg());
 		holder.text.setText(item.getText());
-/*		
+		holder.text.setAlpha(0);
+		
 		holder.like.setOnClickListener(new OnClickListener(){
 
 			@Override
@@ -67,14 +71,40 @@ public class StackAdapter extends ArrayAdapter<StackItem> {
 				
 				
 				
-			//	Button l = (Button) v.findViewById(R.id.likeButton);
-			//	l.setText("Liked");
+				Button l = (Button) v.findViewById(R.id.likeButton);
+				l.setText("Liked");
+				l.setClickable(false);
 				
 				
 			}
 			
 		});
-*/
+		
+		row.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				
+				if(arg1.getDownTime() >= 1000){
+					for (int i = 0; i <= 100; i++) {
+						arg0.findViewById(R.id.stackText).setAlpha(i);
+					}
+				}
+				else if(arg1.getActionMasked() == MotionEvent.ACTION_UP){
+					for (int i = 0; i <= 100; i++) {
+						arg0.findViewById(R.id.stackText).setAlpha(100 - i);
+					}
+				}
+				else{
+					arg0.findViewById(R.id.stackText).setAlpha(0);
+				}
+				
+				
+				return false;
+			}
+			
+		});
+
 		return row;
 	}
 	

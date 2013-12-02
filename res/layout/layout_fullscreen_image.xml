@@ -45,7 +45,7 @@
                android:textColor="#00FF26"
                android:textSize="30sp" />
 
-           <ImageView
+           <com.zonesnap.classes.TouchImageView
                android:id="@+id/imgDisplay"
                android:layout_width="fill_parent"
                android:layout_height="fill_parent"
