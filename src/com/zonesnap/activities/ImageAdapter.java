@@ -229,6 +229,9 @@ public class ImageAdapter extends BaseAdapter {
 				}
 				String imageBase64 = (String) json.get("image");
 				String title = (String) json.get("title");
+
+				String likes = String.valueOf(Integer.parseInt(json.get("likes").toString()));
+
 				
 				try {
 					// Decode and set image to profile pic
