@@ -1,5 +1,7 @@
 package com.zonesnap.classes;
 
+import java.util.ArrayList;
+
 import android.app.Application;
 import com.facebook.model.GraphUser;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +40,7 @@ public class ZoneSnap_App extends Application {
 	
     public static GraphUser user;
 
+    public static ArrayList<Integer> likedList;
 	
     // Constructor
 	public ZoneSnap_App() {
@@ -62,6 +65,9 @@ public class ZoneSnap_App extends Application {
 		};
 		likeCache = new LruCache<Integer, Integer>(cacheSize);
 		descCache = new LruCache<Integer, String>(cacheSize);
+		imageCache.evictAll();
+		descCache.evictAll();
+		likeCache.evictAll();
 		
 	}
 	

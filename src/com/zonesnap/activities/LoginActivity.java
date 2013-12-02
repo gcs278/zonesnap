@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.facebook.AppEventsLogger;
 import com.facebook.FacebookAuthorizationException;
@@ -33,7 +34,7 @@ public class LoginActivity extends Activity {
 	// GUI Variables
 	private LoginButton loginButton;
 	private TextView greeting;
-
+	ProgressBar progressBar;
 	// UI LifeCycle helper for transistions
 	private UiLifecycleHelper uiHelper;
 
@@ -75,6 +76,7 @@ public class LoginActivity extends Activity {
 				"fonts/Orbitron-Regular.ttf");
 		greeting.setTypeface(zsFont);
 
+		progressBar = (ProgressBar) findViewById(R.id.login_progress);
 	}
 
 	private Session.StatusCallback callback = new Session.StatusCallback() {
@@ -166,9 +168,9 @@ public class LoginActivity extends Activity {
 
 		if (activeSession && ZoneSnap_App.user != null) {
 
-
+			progressBar.setVisibility(View.VISIBLE);
 			// Login in the user
-			NetworkPostLogin task = new NetworkPostLogin(this);
+			NetworkPostLogin task = new NetworkPostLogin(this, progressBar);
 			task.execute(ZoneSnap_App.user.getUsername());
 
 			greeting.setText(getString(R.string.hello_user,

@@ -66,7 +66,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		likes = (TextView) viewLayout.findViewById(R.id.image_likesNum);
 		likesTitle = (TextView) viewLayout.findViewById(R.id.image_likesTitle);
 		imgLiked = (ImageView) viewLayout.findViewById(R.id.image_liked);
-		
+
 		// Set Font of text Views
 		Typeface zsFont = Typeface.createFromAsset(_activity.getAssets(),
 				"fonts/Orbitron-Regular.ttf");
@@ -83,16 +83,12 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		desc.setText(ZoneSnap_App.descCache.get(photoIDs.get(position)));
 		likes.setText(String.valueOf(ZoneSnap_App.likeCache.get(photoIDs
 				.get(position))));
-		
+
 		// See if photo has been liked
-		try {
-			if (ZoneSnap_App.likeCache.get(photoIDs.get(position)) != 0) {
-				imgLiked.setVisibility(View.VISIBLE);
-				btnLike.setEnabled(false);
-				btnLike.setText("Liked");
-			}
-		} catch (NullPointerException e) {
-			// Do nothing
+		if (ZoneSnap_App.likedList.contains(photoIDs.get(position))) {
+			imgLiked.setVisibility(View.VISIBLE);
+			btnLike.setEnabled(false);
+			btnLike.setText("Liked");
 		}
 
 		// close button click event

@@ -103,12 +103,6 @@ public class CurrentFragment extends Fragment {
 		// Acquire a reference to the system Location Manager
 		locationManager = (LocationManager) getActivity().getSystemService(
 				Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
-				ZoneSnap_App.GPS_MIN_DISTANCE, mLocationListener);
-
-		// Call First update
-		updateLocation(locationManager
-				.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 
 		// Set the refresh button to refresh
 		refresh = (Button) getView().findViewById(R.id.refresh);
@@ -117,8 +111,7 @@ public class CurrentFragment extends Fragment {
 				LocationManager locationManager = (LocationManager) getActivity()
 						.getSystemService(Context.LOCATION_SERVICE);
 				// Update Location
-				updateLocation(locationManager
-						.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+				updateLocation(getBestLocation());
 			}
 		});
 
@@ -170,11 +163,13 @@ public class CurrentFragment extends Fragment {
 	public void onResume() {
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,
 				ZoneSnap_App.GPS_MIN_DISTANCE, mLocationListener);
+		updateLocation(getBestLocation());
 		super.onResume();
 	}
 
 	private void EnableGPS() {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		final AlertDialog.Builder builder = new AlertDialog.Builder(
+				getActivity());
 		builder.setMessage(
 				"Your GPS seems to be disabled, do you want to enable it?")
 				.setCancelable(false)
@@ -187,18 +182,74 @@ public class CurrentFragment extends Fragment {
 										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 							}
 						})
-				.setNegativeButton("No",
-						new DialogInterface.OnClickListener() {
-							public void onClick(
-									final DialogInterface dialog,
-									@SuppressWarnings("unused") final int id) {
-								dialog.cancel();
-							}
-						});
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(final DialogInterface dialog,
+							@SuppressWarnings("unused") final int id) {
+						dialog.cancel();
+					}
+				});
 		final AlertDialog alert = builder.create();
 		alert.show();
 	}
-	
+
+	/**
+	 * try to get the 'best' location selected from all providers
+	 */
+	private Location getBestLocation() {
+		Location gpslocation = getLocationByProvider(LocationManager.GPS_PROVIDER);
+		Location networkLocation = getLocationByProvider(LocationManager.NETWORK_PROVIDER);
+		// if we have only one location available, the choice is easy
+		if (gpslocation == null) {
+			// Log.d(TAG, "No GPS Location available.");
+			return networkLocation;
+		}
+		if (networkLocation == null) {
+			// Log.d(TAG, "No Network Location available");
+			return gpslocation;
+		}
+		// a locationupdate is considered 'old' if its older than the configured
+		// update interval. this means, we didn't get a
+		// update from this provider since the last check
+		long old = System.currentTimeMillis() - 5000;
+		boolean gpsIsOld = (gpslocation.getTime() < old);
+		boolean networkIsOld = (networkLocation.getTime() < old);
+		// gps is current and available, gps is better than network
+		if (!gpsIsOld) {
+			// Log.d(TAG, "Returning current GPS Location");
+			return gpslocation;
+		}
+		// gps is old, we can't trust it. use network location
+		if (!networkIsOld) {
+			// Log.d(TAG, "GPS is old, Network is current, returning network");
+			return networkLocation;
+		}
+		// both are old return the newer of those two
+		if (gpslocation.getTime() > networkLocation.getTime()) {
+			// Log.d(TAG, "Both are old, returning gps(newer)");
+			return gpslocation;
+		} else {
+			// Log.d(TAG, "Both are old, returning network(newer)");
+			return networkLocation;
+		}
+	}
+
+	/**
+	 * get the last known location from a specific provider (network/gps)
+	 */
+	private Location getLocationByProvider(String provider) {
+		Location location = null;
+		LocationManager locationManager = (LocationManager) getActivity().getApplicationContext()
+				.getSystemService(Context.LOCATION_SERVICE);
+		try {
+			if (locationManager.isProviderEnabled(provider)) {
+				location = locationManager.getLastKnownLocation(provider);
+			}
+		} catch (IllegalArgumentException e) {
+			// Log.d(TAG, "Cannot acces Provider " + provider);
+		}
+		return location;
+	}
+
 	// Listen for location changes
 	public final LocationListener mLocationListener = new LocationListener() {
 		@Override

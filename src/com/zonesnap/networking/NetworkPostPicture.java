@@ -6,8 +6,11 @@ import java.net.URISyntaxException;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -21,6 +24,7 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.internal.ac;
 import com.zonesnap.classes.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostPicture extends AsyncTask<String, Void, String> {
@@ -44,15 +48,70 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 		pd.show();
 		
 		// Get Current location
-		LocationManager locationManager = (LocationManager) activity
-				.getSystemService(Context.LOCATION_SERVICE);
-		latitude = locationManager.getLastKnownLocation(
-				LocationManager.GPS_PROVIDER).getLatitude();
-		longitude = locationManager.getLastKnownLocation(
-				LocationManager.GPS_PROVIDER).getLongitude();
+		Location location = getBestLocation();
+		latitude = location.getLatitude();
+		longitude = location.getLongitude();
 		
 	}
 
+	/**
+	 * try to get the 'best' location selected from all providers
+	 */
+	private Location getBestLocation() {
+	    Location gpslocation = getLocationByProvider(LocationManager.GPS_PROVIDER);
+	    Location networkLocation =
+	            getLocationByProvider(LocationManager.NETWORK_PROVIDER);
+	    // if we have only one location available, the choice is easy
+	    if (gpslocation == null) {
+	        // Log.d(TAG, "No GPS Location available.");
+	        return networkLocation;
+	    }
+	    if (networkLocation == null) {
+	        // Log.d(TAG, "No Network Location available");
+	        return gpslocation;
+	    }
+	    // a locationupdate is considered 'old' if its older than the configured
+	    // update interval. this means, we didn't get a
+	    // update from this provider since the last check
+	    long old = System.currentTimeMillis() - 5000;
+	    boolean gpsIsOld = (gpslocation.getTime() < old);
+	    boolean networkIsOld = (networkLocation.getTime() < old);
+	    // gps is current and available, gps is better than network
+	    if (!gpsIsOld) {
+	        // Log.d(TAG, "Returning current GPS Location");
+	        return gpslocation;
+	    }
+	    // gps is old, we can't trust it. use network location
+	    if (!networkIsOld) {
+	       // Log.d(TAG, "GPS is old, Network is current, returning network");
+	        return networkLocation;
+	    }
+	    // both are old return the newer of those two
+	    if (gpslocation.getTime() > networkLocation.getTime()) {
+	       // Log.d(TAG, "Both are old, returning gps(newer)");
+	        return gpslocation;
+	    } else {
+	       // Log.d(TAG, "Both are old, returning network(newer)");
+	        return networkLocation;
+	    }
+	}
+
+	/**
+	 * get the last known location from a specific provider (network/gps)
+	 */
+	private Location getLocationByProvider(String provider) {
+	    Location location = null;
+	    LocationManager locationManager = (LocationManager) activity.getApplicationContext()
+	            .getSystemService(Context.LOCATION_SERVICE);
+	    try {
+	        if (locationManager.isProviderEnabled(provider)) {
+	            location = locationManager.getLastKnownLocation(provider);
+	        }
+	    } catch (IllegalArgumentException e) {
+	       //  Log.d(TAG, "Cannot acces Provider " + provider);
+	    }
+	    return location;
+	}
 	// Retrieve data
 	@Override
 	protected String doInBackground(String... params) {

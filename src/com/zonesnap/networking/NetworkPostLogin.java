@@ -8,6 +8,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -28,9 +31,10 @@ import com.zonesnap.classes.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	Context activity;
-	
-	public NetworkPostLogin(Context context) {
+	ProgressBar progressBar;
+	public NetworkPostLogin(Context context, ProgressBar pb) {
 		activity = context;
+		this.progressBar = pb;
 	}
 
 	// Let user know its updating
@@ -86,6 +90,7 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	// Process data, display
 	@Override
 	protected void onPostExecute(String result) {
+		progressBar.setVisibility(View.GONE);
 		if (result.contains("OK")) {
 			Intent login = new Intent(activity, MapMenuActivity.class);
 			activity.startActivity(login);

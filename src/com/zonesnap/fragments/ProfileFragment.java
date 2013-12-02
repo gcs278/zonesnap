@@ -33,7 +33,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.widget.ProfilePictureView;
-import com.zonesnap.activities.MainFragmentActivity;
 import com.zonesnap.adapters.ImageAdapter;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
@@ -41,7 +40,7 @@ import com.zonesnap.zonesnap_app.R;
 //Fragment for user's profile
 public class ProfileFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
-	
+
 	// Facebook profile pic
 	private ProfilePictureView profilePictureView;
 
@@ -67,7 +66,7 @@ public class ProfileFragment extends Fragment {
 				"fonts/capella.ttf");
 		Typeface zsFont = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Orbitron-Regular.ttf");
-		
+
 		// /////////////// Set all of the textview font's ////////////////////
 		TextView title = (TextView) getView().findViewById(R.id.profile_title);
 		title.setTypeface(zsLogo);
@@ -109,6 +108,18 @@ public class ProfileFragment extends Fragment {
 		NetworkGetProfileInfo profileTask = new NetworkGetProfileInfo();
 		profileTask.execute();
 
+	}
+
+	@Override
+	public void onResume() {
+		// Get personal pictures
+		NetworkGetPersonalPictures picsTask = new NetworkGetPersonalPictures();
+		picsTask.execute();
+
+		// Get profile data
+		NetworkGetProfileInfo profileTask = new NetworkGetProfileInfo();
+		profileTask.execute();
+		super.onResume();
 	}
 
 	// This network task retrieves profile information and displays

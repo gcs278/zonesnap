@@ -50,12 +50,16 @@ public class LikedFragment extends Fragment {
 
 		return rootView;
 	}
-
+	@Override
+	public void onResume() {
+		NetworkGetLikedList likeTask = new NetworkGetLikedList(getActivity());
+		likeTask.execute();
+		
+		super.onResume();
+	}
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		NetworkGetLikedList likeTask = new NetworkGetLikedList(getActivity());
-		likeTask.execute();
 //		NetworkGetPastList pastTask = new NetworkGetPastList(getActivity());
 //		pastTask.execute();
 
@@ -146,6 +150,7 @@ public class LikedFragment extends Fragment {
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
+				ZoneSnap_App.likedList = (ArrayList<Integer>) photoIDs.clone();
 			} else {
 				System.out.println("FailGetPictureList");
 			}
