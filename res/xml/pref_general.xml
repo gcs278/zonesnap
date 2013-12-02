@@ -10,7 +10,6 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="URL" />
-    
     <EditTextPreference
         android:defaultValue="8080"
         android:inputType="number"
@@ -19,5 +18,12 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="Port Number" />
+
+    <ListPreference
+        android:dialogTitle="Select a map type"
+        android:entries="@array/pref_list_map_types"
+        android:entryValues="@array/pref_sync_map_type_values"
+        android:key="@string/pref_key_map"
+        android:title="Google Maps Type" />
 
 </PreferenceScreen>

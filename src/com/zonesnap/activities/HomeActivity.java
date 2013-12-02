@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,36 +20,25 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.internal.p;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.zonesnap.classes.Coordinates;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
-import com.zonesnap.zonesnap_app.R.id;
-import com.zonesnap.zonesnap_app.R.layout;
-import com.zonesnap.zonesnap_app.R.menu;
-
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.service.textservice.SpellCheckerService.Session;
 import android.support.v4.app.FragmentActivity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,7 +66,6 @@ public class HomeActivity extends FragmentActivity {
 				.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		LatLng myCoor = null;
 		if (location != null) {
-			System.out.println("Here");
 			myCoor = new LatLng(location.getLatitude(), location.getLongitude());
 		} else {
 			new AlertDialog.Builder(this).setMessage(
@@ -87,6 +76,7 @@ public class HomeActivity extends FragmentActivity {
 		// This has been known to throw exception
 		try {
 			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
+			map.setMapType(ZoneSnap_App.MAP_TYPE);
 		} catch (NullPointerException e) {
 			new AlertDialog.Builder(this).setMessage(
 					"Whoops. Something when wrong.").show();
@@ -197,6 +187,8 @@ public class HomeActivity extends FragmentActivity {
 		// Retrieve the picture marks again
 		NetworkGetPictureLocations task = new NetworkGetPictureLocations(this);
 		task.execute();
+		
+		map.setMapType(ZoneSnap_App.MAP_TYPE);
 	}
 
 	@Override
@@ -244,7 +236,6 @@ public class HomeActivity extends FragmentActivity {
 					response.getEntity().getContent().close();
 					throw new IOException(statusLine.getReasonPhrase());
 				}
-				System.out.println(photoListJSON);
 
 				try {
 					JSONParser j = new JSONParser();
@@ -255,10 +246,15 @@ public class HomeActivity extends FragmentActivity {
 						String data = array.get(i).toString();
 						String[] parts = data.split(",");
 						Coordinates coor = new Coordinates();
-						coor.photoId = Integer.parseInt(parts[0]);
-						coor.latitude = Double.parseDouble(parts[1]);
-						coor.longitude = Double.parseDouble(parts[2]);
-
+						try {
+							coor.photoId = Integer.parseInt(parts[0]);
+							coor.latitude = Double.parseDouble(parts[1]);
+							coor.longitude = Double.parseDouble(parts[2]);
+							coor.title = parts[3];
+						} catch (ArrayIndexOutOfBoundsException e) {
+							e.printStackTrace();
+						}
+						
 						photos.add(coor);
 					}
 				} catch (ParseException e) {
@@ -286,7 +282,7 @@ public class HomeActivity extends FragmentActivity {
 						markers.add(coor);
 						LatLng point = new LatLng(coor.latitude, coor.longitude);
 						map.addMarker(new MarkerOptions().position(point)
-								.title(String.valueOf(coor.photoId)));
+								.title("Photo #"+String.valueOf(coor.photoId)).snippet(coor.title));
 					}
 
 				}
