@@ -20,11 +20,11 @@ import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 
-import com.zonesnap.networking.post.NetworkPostLogin;
+import com.zonesnap.networking.NetworkPostLogin;
 import com.facebook.widget.FacebookDialog;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
-import com.zonesnap.activities.ZoneSnap_App;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 

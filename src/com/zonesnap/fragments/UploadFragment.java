@@ -29,8 +29,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zonesnap.activities.MainActivity;
-import com.zonesnap.activities.ZoneSnap_App;
-import com.zonesnap.networking.post.NetworkPostPicture;
+import com.zonesnap.classes.ZoneSnap_App;
+import com.zonesnap.networking.NetworkPostPicture;
 import com.zonesnap.zonesnap_app.R;
 
 // fragment for camera

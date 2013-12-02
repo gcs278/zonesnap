@@ -21,6 +21,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 import com.zonesnap.zonesnap_app.R.string;
 import com.zonesnap.zonesnap_app.R.xml;

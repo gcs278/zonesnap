@@ -33,8 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.widget.ProfilePictureView;
-import com.zonesnap.activities.ImageAdapter;
-import com.zonesnap.activities.ZoneSnap_App;
+import com.zonesnap.classes.ImageAdapter;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 //Fragment for user's profile

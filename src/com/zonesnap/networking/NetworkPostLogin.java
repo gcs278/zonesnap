@@ -1,4 +1,4 @@
-package com.zonesnap.networking.post;
+package com.zonesnap.networking;
 
 import java.io.IOException;
 import java.net.URI;
@@ -24,7 +24,7 @@ import org.json.JSONObject;
 import com.google.android.gms.internal.ac;
 import com.zonesnap.activities.HomeActivity;
 import com.zonesnap.activities.MainActivity;
-import com.zonesnap.activities.ZoneSnap_App;
+import com.zonesnap.classes.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	Context activity;

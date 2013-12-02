@@ -1,4 +1,4 @@
-package com.zonesnap.networking.post;
+package com.zonesnap.networking;
 
 import java.io.IOException;
 import java.net.URI;
@@ -17,7 +17,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.zonesnap.activities.ZoneSnap_App;
+import com.zonesnap.classes.ZoneSnap_App;
 // This task is for uploading a picture to the database
 public class NetworkPostTracking extends AsyncTask<String, Void, String> {
 

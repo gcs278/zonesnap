@@ -28,8 +28,8 @@ import android.view.ViewGroup;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.zonesnap.activities.ImageAdapter;
-import com.zonesnap.activities.ZoneSnap_App;
+import com.zonesnap.classes.ImageAdapter;
+import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 
 //Fragment for the Historic ZoneSnap View

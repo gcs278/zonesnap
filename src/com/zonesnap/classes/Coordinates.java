@@ -1,4 +1,4 @@
-package com.zonesnap.networking.get;
+package com.zonesnap.classes;
 
 public class Coordinates {
 	public double latitude;

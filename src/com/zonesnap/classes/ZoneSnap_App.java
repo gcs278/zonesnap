@@ -1,4 +1,4 @@
-package com.zonesnap.activities;
+package com.zonesnap.classes;
 
 import android.app.Application;
 import com.facebook.model.GraphUser;
