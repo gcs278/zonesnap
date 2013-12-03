@@ -64,7 +64,7 @@ public class MapMenuActivity extends FragmentActivity {
 
 		Intent intent = new Intent(this, LocationService.class);
 		startService(intent);
-		
+
 		// Get the map fragment
 		SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
@@ -86,10 +86,10 @@ public class MapMenuActivity extends FragmentActivity {
 		}
 
 		try {
-		// Move the camera to current location
-		// This has been known to throw exception
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 18));
-		map.setMapType(ZoneSnap_App.MAP_TYPE);
+			// Move the camera to current location
+			// This has been known to throw exception
+			map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 18));
+			map.setMapType(ZoneSnap_App.MAP_TYPE);
 		} catch (NullPointerException e) {
 			// GPS is not enabled
 			Toast.makeText(this, "GPS is disabled", Toast.LENGTH_LONG);
