@@ -24,6 +24,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 // This is the activity that the fragments run off of
 public class MainFragmentActivity extends FragmentActivity implements
@@ -79,6 +80,7 @@ public class MainFragmentActivity extends FragmentActivity implements
 		
 		// Check that user is logged in
 		if (ZoneSnap_App.user == null) {
+			Toast.makeText(getApplicationContext(),"Please log back into ZoneSnap", Toast.LENGTH_LONG).show();
 			finish();
 			return;
 		}

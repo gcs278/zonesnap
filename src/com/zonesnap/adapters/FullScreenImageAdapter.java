@@ -4,14 +4,17 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -51,7 +54,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 	public Object instantiateItem(ViewGroup container, final int position) {
 		TouchImageView imgDisplay;
 		final ImageView imgLiked;
-		TextView desc, likesTitle;
+		TextView desc, likesTitle, username;
 		final TextView likes;
 		ImageButton btnClose;
 		final Button btnLike;
@@ -69,14 +72,16 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		likes = (TextView) viewLayout.findViewById(R.id.image_likesNum);
 		likesTitle = (TextView) viewLayout.findViewById(R.id.image_likesTitle);
 		imgLiked = (ImageView) viewLayout.findViewById(R.id.image_liked);
-
+		username = (TextView) viewLayout.findViewById(R.id.image_userName);
+		
 		// Set Font of text Views
 		Typeface zsFont = Typeface.createFromAsset(_activity.getAssets(),
 				"fonts/Orbitron-Regular.ttf");
 		desc.setTypeface(zsFont);
 		likes.setTypeface(zsFont);
 		likesTitle.setTypeface(zsFont);
-
+		username.setTypeface(zsFont);
+		
 		// Set the image
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -86,7 +91,20 @@ public class FullScreenImageAdapter extends PagerAdapter {
 		desc.setText(ZoneSnap_App.descCache.get(photoIDs.get(position)));
 		likes.setText(String.valueOf(ZoneSnap_App.likeCache.get(photoIDs
 				.get(position))));
-
+		final String usernameString = ZoneSnap_App.userCache.get(photoIDs.get(position));
+		username.setText(usernameString);
+		
+		// 
+		username.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				String url = "https://www.facebook.com/"+usernameString;
+				Intent i = new Intent(Intent.ACTION_VIEW);
+				i.setData(Uri.parse(url));
+				_activity.startActivity(i);
+			}
+		});
+		
 		// See if photo has been liked
 		if (ZoneSnap_App.likedList.contains(photoIDs.get(position))) {
 			imgLiked.setVisibility(View.VISIBLE);

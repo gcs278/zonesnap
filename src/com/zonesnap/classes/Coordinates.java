@@ -5,4 +5,5 @@ public class Coordinates {
 	public double longitude;
 	public int photoId;
 	public String title;
+	public String username;
 }

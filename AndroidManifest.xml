@@ -81,7 +81,9 @@
             android:theme="@android:style/Theme.Holo.NoActionBar" >
         </activity>
 
-        <receiver android:name="ZoneSnap_WidgetProvider" >
+        <service android:name="com.zonesnap.classes.LocationService" />
+
+        <receiver android:name="com.zonesnap.classes.ZoneSnap_WidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

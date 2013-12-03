@@ -4,15 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="8dip"
-    android:background="@drawable/widget_background" >
+    android:background="@drawable/widget_background" 
+    android:orientation="vertical">
 
-    <ToggleButton
-        android:id="@+id/toggleButton1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal|center_vertical"
-        android:layout_margin="4dip"
-        android:text="ToggleButton" />
+    <TextView
+        android:id="@+id/widgetLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eric's so cool."
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout> 
