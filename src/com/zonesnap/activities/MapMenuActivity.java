@@ -29,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.zonesnap.classes.Coordinates;
+import com.zonesnap.classes.LocationService;
 import com.zonesnap.classes.ZoneSnap_App;
 import com.zonesnap.zonesnap_app.R;
 import android.location.Location;
@@ -61,6 +62,9 @@ public class MapMenuActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
+		Intent intent = new Intent(this, LocationService.class);
+		startService(intent);
+		
 		// Get the map fragment
 		SupportMapFragment fm = (SupportMapFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.map);
