@@ -38,8 +38,9 @@ public class ZoneSnap_WidgetProvider extends AppWidgetProvider{
 
 	      PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
 	          0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-	      remoteViews.setOnClickPendingIntent(R.id.toggleButton1, pendingIntent);
+	     // remoteViews.setOnClickPendingIntent(R.id.toggleButton1, pendingIntent);
 	      appWidgetManager.updateAppWidget(widgetId, remoteViews);
 	    }
 	  }
+	 
 	} 

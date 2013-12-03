@@ -81,10 +81,15 @@ public class MapMenuActivity extends FragmentActivity {
 			EnableGPS();
 		}
 
+		try {
 		// Move the camera to current location
 		// This has been known to throw exception
 		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 18));
 		map.setMapType(ZoneSnap_App.MAP_TYPE);
+		} catch (NullPointerException e) {
+			// GPS is not enabled
+			Toast.makeText(this, "GPS is disabled", Toast.LENGTH_LONG);
+		}
 
 		// Get all of the markers for pictures
 		NetworkGetPictureLocations task = new NetworkGetPictureLocations();

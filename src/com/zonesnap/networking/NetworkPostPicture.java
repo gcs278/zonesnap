@@ -33,7 +33,8 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	// Progress display
 	ProgressDialog pd;
 	double latitude, longitude;
-
+	boolean GPSenabled = true;
+	
 	public NetworkPostPicture(Context context) {
 		activity = context;
 	}
@@ -51,8 +52,12 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 
 		// Get Current location
 		Location location = getBestLocation();
-		latitude = location.getLatitude();
-		longitude = location.getLongitude();
+		try {
+			latitude = location.getLatitude();
+			longitude = location.getLongitude();
+		} catch (NullPointerException e) {
+			GPSenabled = false;
+		}
 
 	}
 
@@ -118,6 +123,9 @@ public class NetworkPostPicture extends AsyncTask<String, Void, String> {
 	// Retrieve data
 	@Override
 	protected String doInBackground(String... params) {
+		if (!GPSenabled) {
+			return "Cannot upload picture. GPS is disabled";
+		}
 		String verified = "OK";
 		try {
 			// Set Timeout
