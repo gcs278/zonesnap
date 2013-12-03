@@ -42,9 +42,9 @@ public class ZoneSnap_WidgetProvider extends AppWidgetProvider{
 	      intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
 	      
 	      // handler for received Intents for the "my-event" event
-		  	BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-		  		@Override
-		  		public void onReceive(Context context, Intent intent) {
+		  //	BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		  //		@Override
+		  //		public void onReceive(Context context, Intent intent) {
 		  			// Extract data included in the Intent
 		  			Bundle b = intent.getExtras();
 		  			Location loc = (Location) b.get("Location");
@@ -52,16 +52,16 @@ public class ZoneSnap_WidgetProvider extends AppWidgetProvider{
 		  			
 		  			remoteViews.setTextViewText(R.id.widgetLabel,  "Zone: " + String.valueOf(zone));
 		  			
-		  		}
-		  	};
+		  //		}
+		  //	};
 	      
-	      LocalBroadcastManager.getInstance(context.getApplicationContext()).registerReceiver(
-					mMessageReceiver, new IntentFilter(LocationService.BROADCAST));
+	   //   LocalBroadcastManager.getInstance(context.getApplicationContext()).registerReceiver(
+		//			mMessageReceiver, new IntentFilter(LocationService.BROADCAST));
 
 	  
 	  	
 	      PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-	          0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+	          0, intent, LocationService.BROADCAST);
 	      remoteViews.setOnClickPendingIntent(R.id.widgetLabel, pendingIntent);
 	      appWidgetManager.updateAppWidget(widgetId, remoteViews);
 	    }
