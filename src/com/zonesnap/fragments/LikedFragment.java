@@ -151,9 +151,7 @@ public class LikedFragment extends Fragment {
 					e.printStackTrace();
 				}
 				ZoneSnap_App.likedList = (ArrayList<Integer>) photoIDs.clone();
-			} else {
-				System.out.println("FailGetPictureList");
-			}
+			} 
 
 		}
 

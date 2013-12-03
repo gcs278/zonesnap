@@ -106,11 +106,12 @@ public class ImageAdapter extends BaseAdapter {
 	}
 
 	// Adds a bitmap to our cache
-	public void addBitmapToMemoryCache(int key, Bitmap bitmap, String desc, int likes) {
+	public void addBitmapToMemoryCache(int key, Bitmap bitmap, String desc, int likes, String username) {
 		if (getBitmapFromMemCache(key) == null) {
 			ZoneSnap_App.imageCache.put(key, bitmap);
 			ZoneSnap_App.descCache.put(key, desc);
 			ZoneSnap_App.likeCache.put(key, likes);
+			ZoneSnap_App.userCache.put(key, username);
 		}
 	}
 
@@ -245,6 +246,7 @@ public class ImageAdapter extends BaseAdapter {
 				// Parse the data coming in
 				String imageBase64 = (String) json.get("image");
 				String title = (String) json.get("title");
+				String user = json.get("username").toString();
 				int likes = Integer.parseInt(json
 						.get("likes").toString());
 
@@ -257,7 +259,7 @@ public class ImageAdapter extends BaseAdapter {
 					
 					// Set the bitmap to the view and add to cache
 					view.setImageBitmap(decodedByte);
-					addBitmapToMemoryCache(photoID, decodedByte, title, likes);
+					addBitmapToMemoryCache(photoID, decodedByte, title, likes, user);
 
 					view.setAnimation(AnimationUtils.loadAnimation(activity,
 							R.anim.zoom_enter));

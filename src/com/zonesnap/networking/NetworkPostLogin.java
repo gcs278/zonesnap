@@ -28,10 +28,12 @@ import com.google.android.gms.internal.ac;
 import com.zonesnap.activities.MapMenuActivity;
 import com.zonesnap.activities.MainFragmentActivity;
 import com.zonesnap.classes.ZoneSnap_App;
+
 // This task is for uploading a picture to the database
 public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 	Context activity;
 	ProgressBar progressBar;
+
 	public NetworkPostLogin(Context context, ProgressBar pb) {
 		activity = context;
 		this.progressBar = pb;
@@ -55,18 +57,17 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 
 			// Create the HTTP Post
 			HttpClient client = new DefaultHttpClient(httpParams);
-			URI address = new URI("http", null, ZoneSnap_App.URL, ZoneSnap_App.PORT, "/login", null,
-					null);
+			URI address = new URI("http", null, ZoneSnap_App.URL,
+					ZoneSnap_App.PORT, "/login", null, null);
 			HttpPost request = new HttpPost(address);
-			
+
 			// Grant new code
 			// Create JSON object for image
 			JSONObject json = new JSONObject();
-			
-			json.put("username",params[0]);
-			
+
+			json.put("username", params[0]);
+
 			request.setEntity(new StringEntity(json.toString()));
-				
 
 			ResponseHandler<String> responsehandler = new BasicResponseHandler();
 			client.execute(request, responsehandler);
@@ -95,8 +96,12 @@ public class NetworkPostLogin extends AsyncTask<String, Void, String> {
 			Intent login = new Intent(activity, MapMenuActivity.class);
 			activity.startActivity(login);
 		} else {
-			new AlertDialog.Builder(activity).setMessage(
-					ZoneSnap_App.getErrorMessage() + result).show();
+			try {
+				new AlertDialog.Builder(activity).setMessage(
+						ZoneSnap_App.getErrorMessage() + result).show();
+			} catch (NullPointerException e) {
+
+			}
 		}
 
 	}

@@ -80,8 +80,12 @@ public class NetworkPostLike extends AsyncTask<String, Void, String> {
 			int prevLikes = ZoneSnap_App.likeCache.get(photoId);
 			ZoneSnap_App.likeCache.put(photoId, prevLikes+1);
 		} else {
+			try {
 			new AlertDialog.Builder(activity).setMessage(
 					ZoneSnap_App.getErrorMessage() + result).show();
+			} catch( NullPointerException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}

@@ -83,7 +83,7 @@ public class MapMenuActivity extends FragmentActivity {
 
 		// Move the camera to current location
 		// This has been known to throw exception
-		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 13));
+		map.animateCamera(CameraUpdateFactory.newLatLngZoom(myCoor, 18));
 		map.setMapType(ZoneSnap_App.MAP_TYPE);
 
 		// Get all of the markers for pictures
@@ -306,6 +306,7 @@ public class MapMenuActivity extends FragmentActivity {
 							coor.latitude = Double.parseDouble(parts[1]);
 							coor.longitude = Double.parseDouble(parts[2]);
 							coor.title = parts[3];
+							coor.username = parts[4];
 						} catch (ArrayIndexOutOfBoundsException e) {
 							e.printStackTrace();
 						}
@@ -340,15 +341,20 @@ public class MapMenuActivity extends FragmentActivity {
 						LatLng point = new LatLng(coor.latitude, coor.longitude);
 						map.addMarker(new MarkerOptions()
 								.position(point)
-								.title("Photo #" + String.valueOf(coor.photoId))
+								.title("Photo #" + String.valueOf(coor.photoId)
+										+ " By: " + coor.username)
 								.snippet(coor.title));
 					}
 
 				}
 
 			} else {
-				new AlertDialog.Builder(MapMenuActivity.this).setMessage(
-						ZoneSnap_App.getErrorMessage() + result).show();
+				try {
+					new AlertDialog.Builder(MapMenuActivity.this).setMessage(
+							ZoneSnap_App.getErrorMessage() + result).show();
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
 			}
 
 		}

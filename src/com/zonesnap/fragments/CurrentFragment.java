@@ -482,14 +482,18 @@ public class CurrentFragment extends Fragment {
 							.build();
 					notiMgr.notify(0, n);
 				} catch (NullPointerException e) {
-
+					e.printStackTrace();
 				}
 			}
 			// Set current Zone
 			currentZone = result;
 
-			// Set title
-			textView.setText("Zone " + currentZone);
+			if (currentZone == -2) {
+				textView.setText("Failed");
+			} else {
+				// Set title
+				textView.setText("Zone " + currentZone);
+			}
 		}
 
 	}
