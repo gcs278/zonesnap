@@ -23,7 +23,6 @@ import org.json.simple.parser.ParseException;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
@@ -54,16 +53,10 @@ import com.zonesnap.zonesnap_app.R;
 public class CurrentFragment extends Fragment {
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
-	// Location variables
-	double latitude, longitude;
-
 	// Layout Variables
 	TextView logo, gridTitle, message;
 	Button refresh;
 	ProgressBar progressBar;
-
-	// Current Zone variable, used to display toast in walking into new zone
-	public int currentZone = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,8 +90,9 @@ public class CurrentFragment extends Fragment {
 		refresh = (Button) getView().findViewById(R.id.refresh);
 		refresh.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
+				// Call NetworkGetZone which broadcasts a intent
 				logo.setText("Locating Zone...");
-				NetworkGetZone task = new NetworkGetZone(getBestLocation(),getActivity(),currentZone);
+				NetworkGetZone task = new NetworkGetZone(getBestLocation(),getActivity());
 				task.execute();
 			}
 		});
@@ -106,19 +100,6 @@ public class CurrentFragment extends Fragment {
 		// Get the progress bar
 		progressBar = (ProgressBar) getActivity().findViewById(
 				R.id.current_progress);
-	}
-
-	// Update location and GUI
-	public void updateLocation(final Location location) {
-		// logo.setText("Finding Zone...");
-
-		// Get location
-		latitude = location.getLatitude();
-		longitude = location.getLongitude();
-
-		// Get the current picture list
-		NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList();
-		listTask.execute();
 	}
 
 	// Pause the zone searching
@@ -150,7 +131,7 @@ public class CurrentFragment extends Fragment {
 			int zone = b.getInt("Zone");
 
 			// If it is a new zone
-			if (currentZone != zone  && currentZone != 0) {
+			if (ZoneSnap_App.zone != zone  && ZoneSnap_App.zone != 0) {
 				try {
 					Toast.makeText(getActivity(), "New Zone!",
 							Toast.LENGTH_SHORT).show();
@@ -160,43 +141,20 @@ public class CurrentFragment extends Fragment {
 			}
 			
 			// Set current Zone
-			currentZone = zone;
+			ZoneSnap_App.zone = zone;
 
-			if (currentZone == -2) {
+			if (ZoneSnap_App.zone == -2) {
 				logo.setText("Failed");
 			} else {
 				// Set title
-				logo.setText("Zone " + currentZone);
+				logo.setText("Zone " + ZoneSnap_App.zone);
 			}
-			updateLocation(loc);
+			
+			// Get the pictures associated with this zone
+			NetworkGetCurrentPictureList listTask = new NetworkGetCurrentPictureList(loc);
+			listTask.execute();
 		}
 	};
-
-	// Function for enabling GPS
-	private void EnableGPS() {
-		final AlertDialog.Builder builder = new AlertDialog.Builder(
-				getActivity());
-		builder.setMessage(
-				"Your GPS seems to be disabled, do you want to enable it?")
-				.setCancelable(false)
-				.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
-							public void onClick(
-									@SuppressWarnings("unused") final DialogInterface dialog,
-									@SuppressWarnings("unused") final int id) {
-								startActivity(new Intent(
-										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-							}
-						})
-				.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					public void onClick(final DialogInterface dialog,
-							@SuppressWarnings("unused") final int id) {
-						dialog.cancel();
-					}
-				});
-		final AlertDialog alert = builder.create();
-		alert.show();
-	}
 
 	/**
 	 * try to get the 'best' location selected from all providers
@@ -206,11 +164,9 @@ public class CurrentFragment extends Fragment {
 		Location networkLocation = getLocationByProvider(LocationManager.NETWORK_PROVIDER);
 		// if we have only one location available, the choice is easy
 		if (gpslocation == null) {
-			// Log.d(TAG, "No GPS Location available.");
 			return networkLocation;
 		}
 		if (networkLocation == null) {
-			// Log.d(TAG, "No Network Location available");
 			return gpslocation;
 		}
 		// a locationupdate is considered 'old' if its older than the configured
@@ -221,20 +177,16 @@ public class CurrentFragment extends Fragment {
 		boolean networkIsOld = (networkLocation.getTime() < old);
 		// gps is current and available, gps is better than network
 		if (!gpsIsOld) {
-			// Log.d(TAG, "Returning current GPS Location");
 			return gpslocation;
 		}
 		// gps is old, we can't trust it. use network location
 		if (!networkIsOld) {
-			// Log.d(TAG, "GPS is old, Network is current, returning network");
 			return networkLocation;
 		}
 		// both are old return the newer of those two
 		if (gpslocation.getTime() > networkLocation.getTime()) {
-			// Log.d(TAG, "Both are old, returning gps(newer)");
 			return gpslocation;
 		} else {
-			// Log.d(TAG, "Both are old, returning network(newer)");
 			return networkLocation;
 		}
 	}
@@ -252,7 +204,7 @@ public class CurrentFragment extends Fragment {
 				location = locationManager.getLastKnownLocation(provider);
 			}
 		} catch (IllegalArgumentException e) {
-			// Log.d(TAG, "Cannot acces Provider " + provider);
+		
 		}
 		return location;
 	}
@@ -261,10 +213,15 @@ public class CurrentFragment extends Fragment {
 	public class NetworkGetCurrentPictureList extends
 			AsyncTask<String, Void, String> {
 		boolean fail = true; // Success variable
-
+		Double latitude, longitude;
 		// List of photo IDs to retrieve
 		public ArrayList<Integer> photoIDs = new ArrayList<Integer>();
-
+		
+		public NetworkGetCurrentPictureList(Location loc) {
+			latitude = loc.getLatitude();
+			longitude = loc.getLongitude();
+		}
+		
 		// Retrieve data
 		@Override
 		protected String doInBackground(String... params) {
