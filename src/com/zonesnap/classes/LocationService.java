@@ -24,7 +24,7 @@ public class LocationService extends Service {
 		
 		// Register listener
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-				30000, ZoneSnap_App.GPS_MIN_DISTANCE, listener);
+				10000, ZoneSnap_App.GPS_MIN_DISTANCE, listener);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class LocationService extends Service {
 		@SuppressLint("NewApi")
 		@Override
 		public void onLocationChanged(final Location loc) {
-
+			System.out.println("location)");
 			// Get the Zone
 			NetworkGetZone zoneTask = new NetworkGetZone(loc, getApplicationContext());
 			zoneTask.execute();

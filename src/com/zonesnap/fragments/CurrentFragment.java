@@ -118,6 +118,12 @@ public class CurrentFragment extends Fragment {
 		// Register broadcast receiver for location
 		LocalBroadcastManager.getInstance(getActivity()).registerReceiver(
 				mMessageReceiver, new IntentFilter(LocationService.BROADCAST));
+		
+		// Call NetworkGetZone which broadcasts a intent
+		logo.setText("Locating Zone...");
+		NetworkGetZone task = new NetworkGetZone(getBestLocation(),getActivity());
+		task.execute();
+		
 		super.onResume();
 	}
 
