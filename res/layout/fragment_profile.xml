@@ -42,7 +42,7 @@
                 android:text="Error"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="#00FF26"
-                android:textSize="14sp" />
+                android:textSize="20sp" />
         </LinearLayout>
 
         <LinearLayout

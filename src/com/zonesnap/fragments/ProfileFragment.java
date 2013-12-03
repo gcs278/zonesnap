@@ -73,7 +73,7 @@ public class ProfileFragment extends Fragment {
 		TextView userId = (TextView) getView()
 				.findViewById(R.id.profile_userId);
 		userId.setTypeface(zsFont);
-		userId.setText(ZoneSnap_App.user.getUsername());
+		userId.setText(ZoneSnap_App.user.getName());
 		TextView picsTitle = (TextView) getView().findViewById(
 				R.id.profile_picsTitle);
 		picsTitle.setTypeface(zsFont);
