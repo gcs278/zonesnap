@@ -16,15 +16,6 @@
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:title="Port Number" />
-    <EditTextPreference
-        android:defaultValue="3"
-        android:inputType="number"
-        android:key="@string/pref_key_distance"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="Min GPS Update Distance" />
-
     <ListPreference
         android:defaultValue="2"
         android:dialogTitle="Select a map type"

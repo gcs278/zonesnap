@@ -132,7 +132,7 @@ public class NetworkGetZone extends AsyncTask<String, Void, Integer> {
 				PendingIntent pIntent = PendingIntent.getActivity(context, 0,
 						notIntent, 0);
 				Notification n = new Notification.Builder(context)
-						.setContentTitle("Entered new zone.")
+						.setContentTitle("Entered Zone #"+result)
 						.setSmallIcon(R.drawable.zonesnap1_launcher)
 						.setContentText("Touch to view content of new zone.")
 						.setContentIntent(pIntent).setAutoCancel(true).build();
