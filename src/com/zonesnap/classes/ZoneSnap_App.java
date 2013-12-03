@@ -38,6 +38,7 @@ public class ZoneSnap_App extends Application {
 	public static String LIKED = "liked";
 	public static int MAP_TYPE = GoogleMap.MAP_TYPE_HYBRID;
 	public static int GPS_MIN_DISTANCE = 3;
+	public static int zone = 0;
 	
 	///////////////// FACEBOOK VARS //////////////////////////////////
 	
