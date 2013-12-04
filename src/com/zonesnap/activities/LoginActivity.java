@@ -1,3 +1,12 @@
+/*******************************************************************
+ * ZoneSnap
+ * Authors: Grant Spence, Eric Owen, Denis Pelevin, Brad Russell
+ * Date: 12/3/2013
+ * Purpose: This class handles the login function. It is the first
+ *  activity called and a user must login to get to the rest of the
+ *  application. It uses a Facebook connection to login  
+ *******************************************************************/
+
 package com.zonesnap.activities;
 
 import android.app.Activity;

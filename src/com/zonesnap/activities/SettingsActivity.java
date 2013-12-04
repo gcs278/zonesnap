@@ -1,3 +1,12 @@
+/*******************************************************************
+ * ZoneSnap
+ * Authors: Grant Spence, Eric Owen, Denis Pelevin, Brad Russell
+ * Date: 12/3/2013
+ * Purpose: This activity allows the user to change a few of the settings
+ * 	to their liking. Currently they can change the type of map they view
+ *  and the server settings.   
+ *******************************************************************/
+
 package com.zonesnap.activities;
 
 // This file is for the settings activity to change the port and URL

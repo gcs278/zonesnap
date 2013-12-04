@@ -87,7 +87,9 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-
+			<intent-filter>
+			    <action android:name="com.zonesnap.zonesnap_app.LOCATION"/>
+			</intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />

@@ -1,3 +1,13 @@
+/*******************************************************************
+ * ZoneSnap
+ * Authors: Grant Spence, Eric Owen, Denis Pelevin, Brad Russell
+ * Date: 12/3/2013
+ * Purpose: This Activity controls the map section of the application.
+ *  This is the first activity the user comes to after they login. 
+ *  The map is from Google maps, overlayed with the locations of
+ *  all of the photos taken. The user can change the type of map
+ *  background and use it as they would the Google map application.  
+ *******************************************************************/
 package com.zonesnap.activities;
 
 import java.io.ByteArrayOutputStream;

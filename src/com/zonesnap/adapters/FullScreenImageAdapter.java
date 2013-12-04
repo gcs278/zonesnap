@@ -1,3 +1,13 @@
+/*******************************************************************
+ * ZoneSnap
+ * Authors: Grant Spence, Eric Owen, Denis Pelevin, Brad Russell
+ * Date: 12/3/2013
+ * Purpose: This adapter takes the array photo array and fits it into
+ *  the display format. This is also the area that controls the buttons
+ *  and text fields for the display. The like button is implemented here
+ *  which sends up the like to the server.  
+ *******************************************************************/
+
 package com.zonesnap.adapters;
 
 import java.util.ArrayList;
