@@ -1,3 +1,13 @@
+/*******************************************************************
+ * ZoneSnap
+ * Authors: Grant Spence, Eric Owen, Denis Pelevin, Brad Russell
+ * Date: 12/3/2013
+ * Purpose: This class manages main portion of the application. Here
+ *  the user switches between the fragments that comprise the bulk of
+ *  the UI. The fragment implementations can be found in the 
+ *  com.zonesnap.fragments package.
+ *******************************************************************/
+
 package com.zonesnap.activities;
 
 import java.util.Locale;

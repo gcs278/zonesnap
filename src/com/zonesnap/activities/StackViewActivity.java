@@ -27,9 +27,9 @@ public class StackViewActivity extends Activity {
 		
 		ArrayList<Integer> pictureList = this.getIntent().getIntegerArrayListExtra("picture_list");
 		
-		Bitmap b = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
-		
-		StackItem item = new StackItem(b, "Test Image");
+//		Bitmap b = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_launcher);
+//		
+//		StackItem item = new StackItem(b, "Test Image");
 		
 		sa_ = new StackAdapter(this, new ArrayList<StackItem>());
 		
