@@ -1,3 +1,11 @@
+/*******************************************************************
+ * ZoneSnap
+ * Authors: Grant Spence, Eric Owen, Denis Pelevin, Brad Russell
+ * Date: 12/3/2013
+ * Purpose: This application handles the Stackview activity. This is
+ *  an alternative display function to the fullscreen.  
+ *******************************************************************/
+
 package com.zonesnap.activities;
 
 import java.util.ArrayList;
